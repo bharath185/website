@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: prigenix
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: OPENCODE_API_KEY
+        sync: false
+      - key: OPENCODE_API_URL
+        value: https://opencode.ai/zen/go/v1/chat/completions
