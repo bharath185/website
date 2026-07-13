@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowLeft, CheckCircle } from 'lucide-react'
-import { resolveIcon } from '../../lib/utils.js'
+import { resolveIcon } from '../../lib/utils.ts'
 
 export function SelectionDetailView({ option, onBack, onInterested }) {
   const Icon = resolveIcon(option?.iconHint)

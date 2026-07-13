@@ -1,5 +1,7 @@
-export const dynamic = 'force-dynamic'
+'use client'
+
+import { LandingPage } from '@/sections/LandingPage'
 
 export default function Home() {
-  return <div>Hello Prigenix</div>
+  return <LandingPage />
 }

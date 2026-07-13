@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Sparkles, ChevronRight } from 'lucide-react'
-import { resolveIcon } from '../../lib/utils.js'
+import { resolveIcon } from '../../lib/utils.ts'
 
 const containerVariants = {
   hidden: { opacity: 0 },
