@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900">
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    </pattern>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="50%" style="stop-color:#1a365d"/>
+      <stop offset="100%" style="stop-color:#0f1f3d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#bg)"/>
+  <rect width="1440" height="900" fill="url(#grid)"/>
+  <!-- Gear 1 -->
+  <g transform="translate(200,150)" opacity="0.06">
+    <circle cx="0" cy="0" r="80" fill="none" stroke="white" stroke-width="1"/>
+    <circle cx="0" cy="0" r="60" fill="none" stroke="white" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="white" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="15" fill="white"/>
+  </g>
+  <!-- Gear 2 -->
+  <g transform="translate(600,650)" opacity="0.05">
+    <circle cx="0" cy="0" r="100" fill="none" stroke="white" stroke-width="1"/>
+    <circle cx="0" cy="0" r="75" fill="none" stroke="white" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="white" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="20" fill="white"/>
+  </g>
+  <!-- Gear 3 -->
+  <g transform="translate(1100,250)" opacity="0.04">
+    <circle cx="0" cy="0" r="120" fill="none" stroke="white" stroke-width="1"/>
+    <circle cx="0" cy="0" r="90" fill="none" stroke="white" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="60" fill="none" stroke="white" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="25" fill="white"/>
+  </g>
+  <!-- Horizontal lines -->
+  <g opacity="0.04">
+    <line x1="0" y1="300" x2="1440" y2="300" stroke="white" stroke-width="0.5"/>
+    <line x1="0" y1="600" x2="1440" y2="600" stroke="white" stroke-width="0.5"/>
+  </g>
+  <!-- Cross lines -->
+  <g opacity="0.03">
+    <line x1="0" y1="0" x2="500" y2="900" stroke="white" stroke-width="0.5"/>
+    <line x1="400" y1="0" x2="900" y2="900" stroke="white" stroke-width="0.5"/>
+    <line x1="800" y1="0" x2="1400" y2="900" stroke="white" stroke-width="0.5"/>
+  </g>
+</svg>
