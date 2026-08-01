@@ -9,6 +9,7 @@ interface EnquiryContextType {
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
   clearEnquiry: () => void
+  clearCart: () => void
   itemCount: number
   totalItems: number
 }
@@ -84,6 +85,7 @@ export function EnquiryProvider({ children }: { children: ReactNode }) {
         removeItem,
         updateQuantity,
         clearEnquiry,
+        clearCart: clearEnquiry,
         itemCount,
         totalItems: items.length
       }}

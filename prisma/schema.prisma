@@ -1,0 +1,63 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("USER") // "USER" | "ADMIN"
+  phone        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+}
+
+model Product {
+  id               String   @id @default(uuid())
+  name             String
+  slug             String   @unique
+  category         String
+  price            Float    @default(10000)
+  shortDescription String
+  description      String
+  image            String
+  specifications   String?  // JSON string array
+  features         String?  // JSON string array
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Order {
+  id                String      @id @default(uuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalAmount       Float
+  status            String      @default("PENDING") // "PENDING", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"
+  paymentStatus     String      @default("PENDING") // "PENDING", "PAID", "FAILED"
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  shippingAddress   String
+  contactPhone      String
+  trackingNumber    String?
+  adminNotes        String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  items             OrderItem[]
+}
+
+model OrderItem {
+  id          String @id @default(uuid())
+  orderId     String
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  productName String
+  quantity    Int
+  price       Float
+}

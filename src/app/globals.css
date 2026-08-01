@@ -1,42 +1,86 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-primary: #1e40af;
-  --color-primary-dark: #1e3a5f;
-  --color-accent: #ea580c;
-  --color-accent-hover: #c2410c;
+  
+  /* BMT Logo Exact Brand Colors */
+  --color-bmt-blue: #062594;
+  --color-bmt-red: #e60000;
+  --color-bmt-slate: #475569;
+  
+  --color-primary: #062594;
+  --color-primary-hover: #1d4ed8;
+  --color-accent: #e60000;
+  --color-accent-hover: #dc2626;
+  --color-surface: #ffffff;
+  --color-surface-light: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-muted: #64748b;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: #f8fafc;
+  color: #0f172a;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(6, 37, 148, 0.04) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(230, 0, 0, 0.03) 0px, transparent 50%);
+  background-attachment: fixed;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Modern Industrial Light Grid Pattern */
+.bg-industrial-grid {
+  background-image: radial-gradient(rgba(203, 213, 225, 0.5) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-@keyframes bounceIn {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.1); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); }
+/* Crisp Light Glassmorphism Card Styles */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+}
+.glass-panel-hover:hover {
+  background: #ffffff;
+  border-color: rgba(6, 37, 148, 0.3);
+  box-shadow: 0 15px 35px -10px rgba(6, 37, 148, 0.15);
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+/* Mobile safe area padding for bottom navbar */
+@media (max-width: 1024px) {
+  main {
+    padding-bottom: 4.5rem;
+  }
 }
 
-.animate-bounce-in {
-  animation: bounceIn 0.5s ease-out forwards;
+.safe-area-pb {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #062594;
+}
+
+/* Hide Next.js corner dev indicator overlay badges/buttons */
+[data-nextjs-toast],
+[data-nextjs-dialog-header],
+#next-logo,
+.nextjs-toast-errors-parent,
+nextjs-portal,
+div[class*="nextjs-portal"],
+div[id*="nextjs"] {
+  display: none !important;
 }

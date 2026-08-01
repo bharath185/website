@@ -1,83 +1,169 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { X, Minus, Plus, ShoppingCart, ArrowRight, Trash2 } from "lucide-react"
-import { useEnquiry } from "@/context/EnquiryContext"
+import { useState } from "react";
+import Link from "next/link";
+import { Trash2, ShoppingBag, ArrowRight, Shield, CreditCard, Send, Plus, Minus } from "lucide-react";
+import { useEnquiry } from "@/context/EnquiryContext";
+import { useAuth } from "@/context/AuthContext";
+import CheckoutModal from "@/components/CheckoutModal";
 
 export default function EnquiryCart() {
-  const { items, removeItem, updateQuantity, clearEnquiry, itemCount } = useEnquiry()
+  const { items, removeItem, updateQuantity, clearCart } = useEnquiry();
+  const { user, openAuthModal } = useAuth();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
+  const subtotal = items.reduce((sum, item) => sum + (item.product.price || 10000) * item.quantity, 0);
+  const gstEstimate = subtotal * 0.18;
+  const grandTotal = subtotal + gstEstimate;
+
+  const handleCheckoutClick = () => {
+    if (!user) {
+      openAuthModal("login");
+    } else {
+      setCheckoutOpen(true);
+    }
+  };
+
+  const handleWhatsAppEnquiry = () => {
+    const message = encodeURIComponent(
+      `*New Machine Tool Order Enquiry*%0A%0A` +
+      items.map(i => `- ${i.product.name} (Qty: ${i.quantity}) - ₹${((i.product.price || 10000) * i.quantity).toLocaleString('en-IN')}`).join('%0A') +
+      `%0A%0A*Estimated Total*: ₹${grandTotal.toLocaleString('en-IN')}`
+    );
+    window.open(`https://wa.me/919530208882?text=${message}`, "_blank");
+  };
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-16">
-        <ShoppingCart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">Your enquiry list is empty</h2>
-        <p className="text-gray-500 mb-6">Browse our products and add items you&apos;re interested in.</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+        <div className="w-16 h-16 bg-blue-50 border border-blue-200 text-blue-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+          <ShoppingBag size={28} />
+        </div>
+        <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Your Cart is Empty</h2>
+        <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">
+          Explore our industrial catalog and add machine tools, hydrostatic spindles, or accessories to place your order.
+        </p>
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-md text-xs uppercase tracking-wider"
         >
-          Browse Products
-          <ArrowRight className="w-4 h-4" />
+          Explore Catalog &amp; Products <ArrowRight size={16} />
         </Link>
       </div>
-    )
+    );
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">
-          Enquiry List ({itemCount} {itemCount === 1 ? "item" : "items"})
-        </h2>
-        <button
-          onClick={clearEnquiry}
-          className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700"
-        >
-          <Trash2 className="w-4 h-4" />
-          Clear All
-        </button>
-      </div>
-
-      <div className="space-y-4 mb-8">
-        {items.map((item) => (
-          <div key={item.product.id} className="flex items-center gap-4 bg-white rounded-lg border border-gray-200 p-4">
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-blue-700 font-bold">{item.product.name.charAt(0)}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <Link
-                href={`/products/${item.product.slug}`}
-                className="text-sm font-medium text-gray-900 hover:text-blue-700 block truncate"
-              >
-                {item.product.name}
-              </Link>
-              <span className="text-xs text-gray-500">{item.product.category}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
-              >
-                <Minus className="w-4 h-4" />
-              </button>
-              <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-              <button
-                onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+            <h2 className="text-xl font-extrabold text-slate-900">
+              Selected Products ({items.length})
+            </h2>
             <button
-              onClick={() => removeItem(item.product.id)}
-              className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+              onClick={clearCart}
+              className="text-xs text-red-600 hover:underline font-bold"
             >
-              <X className="w-4 h-4" />
+              Clear Cart
             </button>
           </div>
-        ))}
+
+          <div className="space-y-3">
+            {items.map(({ product, quantity }) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 shadow-sm"
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-20 h-20 object-cover rounded-xl border border-slate-200 bg-slate-50 shrink-0"
+                />
+                <div className="flex-1 min-w-0 text-center sm:text-left">
+                  <span className="text-[10px] font-bold text-blue-900 uppercase tracking-wider">
+                    {product.category}
+                  </span>
+                  <h3 className="font-bold text-slate-900 text-sm truncate">{product.name}</h3>
+                  <p className="text-xs font-mono font-bold text-blue-900 mt-0.5">
+                    ₹{((product.price || 10000) * quantity).toLocaleString("en-IN")}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center border border-slate-200 rounded-lg bg-slate-50 overflow-hidden">
+                    <button
+                      onClick={() => updateQuantity(product.id, quantity - 1)}
+                      className="p-2 text-slate-600 hover:bg-slate-200"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="px-3 text-xs font-bold text-slate-900 font-mono">{quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(product.id, quantity + 1)}
+                      className="p-2 text-slate-600 hover:bg-slate-200"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => removeItem(product.id)}
+                    className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm sticky top-24">
+            <h3 className="text-base font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100">
+              Order Summary &amp; Payment
+            </h3>
+
+            <div className="space-y-3 text-xs mb-6">
+              <div className="flex justify-between text-slate-600">
+                <span>Subtotal</span>
+                <span className="font-mono font-bold text-slate-900">₹{subtotal.toLocaleString("en-IN")}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Estimated 18% GST</span>
+                <span className="font-mono font-bold text-slate-900">₹{gstEstimate.toLocaleString("en-IN")}</span>
+              </div>
+              <div className="flex justify-between text-slate-900 font-extrabold text-sm pt-3 border-t border-slate-100">
+                <span>Total Amount</span>
+                <span className="font-mono text-blue-900">₹{grandTotal.toLocaleString("en-IN")}</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={handleCheckoutClick}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-900/20"
+              >
+                <CreditCard size={16} /> Pay Online via Razorpay
+              </button>
+
+              <button
+                onClick={handleWhatsAppEnquiry}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow"
+              >
+                <Send size={16} /> Instant WhatsApp Quote
+              </button>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-100 text-[11px] text-slate-500 flex items-center gap-2">
+              <Shield size={14} className="text-blue-900 shrink-0" />
+              <span>Razorpay 256-bit SSL encrypted checkout &amp; GST tax invoice provided.</span>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <CheckoutModal isOpen={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
     </div>
-  )
+  );
 }

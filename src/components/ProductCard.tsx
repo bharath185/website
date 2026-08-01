@@ -1,60 +1,108 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { ShoppingCart, Eye } from "lucide-react"
-import { Product } from "@/types"
+import { motion } from "framer-motion"
+import { Check, ShoppingCart } from "lucide-react"
 import { useEnquiry } from "@/context/EnquiryContext"
+import { Product } from "@/types"
 
 interface ProductCardProps {
   product: Product
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useEnquiry()
+  const { items, addItem, removeItem } = useEnquiry()
+  const [rotateX, setRotateX] = useState(0)
+  const [rotateY, setRotateY] = useState(0)
+
+  const inCart = items.some((i) => i.product.id === product.id)
+  const itemPrice = product.price || 10000
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    setRotateX((y - centerY) / 25)
+    setRotateY((centerX - x) / 25)
+  }
+
+  function handleMouseLeave() {
+    setRotateX(0)
+    setRotateY(0)
+  }
 
   return (
-    <div className="group bg-white rounded-xl shadow-sm hover:shadow-lg border border-gray-100 overflow-hidden transition-all duration-300 flex flex-col">
-      <Link href={`/products/${product.slug}`} className="block aspect-[4/3] bg-gray-100 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center">
-          <div className="text-center p-4">
-            <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-700 font-bold text-lg">{product.name.charAt(0)}</span>
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <motion.div
+        animate={{ rotateX, rotateY }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        style={{ perspective: 1000, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="group relative bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-blue-400 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between"
+      >
+        <div style={{ transform: "translateZ(20px)" }}>
+          <Link href={`/products/${product.slug}`} className="block p-5">
+            <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 border border-slate-100 bg-slate-50 group-hover:border-slate-200 transition-colors">
+              <img
+                src={product.image}
+                alt={product.name}
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+              <div className="absolute top-3 left-3">
+                <span className="px-2.5 py-1 bg-white/90 backdrop-blur-md border border-slate-200 text-blue-900 font-extrabold text-[10px] rounded-md uppercase tracking-wider shadow-sm">
+                  {product.category}
+                </span>
+              </div>
             </div>
-            <p className="text-xs text-gray-400 line-clamp-2">{product.shortDescription}</p>
-          </div>
-        </div>
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <Eye className="w-8 h-8 text-white" />
-        </div>
-      </Link>
-      <div className="p-5 flex flex-col flex-1">
-        <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full inline-block w-fit mb-2">
-          {product.category}
-        </span>
-        <Link href={`/products/${product.slug}`}>
-          <h3 className="text-base font-semibold text-gray-900 group-hover:text-blue-700 transition-colors mb-2">
-            {product.name}
-          </h3>
-        </Link>
-        <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">
-          {product.shortDescription}
-        </p>
-        <div className="flex gap-2">
-          <Link
-            href={`/products/${product.slug}`}
-            className="flex-1 text-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            View Details
+
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-900 transition-colors line-clamp-1">
+                {product.name}
+              </h3>
+              <span className="text-sm font-mono font-bold text-blue-900 flex-shrink-0">
+                ₹{itemPrice.toLocaleString("en-IN")}
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+              {product.shortDescription || product.description}
+            </p>
           </Link>
+        </div>
+
+        <div className="px-5 pb-5 pt-1" style={{ transform: "translateZ(10px)" }}>
           <button
-            onClick={() => addItem(product)}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 transition-colors"
+            onClick={() => (inCart ? removeItem(product.id) : addItem(product))}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+              inCart
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-inner"
+                : "bg-blue-900 hover:bg-blue-800 text-white shadow-md shadow-blue-900/20 active:scale-[0.98]"
+            }`}
           >
-            <ShoppingCart className="w-3.5 h-3.5" />
-            Add
+            {inCart ? (
+              <>
+                <Check className="w-4 h-4" />
+                Added in Cart
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-4 h-4" />
+                Add to Cart &amp; Order
+              </>
+            )}
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

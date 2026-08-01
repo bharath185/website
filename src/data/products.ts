@@ -1,350 +1,321 @@
 import { Product, GalleryImage } from "@/types"
 
+// Product images from bmtbharat.com (WithFloats CDN)
+const IMG = {
+  straighteningRollers: "https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg",
+  reelingRollers: "https://productimages.withfloats.com/tile/66b1c5539464b8011ada885c.jpg",
+  driveRing: "https://productimages.withfloats.com/tile/66b1c2c54f7781d15f4e71dc.jpg",
+  hydroSpindles: "https://bizimages.withfloats.com/tile/6a6c3b333547fd8e003991a2.jpg",
+  rotaryTables: "https://bizimages.withfloats.com/tile/6a699dcbba701899e1dda222.jpg",
+  planetaryGearbox: "https://bizimages.withfloats.com/tile/6a6708682a70fd3f18329c55.jpg",
+  gallery1: "https://fpimages.withfloats.com/actual/689b2aaf4e1a717b10cdac53.jpg",
+  gallery2: "https://fpimages.withfloats.com/actual/689b2a7f68536c1523251664.jpg",
+  gallery3: "https://fpimages.withfloats.com/actual/689b2a7ca0534d0427d7b062.jpg",
+  gallery4: "https://fpimages.withfloats.com/actual/689b2a7ae41135d55e7beaf0.jpg",
+}
+
 export const products: Product[] = [
   {
-    id: "straightening-rollers",
+    id: "straightening-machine-rollers",
     name: "Straightening Machine Rollers",
     slug: "straightening-machine-rollers",
-    category: "Rollers",
-    shortDescription: "High-precision straightening rollers for bar, pipe, tube, and sheet metal industries.",
-    description: "We manufacture high-quality straightening machine rollers engineered for precision straightening of bars, pipes, tubes, rods, and sheets. Crafted from superior grade alloy steel and heat-treated for maximum wear resistance, our rollers deliver consistent performance and extended service life. Available in various profiles including concave, convex, and flat configurations to suit您的 specific application requirements.",
+    category: "Machinery",
+    price: 45000,
+    shortDescription: "High-quality straightening machine rollers engineered for precision and durability.",
+    description: "Bharat Machine Tools is a top manufacturer of high-quality straightening machine rollers in Bangalore. Known for precision and durability, our rollers are engineered to deliver optimal performance and longevity. With cutting-edge technology and a skilled team, we produce straightening machine rollers that meet the rigorous demands of various industries. Trust Bharat Machine Tools for reliable and efficient solutions in straightening machine rollers. Choose us for superior craftsmanship and innovation in Bangalore.",
     specifications: [
-      "Material: Alloy Steel / D2 / H13 / EN series",
-      "Hardness: 52-62 HRC as per application",
-      "Surface Finish: 0.8 Ra or better",
-      "Diameter Range: 20 mm to 500 mm",
-      "Length Range: 100 mm to 3000 mm",
-      "Custom profiles available",
-      "Heat treatment: Through-hardened / Induction hardened"
+      "Precision engineered for optimal performance",
+      "Superior wear resistance and durability",
+      "Custom sizes and profiles per application",
+      "Manufactured with cutting-edge technology",
     ],
-    image: "/images/straightening-rollers.jpg",
+    image: IMG.straighteningRollers,
     features: [
-      "Superior wear resistance",
-      "Precision ground surface finish",
-      "Custom profiles per drawing",
-      "Extended service life",
-      "Consistent straightening quality"
-    ]
+      "Precision and durability",
+      "Optimal performance and longevity",
+      "Meets rigorous industry demands",
+      "Superior craftsmanship",
+    ],
   },
   {
     id: "reeling-rollers",
     name: "Reeling Rollers",
     slug: "reeling-rollers",
-    category: "Rollers",
-    shortDescription: "Premium reeling rollers for tube and pipe finishing applications.",
-    description: "Our reeling rollers are designed for superior surface finishing and dimensional accuracy in tube and pipe manufacturing. Made from high-grade materials with precision machining, these rollers ensure optimal surface quality and consistent roundness in the reeling process.",
-    specifications: [
-      "Material: Alloy Steel / Carbide coated options",
-      "Hardness: 58-65 HRC",
-      "Surface Finish: 0.4 Ra",
-      "Custom designs per application",
-      "Optimized groove profiles"
-    ],
-    image: "/images/reeling-rollers.jpg",
-    features: [
-      "Excellent surface finish quality",
-      "High dimensional accuracy",
-      "Long operational life",
-      "Custom groove profiles",
-      "Reduced downtime"
-    ]
-  },
-  {
-    id: "drive-rings",
-    name: "Drive Rings",
-    slug: "drive-rings",
-    category: "Rollers",
-    shortDescription: "Robust drive rings for rotary tube and pipe straightening machines.",
-    description: "We supply heavy-duty drive rings designed for rotary straightening machines in tube and pipe industries. Manufactured from wear-resistant materials with precision machining, our drive rings provide reliable power transmission and consistent performance in demanding production environments.",
-    specifications: [
-      "Material: Alloy Steel / Forged Steel",
-      "Hardness: 50-58 HRC",
-      "Precision machined bores",
-      "Custom sizes available",
-      "Balanced for high-speed operation"
-    ],
-    image: "/images/drive-rings.jpg",
-    features: [
-      "High strength and durability",
-      "Precision fitment",
-      "Balanced rotation",
-      "Wear-resistant surface",
-      "Custom manufacturing"
-    ]
-  },
-  {
-    id: "cylindrical-rollers",
-    name: "Cylindrical Roller Bearings",
-    slug: "cylindrical-roller-bearings",
-    category: "Bearings",
-    shortDescription: "High-capacity cylindrical roller bearings for heavy radial loads.",
-    description: "We offer a comprehensive range of cylindrical roller bearings designed for high radial load capacity and moderate thrust loads in both directions. Ideal for machine tool spindles, electric motors, and industrial gearboxes.",
-    specifications: [
-      "Type: NU, NJ, NUP, N series",
-      "Cage: Brass / Steel / Polyamide",
-      "Precision: P0, P6, P5, P4",
-      "Size range: 20 mm bore to 500 mm bore",
-      "Clearance: C2, CN, C3, C4"
-    ],
-    image: "/images/cylindrical-rollers.jpg",
-    features: [
-      "High radial load capacity",
-      "Low friction",
-      "High speed capability",
-      "Interchangeable design",
-      "Long service life"
-    ]
-  },
-  {
-    id: "ball-bearings",
-    name: "Deep Groove Ball Bearings",
-    slug: "deep-groove-ball-bearings",
-    category: "Bearings",
-    shortDescription: "Versatile deep groove ball bearings for high-speed and low-noise applications.",
-    description: "Our deep groove ball bearings are the most versatile type of rolling bearings, suitable for high-speed operation while accommodating radial and axial loads in both directions. Available in various sizes, seals, and precision grades.",
-    specifications: [
-      "Type: Single row / Double row",
-      "Seals: Open / ZZ / 2RS / Teflon",
-      "Precision: P0, P6, P5, P4",
-      "Size range: 3 mm bore to 400 mm bore",
-      "Cages: Steel / Brass / Polyamide"
-    ],
-    image: "/images/ball-bearings.jpg",
-    features: [
-      "Versatile load handling",
-      "High-speed capability",
-      "Low noise operation",
-      "Wide size range",
-      "Multiple seal options"
-    ]
-  },
-  {
-    id: "spherical-roller-bearings",
-    name: "Spherical Roller Bearings",
-    slug: "spherical-roller-bearings",
-    category: "Bearings",
-    shortDescription: "Self-aligning spherical roller bearings for heavy loads and misalignment compensation.",
-    description: "Spherical roller bearings offer the highest load capacity among roller bearings with self-aligning capability. Ideal for heavy industrial applications like mining, cement, paper mills, and heavy machinery where shaft deflection or misalignment is present.",
-    specifications: [
-      "Type: 20000 CC, CA, E series",
-      "Bore: 25 mm to 1000 mm",
-      "Precision: P0, P6, P5",
-      "Cage: Brass / Steel / Polyamide",
-      "Clearance: CN, C3, C4"
-    ],
-    image: "/images/spherical-roller-bearings.jpg",
-    features: [
-      "Highest load capacity",
-      "Self-aligning feature",
-      "Excellent shock load resistance",
-      "Long maintenance-free life",
-      "Suitable for harsh environments"
-    ]
-  },
-  {
-    id: "grinding-spindles",
-    name: "Grinding Spindles",
-    slug: "grinding-spindles",
-    category: "Spindles",
-    shortDescription: "High-precision grinding spindles for surface, cylindrical, and internal grinding applications.",
-    description: "We manufacture and supply precision grinding spindles designed for surface grinders, cylindrical grinders, and internal grinding machines. Built with high-precision bearings and dynamically balanced for vibration-free operation at high speeds.",
-    specifications: [
-      "Speed: Up to 60000 RPM",
-      "Bearing Type: Angular Contact / Roller",
-      "Lubrication: Grease / Oil Mist",
-      "Cooling: Air / Liquid",
-      "Runout: < 2 microns",
-      "Power: Custom as required"
-    ],
-    image: "/images/grinding-spindles.jpg",
-    features: [
-      "Sub-micron precision",
-      "High-speed capability",
-      "Vibration-free operation",
-      "Custom mounting configurations",
-      "Long bearing life"
-    ]
-  },
-  {
-    id: "milling-spindles",
-    name: "Milling Spindles",
-    slug: "milling-spindles",
-    category: "Spindles",
-    shortDescription: "Robust milling spindles for heavy-duty machining operations.",
-    description: "Our milling spindles are engineered for heavy-duty machining centers and milling machines. Designed for high torque and rigidity, these spindles ensure accurate material removal in demanding manufacturing environments.",
-    specifications: [
-      "Speed: Up to 15000 RPM",
-      "Taper: BT / ISO / CAT / HSK",
-      "Drive: Belt / Direct / Geared",
-      "Cooling: Air / Liquid",
-      "Runout: < 5 microns"
-    ],
-    image: "/images/milling-spindles.jpg",
-    features: [
-      "High torque output",
-      "Rigid construction",
-      "Multiple taper options",
-      "Smooth operation",
-      "Customizable drive systems"
-    ]
-  },
-  {
-    id: "cnc-lathe-spindles",
-    name: "CNC Lathe Spindles",
-    slug: "cnc-lathe-spindles",
-    category: "Spindles",
-    shortDescription: "Precision CNC lathe spindles for turning and boring applications.",
-    description: "High-precision CNC lathe spindles designed for accurate turning, facing, and boring operations. Built with precision bearings and robust housing for chatter-free machining at various speed ranges.",
-    specifications: [
-      "Speed: Up to 8000 RPM",
-      "Bore: Custom sizes",
-      "Mounting: Flange / Foot mount",
-      "Runout: < 3 microns",
-      "Lubrication: Grease / Oil"
-    ],
-    image: "/images/cnc-lathe-spindles.jpg",
-    features: [
-      "High precision turning",
-      "Chatter-free operation",
-      "Compact design",
-      "Easy installation",
-      "Low maintenance"
-    ]
-  },
-  {
-    id: "industrial-machinery-spares",
-    name: "Industrial Machinery Spares",
-    slug: "industrial-machinery-spares",
     category: "Machinery",
-    shortDescription: "Comprehensive range of industrial machinery spares and replacement parts.",
-    description: "We supply a wide range of industrial machinery spares including gears, shafts, bushes, sleeves, couplings, and other custom-engineered components for various industrial machines. Each component is manufactured to precise specifications.",
+    price: 38000,
+    shortDescription: "Durable and efficient reeling rollers built to the highest industry standards.",
+    description: "Bharat Machine Tools is a trusted name in the manufacturing of high-quality reeling rollers in Bangalore. Our expertise in precision engineering and commitment to quality ensure that every reeling roller we produce is durable and efficient. With state-of-the-art manufacturing facilities and a team of experienced professionals, we deliver reeling rollers that meet the highest industry standards. For reliable performance and exceptional craftsmanship, choose Bharat Machine Tools, your premier reeling rollers manufacturer in Bangalore. Experience manufacturing excellence with us.",
     specifications: [
-      "Material: Mild Steel / Alloy Steel / Stainless Steel / CI",
-      "Process: Turning / Milling / Grinding / Gear cutting",
-      "Heat Treatment: As required",
-      "Custom designs accepted",
-      "Reverse engineering available"
+      "Precision engineering",
+      "State-of-the-art manufacturing",
+      "Durable and efficient construction",
+      "Meets highest industry standards",
     ],
-    image: "/images/machinery-spares.jpg",
+    image: IMG.reelingRollers,
     features: [
-      "Custom manufacturing",
-      "Reverse engineering",
-      "Quality materials",
-      "Competitive pricing",
-      "Quick turnaround"
-    ]
+      "Durable and efficient",
+      "Reliable performance",
+      "Exceptional craftsmanship",
+      "Highest industry standards",
+    ],
   },
   {
-    id: "rubber-rollers",
-    name: "Rubber & Polyurethane Rollers",
-    slug: "rubber-polyurethane-rollers",
-    category: "Rollers",
-    shortDescription: "High-quality rubber and polyurethane rollers for diverse industrial applications.",
-    description: "We manufacture rubber and polyurethane rollers for a variety of industrial applications including printing, packaging, textile, steel, and material handling. Our rollers are made with precision-ground cores and high-quality elastomers for optimal performance.",
-    specifications: [
-      "Core Material: MS / SS / CI / Aluminum",
-      "Coating: Natural Rubber / Neoprene / Silicon / PU",
-      "Hardness: 20 to 90 Shore A",
-      "Diameter: Up to 600 mm",
-      "Length: Up to 4000 mm",
-      "Surface Finish: As required"
-    ],
-    image: "/images/rubber-rollers.jpg",
-    features: [
-      "Multiple elastomer options",
-      "Precision ground surface",
-      "Chemical resistant options",
-      "High temperature variants",
-      "Rebonding and regrinding service"
-    ]
-  },
-  {
-    id: "machine-tool-accessories",
-    name: "Machine Tool Accessories",
-    slug: "machine-tool-accessories",
+    id: "drive-ring",
+    name: "Drive Ring",
+    slug: "drive-ring",
     category: "Accessories",
-    shortDescription: "Complete range of machine tool accessories and tooling solutions.",
-    description: "We offer a complete range of machine tool accessories including chucks, collets, tool holders, arbors, adapters, boring heads, and milling tooling. All accessories are sourced from reputed manufacturers and quality checked before delivery.",
+    price: 12500,
+    shortDescription: "Durable and reliable drive rings that excel in performance for industrial machinery.",
+    description: "Bharat Machine Tools stands at the forefront of drive ring manufacturing in Bangalore. Our commitment to precision engineering and quality craftsmanship ensures that every drive ring we produce meets the highest industry standards. With advanced manufacturing facilities and a team of skilled professionals, we deliver durable and reliable drive rings that excel in performance. Whether for industrial machinery or specialized applications, Bharat Machine Tools is your trusted partner for superior drive rings. Experience excellence in manufacturing with Bharat Machine Tools in Bangalore.",
     specifications: [
-      "Types: Chucks / Collets / Tool Holders / Arbors",
-      "Standards: DIN / ISO / BT / CAT / HSK",
-      "Material: Alloy Steel / Carbide",
-      "Precision: Standard to Ultra-precision",
-      "Custom tooling solutions available"
+      "Precision engineering",
+      "Quality craftsmanship",
+      "Durable and reliable",
+      "Suits industrial machinery & specialized applications",
     ],
-    image: "/images/accessories.jpg",
+    image: IMG.driveRing,
     features: [
-      "Complete range available",
-      "Industry standard compatibility",
-      "Quality assured",
-      "Competitive pricing",
-      "Custom tooling solutions"
-    ]
+      "Highest industry standards",
+      "Durable and reliable",
+      "Excels in performance",
+      "Advanced manufacturing facilities",
+    ],
   },
   {
-    id: "roller-reconditioning",
-    name: "Roller Reconditioning & Regrinding",
-    slug: "roller-reconditioning-regrinding",
-    category: "Services",
-    shortDescription: "Professional roller reconditioning, regrinding, and refurbishment services.",
-    description: "We provide comprehensive roller reconditioning and regrinding services to extend the life of your existing rollers. Our services include regrinding to original specifications, hard chrome plating, metal spray coating, and rubber/polyurethane re-bonding.",
+    id: "ball-screws",
+    name: "Ball Screws",
+    slug: "ball-screws",
+    category: "Accessories",
+    price: 18500,
+    shortDescription: "Precision ball screws for accurate linear motion in machine tools.",
+    description: "We supply high-precision ball screws for CNC machines and machine tools, engineered for smooth, accurate linear motion with minimal backlash. Available in various leads, diameters, and accuracy grades to suit new builds as well as retrofit and reconditioning projects.",
     specifications: [
-      "Regrinding: Up to 4000 mm length",
-      "Coating: Hard Chrome / Metal Spray / Ceramic",
-      "Rubber Re-bonding: All elastomers",
-      "Dynamic Balancing available",
-      "Inspection & measurement reports"
+      "Various leads and diameters",
+      "Multiple accuracy grades",
+      "Suitable for CNC retrofits",
+      "Low backlash, high efficiency",
     ],
-    image: "/images/reconditioning.jpg",
+    image: IMG.gallery1,
     features: [
-      "Cost-effective alternative to new",
-      "Restores original specs",
-      "Extends roller life significantly",
-      "Quick turnaround time",
-      "Comprehensive quality report"
-    ]
+      "Smooth linear motion",
+      "Minimal backlash",
+      "Retrofit friendly",
+      "High positioning accuracy",
+    ],
   },
   {
-    id: "bearing-repair",
-    name: "Bearing Repair & Refurbishment",
-    slug: "bearing-repair-refurbishment",
-    category: "Services",
-    shortDescription: "Professional bearing repair and refurbishment services for industrial bearings.",
-    description: "Our bearing repair service offers a cost-effective alternative to replacement. We inspect, re-grind, replace rolling elements, and re-assemble bearings to restore them to like-new condition, often at 40-60% cost savings.",
+    id: "flow-forming-machine-mandrels",
+    name: "Flow Forming Machine Mandrels",
+    slug: "flow-forming-machine-mandrels",
+    category: "Machinery",
+    price: 65000,
+    shortDescription: "Precision mandrels for extrusion and flow forming machines.",
+    description: "We manufacture precision mandrels and SPM machine tools for extrusion and flow forming machines. Built from high-grade materials and precision ground, our mandrels deliver concentricity and surface finish required for demanding flow forming applications.",
     specifications: [
-      "Bearing Types: All standard types",
-      "Size Range: 50 mm to 1000 mm OD",
-      "Process: Inspection / Re-grinding / Re-assembly",
-      "Testing: Run-out / Vibration / Noise",
-      "Warranty: 6-12 months on repaired bearings"
+      "SPM machine tools for extrusion & flow forming",
+      "High-grade alloy construction",
+      "Precision ground finish",
+      "Custom designs per machine",
     ],
-    image: "/images/bearing-repair.jpg",
+    image: IMG.gallery2,
     features: [
-      "40-60% cost savings",
-      "Faster turnaround than new",
-      "Same performance standards",
-      "Extended equipment life",
-      "Environmentally sustainable"
-    ]
-  }
+      "High concentricity",
+      "Excellent surface finish",
+      "Custom engineered",
+      "Long service life",
+    ],
+  },
+  {
+    id: "planetary-gear-box",
+    name: "Planetary Gear Box",
+    slug: "planetary-gear-box",
+    category: "Machinery",
+    price: 85000,
+    shortDescription: "Compact planetary gear boxes for high torque and space efficiency.",
+    description: "Our planetary gear boxes deliver high torque density in a compact footprint. The coaxial arrangement of planet gears distributes load evenly, improving torque capacity and space efficiency for industrial machinery, conveyors, and process equipment.",
+    specifications: [
+      "High torque density",
+      "Compact coaxial design",
+      "Multiple ratios available",
+      "Hardened & ground gears",
+    ],
+    image: IMG.planetaryGearbox,
+    features: [
+      "Improved torque capacity",
+      "Space efficient",
+      "Even load distribution",
+      "Low maintenance",
+    ],
+  },
+  {
+    id: "locknuts",
+    name: "LOCKNUTS",
+    slug: "locknuts",
+    category: "Accessories",
+    price: 4500,
+    shortDescription: "Precision locknuts for secure bearing and spindle assembly.",
+    description: "We supply precision locknuts for securing bearings, spindles, and rotating assemblies. Manufactured to tight tolerances with fine threads, our locknuts ensure secure axial positioning and reliable clamping in high-speed and high-load applications.",
+    specifications: [
+      "Fine precision threads",
+      "Various sizes available",
+      "Secure axial clamping",
+      "Suits bearings & spindles",
+    ],
+    image: IMG.gallery3,
+    features: [
+      "Tight tolerances",
+      "Reliable clamping",
+      "High-speed capable",
+      "Corrosion resistant options",
+    ],
+  },
+  {
+    id: "hydro-static-spindles",
+    name: "Hydro Static Spindles",
+    slug: "hydro-static-spindles",
+    category: "Spindles",
+    price: 120000,
+    shortDescription: "Hydrostatic spindles for ultra-precision, high-accuracy machining.",
+    description: "Hydro static spindles use a pressurized oil film to support the rotating shaft, eliminating metal-to-metal contact. This delivers exceptional rotational accuracy, vibration damping, and surface finish — ideal for high-accuracy machining, grinding, and precision turning applications.",
+    specifications: [
+      "Non-contact oil film bearing",
+      "Exceptional rotational accuracy",
+      "Superior vibration damping",
+      "Ideal for grinding & precision turning",
+    ],
+    image: IMG.hydroSpindles,
+    features: [
+      "Ultra-high precision",
+      "Excellent surface finish",
+      "Long bearing life",
+      "Smooth, wear-free operation",
+    ],
+  },
+  {
+    id: "rotary-tables",
+    name: "Rotary Tables",
+    slug: "rotary-tables",
+    category: "Machinery",
+    price: 95000,
+    shortDescription: "Precision rotary tables for multi-axis machining operations.",
+    description: "Rotary tables are essential for multi-axis precision machining, enabling accurate indexing and continuous rotation of the workpiece. We supply robust, high-precision rotary tables that add 4th and 5th axis capability to machining centers for complex part geometries.",
+    specifications: [
+      "4th / 5th axis capability",
+      "High indexing accuracy",
+      "Rigid construction",
+      "Worm gear & direct drive options",
+    ],
+    image: IMG.rotaryTables,
+    features: [
+      "Multi-axis machining",
+      "Accurate indexing",
+      "Complex part capability",
+      "Heavy load capacity",
+    ],
+  },
+  {
+    id: "yrt-cross-roller-bearings",
+    name: "YRT & Cross Roller Bearings",
+    slug: "yrt-cross-roller-bearings",
+    category: "Bearings",
+    price: 28000,
+    shortDescription: "YRT bearings and large cross roller bearings for rotary tables and precision axes.",
+    description: "We supply YRT bearings and large cross roller bearings for rotary tables, indexing heads, and precision rotary axes. These bearings combine radial, axial, and moment load capacity in a single compact unit with exceptional running accuracy.",
+    specifications: [
+      "Combined radial/axial/moment capacity",
+      "High running accuracy",
+      "Large sizes available",
+      "Suits rotary tables & indexing heads",
+    ],
+    image: IMG.gallery4,
+    features: [
+      "Compact single-unit design",
+      "Exceptional accuracy",
+      "High stiffness",
+      "Precision rotary applications",
+    ],
+  },
+  {
+    id: "duplex-worm-shafts-worm-wheels",
+    name: "Duplex Worm Shafts & Worm Wheels",
+    slug: "duplex-worm-shafts-worm-wheels",
+    category: "Accessories",
+    price: 24000,
+    shortDescription: "Duplex worm shafts and worm wheels for backlash-adjustable gear drives.",
+    description: "We manufacture duplex worm shafts and worm wheels that allow precise backlash adjustment through axial movement of the worm. Ideal for rotary tables, indexing mechanisms, and precision gear drives where minimal backlash is critical.",
+    specifications: [
+      "Adjustable backlash design",
+      "Precision ground worm threads",
+      "Custom ratios",
+      "Suits rotary & indexing mechanisms",
+    ],
+    image: IMG.gallery1,
+    features: [
+      "Minimal backlash",
+      "Precise adjustment",
+      "Custom engineering",
+      "Durable construction",
+    ],
+  },
+  {
+    id: "spm-machine-tools",
+    name: "SPM Machine Tools",
+    slug: "spm-machine-tools",
+    category: "Machinery",
+    price: 150000,
+    shortDescription: "Special purpose machine tools for extrusion and flow forming applications.",
+    description: "We design and build SPM (Special Purpose Machine) tools for extrusion and flow forming machines, along with the necessary rotational gears, actuators, and outriggers. Every SPM solution is engineered to your process for maximum productivity and reliability.",
+    specifications: [
+      "Custom SPM design & build",
+      "Rotational gears, actuators & outriggers",
+      "Extrusion & flow forming tooling",
+      "Retrofitting & reconditioning",
+    ],
+    image: IMG.gallery2,
+    features: [
+      "Process-specific engineering",
+      "Complete tooling packages",
+      "Retrofit expertise",
+      "Reliable productivity",
+    ],
+  },
 ]
 
 export const categories = [
-  { id: "rollers", name: "Rollers", count: 4 },
-  { id: "bearings", name: "Bearings", count: 3 },
-  { id: "spindles", name: "Spindles", count: 3 },
-  { id: "machinery", name: "Machinery & Spares", count: 1 },
-  { id: "accessories", name: "Accessories", count: 1 },
-  { id: "services", name: "Services", count: 2 }
+  { id: "machinery", name: "Machinery", count: 5 },
+  { id: "bearings", name: "Bearings", count: 1 },
+  { id: "spindles", name: "Spindles", count: 1 },
+  { id: "accessories", name: "Accessories", count: 5 },
 ]
 
+// Real gallery images from bmtbharat.com
 export const galleryImages: GalleryImage[] = [
-  { src: "/images/gallery/workshop-1.jpg", alt: "Manufacturing Workshop", caption: "Our Manufacturing Facility" },
-  { src: "/images/gallery/workshop-2.jpg", alt: "Machining Operations", caption: "Precision Machining" },
-  { src: "/images/gallery/grinding.jpg", alt: "Grinding Operations", caption: "Roller Grinding" },
-  { src: "/images/gallery/quality.jpg", alt: "Quality Inspection", caption: "Quality Control" },
-  { src: "/images/gallery/products.jpg", alt: "Finished Products", caption: "Finished Rollers" },
-  { src: "/images/gallery/team.jpg", alt: "Our Team", caption: "Our Engineering Team" }
+  { src: IMG.gallery1, alt: "Bharat Machine Tools facility", caption: "Our Facility" },
+  { src: IMG.gallery2, alt: "Machine tools and equipment", caption: "Machine Tools" },
+  { src: IMG.gallery3, alt: "Precision manufacturing", caption: "Precision Manufacturing" },
+  { src: IMG.gallery4, alt: "Industrial machinery", caption: "Industrial Machinery" },
+]
+
+// Real updates/blog posts from bmtbharat.com
+export const updates = [
+  {
+    title: "How Hydro Static Spindles Improve Precision in High-Accuracy Machining",
+    date: "2026-07-31",
+    image: IMG.hydroSpindles,
+    slug: "how-hydro-static-spindles-improve-precision-in-high-accuracy-machining",
+  },
+  {
+    title: "Why Rotary Tables Are Essential for Multi-Axis Precision Machining",
+    date: "2026-07-29",
+    image: IMG.rotaryTables,
+    slug: "why-rotary-tables-are-essential-for-multi-axis-precision-machining",
+  },
+  {
+    title: "How a Planetary Gear Box Improves Torque and Space Efficiency",
+    date: "2026-07-27",
+    image: IMG.planetaryGearbox,
+    slug: "how-a-planetary-gear-box-improves-torque-and-space-efficiency",
+  },
 ]
 
 export function getProductBySlug(slug: string): Product | undefined {
