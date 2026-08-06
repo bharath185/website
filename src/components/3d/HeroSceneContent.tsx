@@ -268,17 +268,17 @@ function ExplodedSpindleAssembly() {
 
   useFrame((state) => {
     const elapsed = state.clock.getElapsedTime()
-    const loopTimeSpindle = elapsed % 4
+    const loopTimeSpindle = elapsed % 6
     
     let d = 0
-    if (loopTimeSpindle < 1) {
+    if (loopTimeSpindle < 1.5) {
       d = 0
-    } else if (loopTimeSpindle >= 1 && loopTimeSpindle < 2) {
-      d = THREE.MathUtils.smoothstep(loopTimeSpindle - 1, 0, 1)
-    } else if (loopTimeSpindle >= 2 && loopTimeSpindle < 3) {
+    } else if (loopTimeSpindle >= 1.5 && loopTimeSpindle < 3.0) {
+      d = THREE.MathUtils.smoothstep(loopTimeSpindle, 1.5, 3.0)
+    } else if (loopTimeSpindle >= 3.0 && loopTimeSpindle < 4.5) {
       d = 1
     } else {
-      d = 1 - THREE.MathUtils.smoothstep(loopTimeSpindle - 3, 0, 1)
+      d = 1 - THREE.MathUtils.smoothstep(loopTimeSpindle, 4.5, 6.0)
     }
 
     const spinSpeed = 1.0
@@ -430,11 +430,11 @@ function SceneCarousel() {
   // Carousel values: 1 = Gears, 2 = Spindle
   const [activeDesign, setActiveDesign] = useState(1)
 
-  // Switch designs every 4 seconds (4000ms) - permanently restricted to 1 and 2
+  // Switch designs every 6 seconds (6000ms) - permanently restricted to 1 and 2
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveDesign((prev) => (prev === 1 ? 2 : 1))
-    }, 4000)
+    }, 6000)
     return () => clearInterval(interval)
   }, [])
 
