@@ -10,6 +10,7 @@ import CheckoutModal from "@/components/CheckoutModal";
 import { Product } from "@/types";
 import { getProductBySlug, products as fallbackProducts } from "@/data/products";
 
+
 export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -84,12 +85,13 @@ export default function ProductDetailPage() {
 
         <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-lg">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
-            <div className="lg:col-span-2 bg-slate-50 p-8 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-slate-200">
-              <div className="w-full aspect-square max-w-sm rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+            <div className="lg:col-span-2 bg-white flex items-center justify-center p-6 border-b lg:border-b-0 lg:border-r border-slate-200">
+              <div className="w-full relative aspect-square max-w-[360px] mx-auto flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={product.image}
+                  src={product.image || "/placeholder-product.jpg"}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain rounded-2xl shadow-sm"
                 />
               </div>
             </div>

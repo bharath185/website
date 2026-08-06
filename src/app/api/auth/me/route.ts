@@ -4,7 +4,11 @@ import { ensureAdminUser } from '@/lib/seed'
 
 export async function GET() {
   try {
-    await ensureAdminUser()
+    try {
+      await ensureAdminUser()
+    } catch {
+      // Ignore SQLite write errors in serverless
+    }
     const user = await getSessionUser()
     if (!user) {
       return NextResponse.json({ user: null })

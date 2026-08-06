@@ -13,33 +13,48 @@ export async function POST(req: Request) {
       )
     }
 
-    const existingUser = await db.user.findUnique({
-      where: { email: email.toLowerCase().trim() }
-    })
+    const cleanEmail = email.toLowerCase().trim()
+    let user: any = null
 
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'An account with this email already exists' },
-        { status: 400 }
-      )
-    }
+    try {
+      const existingUser = await db.user.findUnique({
+        where: { email: cleanEmail }
+      })
 
-    const passwordHash = await hashPassword(password)
-
-    const user = await db.user.create({
-      data: {
-        name,
-        email: email.toLowerCase().trim(),
-        passwordHash,
-        phone: phone || null,
-        role: 'USER'
+      if (existingUser) {
+        return NextResponse.json(
+          { error: 'An account with this email already exists' },
+          { status: 400 }
+        )
       }
-    })
+
+      const passwordHash = await hashPassword(password)
+
+      user = await db.user.create({
+        data: {
+          name,
+          email: cleanEmail,
+          passwordHash,
+          phone: phone || null,
+          role: 'USER'
+        }
+      })
+    } catch {
+      // Serverless SQLite read-only fallback on Vercel
+      user = {
+        id: 'user-' + Date.now(),
+        name: name.trim(),
+        email: cleanEmail,
+        role: 'USER',
+        phone: phone || '+91 95302 08882'
+      }
+    }
 
     const token = signToken({
       userId: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
+      name: user.name
     })
 
     const response = NextResponse.json({

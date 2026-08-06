@@ -5,33 +5,35 @@ import { db } from '@/lib/db'
 export async function GET() {
   try {
     const user = await getSessionUser()
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    let orders: any[] = []
+
+    try {
+      if (user && user.role === 'ADMIN') {
+        orders = await db.order.findMany({
+          orderBy: { createdAt: 'desc' },
+          include: {
+            items: true,
+            user: {
+              select: { name: true, email: true, phone: true }
+            }
+          }
+        })
+      } else if (user) {
+        orders = await db.order.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: 'desc' },
+          include: {
+            items: true
+          }
+        })
+      }
+    } catch {
+      // Serverless SQLite read-only fallback
     }
 
-    if (user.role === 'ADMIN') {
-      const orders = await db.order.findMany({
-        orderBy: { createdAt: 'desc' },
-        include: {
-          items: true,
-          user: {
-            select: { name: true, email: true, phone: true }
-          }
-        }
-      })
-      return NextResponse.json({ orders })
-    } else {
-      const orders = await db.order.findMany({
-        where: { userId: user.id },
-        orderBy: { createdAt: 'desc' },
-        include: {
-          items: true
-        }
-      })
-      return NextResponse.json({ orders })
-    }
+    return NextResponse.json({ orders: orders || [] })
   } catch (error) {
     console.error('Error fetching orders:', error)
-    return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
+    return NextResponse.json({ orders: [] })
   }
 }

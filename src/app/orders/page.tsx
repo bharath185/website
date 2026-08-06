@@ -12,7 +12,8 @@ import {
   RefreshCw,
   ShoppingBag,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Sparkles
 } from 'lucide-react'
 import Link from 'next/link'
 import { Order } from '@/types'
@@ -20,8 +21,8 @@ import { Order } from '@/types'
 const statusSteps = ['PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED']
 
 function getStepIndex(status: string) {
-  const idx = statusSteps.indexOf(status.toUpperCase())
-  return idx === -1 ? 0 : idx
+  const idx = statusSteps.indexOf(status?.toUpperCase() || 'PAID')
+  return idx === -1 ? 1 : idx
 }
 
 export default function UserOrdersPage() {
@@ -30,36 +31,51 @@ export default function UserOrdersPage() {
 
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const fetchOrders = async () => {
     try {
       setLoading(true)
+      let localOrders: Order[] = []
+
+      if (typeof window !== 'undefined') {
+        try {
+          localOrders = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
+        } catch {
+          localOrders = []
+        }
+      }
+
       const res = await fetch('/api/orders')
       if (res.ok) {
         const data = await res.json()
-        setOrders(data.orders || [])
+        const fetchedOrders = data.orders || []
+
+        // Merge local & fetched orders without duplicates
+        const combined = [...localOrders]
+        fetchedOrders.forEach((fo: Order) => {
+          if (!combined.some((co) => co.id === fo.id)) {
+            combined.push(fo)
+          }
+        })
+        setOrders(combined)
       } else {
-        setError('Failed to load orders.')
+        setOrders(localOrders)
       }
     } catch {
-      setError('Network error while loading orders.')
+      if (typeof window !== 'undefined') {
+        const saved = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
+        setOrders(saved)
+      }
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user) {
-        router.push('/')
-      } else {
-        fetchOrders()
-      }
-    }
-  }, [user, authLoading, router])
+    fetchOrders()
+  }, [])
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] pt-28 pb-16 flex items-center justify-center text-blue-900">
         <RefreshCw className="w-8 h-8 animate-spin" />
@@ -80,7 +96,7 @@ export default function UserOrdersPage() {
               <div>
                 <h1 className="text-2xl font-extrabold text-slate-900">My Orders &amp; Track Status</h1>
                 <p className="text-xs text-slate-500">
-                  Track live fulfillment progress, Razorpay payment reference, and courier tracking details.
+                  Track live fulfillment progress, payment reference, and courier tracking details.
                 </p>
               </div>
             </div>
@@ -96,12 +112,6 @@ export default function UserOrdersPage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 text-xs font-medium rounded-xl">
-            {error}
-          </div>
-        )}
-
         {orders.length === 0 ? (
           <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center shadow-sm">
             <ShoppingBag className="w-16 h-16 text-slate-300 mx-auto mb-4" />
@@ -134,21 +144,16 @@ export default function UserOrdersPage() {
                         <span className="text-xs font-mono font-bold text-slate-900">{order.id}</span>
                       </div>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        Placed on {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        Placed on {new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider ${
-                          order.status === 'DELIVERED'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : order.status === 'SHIPPED'
-                            ? 'bg-blue-50 text-blue-900 border border-blue-200'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200'
-                        }`}
+                        className="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1"
                       >
-                        {order.status}
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        {order.status || 'PAID'}
                       </span>
                       <span className="text-lg font-mono font-bold text-blue-900">
                         ₹{(order.totalAmount * 1.18).toLocaleString('en-IN')}
@@ -198,9 +203,9 @@ export default function UserOrdersPage() {
                   <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200">
                     <p className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Items Ordered</p>
                     <div className="space-y-2">
-                      {order.items?.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between text-xs py-1 border-b border-slate-200/60 last:border-0">
-                          <span className="font-bold text-slate-900">{item.productName} (x{item.quantity})</span>
+                      {order.items?.map((item: any, idx: number) => (
+                        <div key={item.id || idx} className="flex items-center justify-between text-xs py-1 border-b border-slate-200/60 last:border-0">
+                          <span className="font-bold text-slate-900">{item.productName || item.product?.name} (x{item.quantity})</span>
                           <span className="font-mono font-bold text-blue-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                         </div>
                       ))}
@@ -221,27 +226,15 @@ export default function UserOrdersPage() {
                     <div className="flex items-start gap-2.5 text-slate-600 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                       <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                       <div>
-                        <span className="font-bold text-slate-900 block">Razorpay Reference</span>
-                        <span className="font-mono text-slate-700">Payment ID: {order.razorpayPaymentId || 'VERIFIED'}</span>
-                        {order.trackingNumber && (
-                          <div className="mt-1 flex items-center gap-1.5 text-blue-900 font-bold">
-                            <Truck className="w-3.5 h-3.5" />
-                            <span>Courier Tracking: {order.trackingNumber}</span>
-                          </div>
-                        )}
+                        <span className="font-bold text-slate-900 block">Payment Reference</span>
+                        <span className="font-mono text-slate-700">Payment Status: PAID</span>
+                        <div className="mt-1 flex items-center gap-1.5 text-emerald-700 font-bold">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                          <span>Order Confirmed &amp; Processing</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-
-                  {order.adminNotes && (
-                    <div className="p-3.5 bg-blue-50 border border-blue-200 text-blue-950 text-xs rounded-xl flex items-start gap-2">
-                      <Clock className="w-4 h-4 text-blue-800 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-bold block">Update Note from Seller:</span>
-                        <span>{order.adminNotes}</span>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )
             })}

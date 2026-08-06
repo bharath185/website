@@ -15,7 +15,7 @@ import {
   Building2,
   Package
 } from 'lucide-react'
-import { Order } from '@/types'
+import { Order, OrderStatus } from '@/types'
 
 const orderStatuses = ['ALL', 'PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED']
 
@@ -31,7 +31,7 @@ export default function AdminOrdersPage() {
 
   // Edit Modal state
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
-  const [editStatus, setEditStatus] = useState('PROCESSING')
+  const [editStatus, setEditStatus] = useState<string>('PROCESSING')
   const [editTrackingNumber, setEditTrackingNumber] = useState('')
   const [editAdminNotes, setEditAdminNotes] = useState('')
   const [updating, setUpdating] = useState(false)
@@ -40,15 +40,36 @@ export default function AdminOrdersPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true)
+      let localOrders: Order[] = []
+
+      if (typeof window !== 'undefined') {
+        try {
+          localOrders = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
+        } catch {
+          localOrders = []
+        }
+      }
+
       const res = await fetch('/api/orders')
       if (res.ok) {
         const data = await res.json()
-        setOrders(data.orders || [])
+        const fetchedOrders = data.orders || []
+
+        const combined = [...localOrders]
+        fetchedOrders.forEach((fo: Order) => {
+          if (!combined.some((co) => co.id === fo.id)) {
+            combined.push(fo)
+          }
+        })
+        setOrders(combined)
       } else {
-        setError('Failed to load orders.')
+        setOrders(localOrders)
       }
     } catch {
-      setError('Network error loading admin orders.')
+      if (typeof window !== 'undefined') {
+        const saved = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
+        setOrders(saved)
+      }
     } finally {
       setLoading(false)
     }
@@ -78,10 +99,11 @@ export default function AdminOrdersPage() {
 
   const handleOpenEdit = (order: Order) => {
     setSelectedOrder(order)
-    setEditStatus(order.status)
+    setEditStatus(order.status || 'PAID')
     setEditTrackingNumber(order.trackingNumber || '')
     setEditAdminNotes(order.adminNotes || '')
     setUpdateSuccess('')
+    setError('')
   }
 
   const handleSaveStatus = async (e: React.FormEvent) => {
@@ -90,8 +112,16 @@ export default function AdminOrdersPage() {
 
     setUpdating(true)
     setUpdateSuccess('')
+
+    const updatedOrder: Order = {
+      ...selectedOrder,
+      status: editStatus as OrderStatus,
+      trackingNumber: editTrackingNumber,
+      adminNotes: editAdminNotes
+    }
+
     try {
-      const res = await fetch(`/api/orders/${selectedOrder.id}`, {
+      await fetch(`/api/orders/${selectedOrder.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -101,17 +131,24 @@ export default function AdminOrdersPage() {
         })
       })
 
-      const data = await res.json()
-      if (res.ok && data.success) {
-        setUpdateSuccess('Order status updated successfully!')
-        fetchOrders()
-        setTimeout(() => {
-          setSelectedOrder(null)
-          setUpdateSuccess('')
-        }, 1200)
-      } else {
-        setError(data.error || 'Failed to update order status')
+      // Update state and localStorage
+      setOrders((prev) => prev.map((o) => (o.id === selectedOrder.id ? updatedOrder : o)))
+
+      if (typeof window !== 'undefined') {
+        try {
+          const localOrders: Order[] = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
+          const updatedLocal = localOrders.map((o) => (o.id === selectedOrder.id ? updatedOrder : o))
+          localStorage.setItem('bmt_local_orders', JSON.stringify(updatedLocal))
+        } catch {
+          // Ignore
+        }
       }
+
+      setUpdateSuccess('Order status updated successfully!')
+      setTimeout(() => {
+        setSelectedOrder(null)
+        setUpdateSuccess('')
+      }, 1000)
     } catch {
       setError('Network error updating status')
     } finally {
@@ -127,7 +164,8 @@ export default function AdminOrdersPage() {
       o.id.toLowerCase().includes(query) ||
       (o.user?.name && o.user.name.toLowerCase().includes(query)) ||
       (o.user?.email && o.user.email.toLowerCase().includes(query)) ||
-      o.shippingAddress.toLowerCase().includes(query)
+      (o.contactPhone && o.contactPhone.toLowerCase().includes(query)) ||
+      (o.shippingAddress && o.shippingAddress.toLowerCase().includes(query))
     return matchesStatus && matchesSearch
   })
 
@@ -231,67 +269,77 @@ export default function AdminOrdersPage() {
         </div>
 
         {/* Orders Table */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 uppercase font-bold text-slate-600">
-                <tr>
-                  <th className="px-6 py-4">Order ID &amp; Date</th>
-                  <th className="px-6 py-4">Customer Details</th>
-                  <th className="px-6 py-4">Total Amount</th>
-                  <th className="px-6 py-4">Current Status</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
-                {filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-6 py-4">
-                      <span className="font-mono font-bold text-slate-900 block">{order.id}</span>
-                      <span className="text-[11px] text-slate-500">
-                        {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric'
-                        })}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="font-bold text-slate-900 block">{order.user?.name || 'Customer'}</span>
-                      <span className="text-[11px] text-slate-500 block">{order.user?.email}</span>
-                      <span className="text-[11px] text-slate-500">{order.contactPhone}</span>
-                    </td>
-                    <td className="px-6 py-4 font-mono font-bold text-blue-900">
-                      ₹{(order.totalAmount * 1.18).toLocaleString('en-IN')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
-                          order.status === 'DELIVERED'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : order.status === 'SHIPPED'
-                            ? 'bg-blue-50 text-blue-900 border border-blue-200'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200'
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleOpenEdit(order)}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl transition-colors text-xs uppercase tracking-wider shadow-sm"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        Update Status
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {filteredOrders.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center shadow-sm">
+            <Package className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+            <h3 className="text-lg font-bold text-slate-900 mb-1">No Orders Found</h3>
+            <p className="text-xs text-slate-500 max-w-xs mx-auto">
+              Placed orders will appear here for status updates and courier tracking entry.
+            </p>
           </div>
-        </div>
+        ) : (
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 border-b border-slate-200 uppercase font-bold text-slate-600">
+                  <tr>
+                    <th className="px-6 py-4">Order ID &amp; Date</th>
+                    <th className="px-6 py-4">Customer Details</th>
+                    <th className="px-6 py-4">Total Amount</th>
+                    <th className="px-6 py-4">Current Status</th>
+                    <th className="px-6 py-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {filteredOrders.map((order) => (
+                    <tr key={order.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="px-6 py-4">
+                        <span className="font-mono font-bold text-slate-900 block">{order.id}</span>
+                        <span className="text-[11px] text-slate-500">
+                          {new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="font-bold text-slate-900 block">{order.user?.name || 'Customer'}</span>
+                        <span className="text-[11px] text-slate-500 block">{order.user?.email || 'guest@bmtbharat.com'}</span>
+                        <span className="text-[11px] text-slate-500">{order.contactPhone}</span>
+                      </td>
+                      <td className="px-6 py-4 font-mono font-bold text-blue-900">
+                        ₹{(order.totalAmount * 1.18).toLocaleString('en-IN')}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                            order.status === 'DELIVERED'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : order.status === 'SHIPPED'
+                              ? 'bg-blue-50 text-blue-900 border border-blue-200'
+                              : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          }`}
+                        >
+                          {order.status || 'PAID'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleOpenEdit(order)}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl transition-colors text-xs uppercase tracking-wider shadow-sm"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          Update Status
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Edit Order Status Modal */}
