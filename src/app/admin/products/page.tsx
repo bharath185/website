@@ -13,7 +13,8 @@ import {
   RefreshCw,
   X,
   CheckCircle2,
-  ArrowLeft
+  ArrowLeft,
+  Upload
 } from 'lucide-react'
 import { Product } from '@/types'
 import { products as fallbackProducts } from '@/data/products'
@@ -43,6 +44,38 @@ export default function AdminProductsPage() {
   const [formImage, setFormImage] = useState('')
   const [formFeatures, setFormFeatures] = useState('')
 
+  const [uploadingImage, setUploadingImage] = useState(false)
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingImage(true)
+    setError('')
+    setSuccessMsg('')
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await res.json()
+      if (res.ok && data.url) {
+        setFormImage(data.url)
+      } else {
+        setError(data.error || 'Failed to upload image')
+      }
+    } catch {
+      setError('Network error while uploading image')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   const fetchProducts = async () => {
     try {
       setLoading(true)
@@ -69,6 +102,7 @@ export default function AdminProductsPage() {
       if (!user || user.role !== 'ADMIN') {
         router.push('/')
       } else {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchProducts()
       }
     }
@@ -428,15 +462,59 @@ export default function AdminProductsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Image URL *</label>
-                  <input
-                    type="url"
-                    required
-                    value={formImage}
-                    onChange={(e) => setFormImage(e.target.value)}
-                    placeholder="https://..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                  />
+                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Image *</label>
+                  <div className="relative border border-dashed border-slate-300 hover:border-blue-500 rounded-lg p-2 transition-colors bg-slate-50 flex flex-col items-center justify-center min-h-[90px] h-[98px]">
+                    {formImage ? (
+                      <div className="relative w-full flex items-center justify-between gap-2 px-1">
+                        <img 
+                          src={formImage} 
+                          alt="Product Preview" 
+                          className="h-14 w-14 object-contain rounded border border-slate-200 bg-white" 
+                        />
+                        <div className="flex flex-col gap-1 items-end">
+                          <label className="cursor-pointer text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all">
+                            {uploadingImage ? 'Uploading...' : 'Change'}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              disabled={uploadingImage}
+                              onChange={handleImageUpload}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setFormImage('')}
+                            className="text-[10px] font-bold text-red-600 hover:text-red-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer flex flex-col items-center justify-center w-full h-full py-1 text-center select-none">
+                        {uploadingImage ? (
+                          <>
+                            <RefreshCw className="w-5 h-5 text-blue-600 animate-spin mb-1" />
+                            <span className="text-[10px] text-slate-500 font-medium">Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-5 h-5 text-slate-400 mb-1" />
+                            <span className="text-[11px] text-slate-700 font-bold">Upload Image File</span>
+                            <span className="text-[9px] text-slate-400">Click to select image</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploadingImage}
+                          onChange={handleImageUpload}
+                        />
+                      </label>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -552,14 +630,59 @@ export default function AdminProductsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Image URL *</label>
-                  <input
-                    type="url"
-                    required
-                    value={formImage}
-                    onChange={(e) => setFormImage(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                  />
+                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Image *</label>
+                  <div className="relative border border-dashed border-slate-300 hover:border-blue-500 rounded-lg p-2 transition-colors bg-slate-50 flex flex-col items-center justify-center min-h-[90px] h-[98px]">
+                    {formImage ? (
+                      <div className="relative w-full flex items-center justify-between gap-2 px-1">
+                        <img 
+                          src={formImage} 
+                          alt="Product Preview" 
+                          className="h-14 w-14 object-contain rounded border border-slate-200 bg-white" 
+                        />
+                        <div className="flex flex-col gap-1 items-end">
+                          <label className="cursor-pointer text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all">
+                            {uploadingImage ? 'Uploading...' : 'Change'}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              disabled={uploadingImage}
+                              onChange={handleImageUpload}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setFormImage('')}
+                            className="text-[10px] font-bold text-red-600 hover:text-red-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer flex flex-col items-center justify-center w-full h-full py-1 text-center select-none">
+                        {uploadingImage ? (
+                          <>
+                            <RefreshCw className="w-5 h-5 text-blue-600 animate-spin mb-1" />
+                            <span className="text-[10px] text-slate-500 font-medium">Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-5 h-5 text-slate-400 mb-1" />
+                            <span className="text-[11px] text-slate-700 font-bold">Upload Image File</span>
+                            <span className="text-[9px] text-slate-400">Click to select image</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploadingImage}
+                          onChange={handleImageUpload}
+                        />
+                      </label>
+                    )}
+                  </div>
                 </div>
               </div>
 
