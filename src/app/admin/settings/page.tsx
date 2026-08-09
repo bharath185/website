@@ -21,6 +21,14 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [testRecipient, setTestRecipient] = useState('')
+  const [testing, setTesting] = useState(false)
+
+  useEffect(() => {
+    if (user?.email && !testRecipient) {
+      setTestRecipient(user.email)
+    }
+  }, [user])
 
   const fetchConfig = async () => {
     try {
@@ -88,6 +96,46 @@ export default function AdminSettingsPage() {
       setError('Network error saving settings')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleTestConnection = async () => {
+    setError('')
+    setSuccessMsg('')
+    setTesting(true)
+
+    if (!host || !port || !smtpUser || !pass || !testRecipient) {
+      setError('SMTP Host, Port, Username, Password, and Recipient Email are all required to run connection test.')
+      setTesting(false)
+      return
+    }
+
+    try {
+      const res = await fetch('/api/admin/mail-config/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          host,
+          port: parseInt(port),
+          secure,
+          user: smtpUser,
+          pass,
+          fromEmail,
+          testRecipient
+        })
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'SMTP Connection Test Failed.')
+        return
+      }
+
+      setSuccessMsg(data.message || 'SMTP Connection Successful! Test email sent.')
+    } catch {
+      setError('Network error occurred during connection check.')
+    } finally {
+      setTesting(false)
     }
   }
 
@@ -242,6 +290,33 @@ export default function AdminSettingsPage() {
               <p className="text-[10px] text-slate-450 mt-1">
                 This is displayed as the sender name/address in customer inboxes.
               </p>
+            </div>
+
+            <div className="pt-6 border-t border-slate-100 mt-6 text-xs">
+              <h3 className="text-sm font-bold text-slate-800 mb-3 uppercase tracking-wider flex items-center gap-1.5">
+                <RefreshCw className={`w-4 h-4 text-blue-900 ${testing ? 'animate-spin' : ''}`} />
+                Test Mail Connection
+              </h3>
+              <div className="flex flex-col sm:flex-row items-end gap-3 bg-slate-50 border border-slate-205 rounded-2xl p-4">
+                <div className="flex-1 w-full">
+                  <label className="block font-bold text-slate-605 uppercase tracking-wider mb-1">Test Recipient Email</label>
+                  <input
+                    type="email"
+                    value={testRecipient}
+                    onChange={(e) => setTestRecipient(e.target.value)}
+                    placeholder="e.g. receiver@domain.com"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
+                  />
+                </div>
+                <button
+                  type="button"
+                  disabled={testing || saving}
+                  onClick={handleTestConnection}
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all disabled:opacity-50 inline-flex items-center gap-2 h-[41px] shrink-0"
+                >
+                  {testing ? 'Testing...' : 'Send Test Mail'}
+                </button>
+              </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
