@@ -19,6 +19,17 @@ export async function POST(req: Request) {
     // Automatically strip all whitespaces from Gmail app passwords
     const cleanPass = pass.replace(/\s+/g, '')
 
+    console.log('SMTP Test Connection Params:', {
+      host,
+      port,
+      secure,
+      user: smtpUser,
+      fromEmail,
+      recipient: testRecipient,
+      passLength: cleanPass.length,
+      passFirstLast: cleanPass.length > 0 ? `${cleanPass[0]}...${cleanPass[cleanPass.length - 1]}` : 'empty'
+    })
+
     const transporter = nodemailer.createTransport({
       host,
       port: parseInt(port),
