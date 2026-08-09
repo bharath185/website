@@ -28,34 +28,28 @@ export async function ensureAdminUser() {
       })
     }
 
-    // Seed default MailConfig settings if not configured
-    const existingMail = await db.mailConfig.findUnique({
-      where: { id: 'smtp-settings' }
+    // Seed/upsert default MailConfig settings with verified Gmail App Password
+    await db.mailConfig.upsert({
+      where: { id: 'smtp-settings' },
+      update: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        user: 'prigenixsoftware@gmail.com',
+        pass: 'taiqosebebmwxsmp',
+        fromEmail: 'BMT Support <prigenixsoftware@gmail.com>'
+      },
+      create: {
+        id: 'smtp-settings',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        user: 'prigenixsoftware@gmail.com',
+        pass: 'taiqosebebmwxsmp',
+        fromEmail: 'BMT Support <prigenixsoftware@gmail.com>'
+      }
     })
-
-    if (!existingMail || !existingMail.host) {
-      await db.mailConfig.upsert({
-        where: { id: 'smtp-settings' },
-        update: {
-          host: 'smtp.gmail.com',
-          port: 587,
-          secure: false,
-          user: 'prigenixsoftware@gmail.com',
-          pass: 'ahodqttdddiditva',
-          fromEmail: 'BMT Support <prigenixsoftware@gmail.com>'
-        },
-        create: {
-          id: 'smtp-settings',
-          host: 'smtp.gmail.com',
-          port: 587,
-          secure: false,
-          user: 'prigenixsoftware@gmail.com',
-          pass: 'ahodqttdddiditva',
-          fromEmail: 'BMT Support <prigenixsoftware@gmail.com>'
-        }
-      })
-      console.log('Seeded default MailConfig settings')
-    }
+    console.log('Seeded default MailConfig settings')
   } catch (error) {
     console.error('Error seeding admin user or mail config:', error)
   }
