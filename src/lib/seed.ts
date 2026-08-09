@@ -27,7 +27,36 @@ export async function ensureAdminUser() {
         data: { role: 'ADMIN', passwordHash }
       })
     }
+
+    // Seed default MailConfig settings if not configured
+    const existingMail = await db.mailConfig.findUnique({
+      where: { id: 'smtp-settings' }
+    })
+
+    if (!existingMail || !existingMail.host) {
+      await db.mailConfig.upsert({
+        where: { id: 'smtp-settings' },
+        update: {
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          user: 'prigenixsoftware@gmail.com',
+          pass: 'ahodqttdddiditva',
+          fromEmail: 'BMT Support <prigenixsoftware@gmail.com>'
+        },
+        create: {
+          id: 'smtp-settings',
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          user: 'prigenixsoftware@gmail.com',
+          pass: 'ahodqttdddiditva',
+          fromEmail: 'BMT Support <prigenixsoftware@gmail.com>'
+        }
+      })
+      console.log('Seeded default MailConfig settings')
+    }
   } catch (error) {
-    console.error('Error seeding admin user:', error)
+    console.error('Error seeding admin user or mail config:', error)
   }
 }
