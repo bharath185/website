@@ -11,21 +11,38 @@ export async function GET() {
       products = await db.product.findMany({
         orderBy: { createdAt: 'desc' }
       })
-    } catch {
-      // Serverless fallback
+    } catch (e) {
+      console.warn("DB connection warning during findMany in GET:", e)
     }
 
-    if (!products || products.length === 0) {
-      return NextResponse.json({ products: defaultProducts })
+    // Merge default products with database products
+    const mergedMap = new Map<string, any>()
+
+    // 1. Load all defaults first
+    defaultProducts.forEach((p) => {
+      mergedMap.set(p.slug, {
+        ...p,
+        specifications: p.specifications || [],
+        features: p.features || []
+      })
+    })
+
+    // 2. Overwrite with database entries (or add new ones)
+    if (products && products.length > 0) {
+      products.forEach((p) => {
+        const parsedSpec = typeof p.specifications === 'string' ? JSON.parse(p.specifications) : (p.specifications || [])
+        const parsedFeat = typeof p.features === 'string' ? JSON.parse(p.features) : (p.features || [])
+        
+        mergedMap.set(p.slug, {
+          ...p,
+          specifications: parsedSpec,
+          features: parsedFeat
+        })
+      })
     }
 
-    const parsedProducts = products.map((p) => ({
-      ...p,
-      specifications: typeof p.specifications === 'string' ? JSON.parse(p.specifications) : (p.specifications || []),
-      features: typeof p.features === 'string' ? JSON.parse(p.features) : (p.features || [])
-    }))
-
-    return NextResponse.json({ products: parsedProducts })
+    const finalProducts = Array.from(mergedMap.values())
+    return NextResponse.json({ products: finalProducts })
   } catch (error) {
     console.error('Error fetching products:', error)
     return NextResponse.json({ products: defaultProducts })

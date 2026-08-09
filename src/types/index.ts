@@ -7,6 +7,7 @@ export interface Product {
   shortDescription: string
   specifications?: string[]
   image: string
+  images?: string[]
   features?: string[]
   price?: number
 }
@@ -63,4 +64,5 @@ export interface User {
   email: string
   role: 'USER' | 'ADMIN'
   phone?: string | null
+  passwordResetRequired?: boolean
 }

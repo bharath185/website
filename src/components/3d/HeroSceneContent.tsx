@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useRef, useMemo, useState, useEffect } from 'react'
+import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Environment, ContactShadows } from '@react-three/drei'
+import { OrbitControls, Environment, ContactShadows, Image } from '@react-three/drei'
 import * as THREE from 'three'
 
 // Helper component: Procedural Spur Gear
@@ -430,7 +430,7 @@ function SceneCarousel() {
   // Carousel values: 1 = Gears, 2 = Spindle
   const [activeDesign, setActiveDesign] = useState(1)
 
-  // Switch designs every 6 seconds (6000ms) - permanently restricted to 1 and 2
+  // Switch designs every 6 seconds (6000ms) - loops between 1 and 2
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveDesign((prev) => (prev === 1 ? 2 : 1))
@@ -540,7 +540,9 @@ export default function HeroSceneContent() {
       <pointLight position={[-2, -0.5, 1.5]} intensity={1.4} color="#ffffff" decay={2} distance={10} />
 
       {/* Render the Carousel Assembly */}
-      <SceneCarousel />
+      <Suspense fallback={null}>
+        <SceneCarousel />
+      </Suspense>
 
       {/* Soft floor shadow to ground the objects */}
       <ContactShadows

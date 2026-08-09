@@ -65,7 +65,7 @@ export async function PUT(
     const body = await req.json()
     const { name, category, price, shortDescription, description, image, specifications, features } = body
 
-    const updateData: Record<string, unknown> = {}
+    const updateData: Record<string, any> = {}
     if (name) updateData.name = name
     if (category) updateData.category = category
     if (price !== undefined) updateData.price = parseFloat(price.toString())
@@ -79,15 +79,60 @@ export async function PUT(
       updateData.features = Array.isArray(features) ? JSON.stringify(features) : features
     }
 
+    let existingProduct: any = null
+    try {
+      // 1. Try to find the product in DB by ID
+      existingProduct = await db.product.findUnique({
+        where: { id }
+      })
+      
+      // 2. Try by slug if not found by ID
+      if (!existingProduct) {
+        existingProduct = await db.product.findUnique({
+          where: { slug: id }
+        })
+      }
+    } catch (e) {
+      console.warn("DB connection warning during fetch in PUT:", e)
+    }
+
     let updatedProduct: any = null
 
-    try {
+    if (existingProduct) {
+      // Product exists in DB, update it using its actual DB primary key (existingProduct.id)
       updatedProduct = await db.product.update({
-        where: { id },
+        where: { id: existingProduct.id },
         data: updateData
       })
-    } catch {
-      updatedProduct = { id, ...updateData }
+    } else {
+      // Product does NOT exist in DB yet. It's in the defaultProducts fallback list.
+      // We must retrieve the default details to fill in any missing fields, and INSERT it!
+      const fallback = defaultProducts.find((p) => p.id === id || p.slug === id)
+      if (!fallback) {
+        return NextResponse.json({ error: 'Product not found in database or catalog fallbacks' }, { status: 404 })
+      }
+
+      // Prepare complete product details for creation
+      const createData = {
+        id: fallback.id, // preserve the existing id (e.g. "straightening-machine-rollers")
+        name: name || fallback.name,
+        slug: fallback.slug,
+        category: category || fallback.category,
+        price: price !== undefined ? parseFloat(price.toString()) : (fallback.price || 10000),
+        shortDescription: shortDescription || fallback.shortDescription,
+        description: description || fallback.description,
+        image: image || fallback.image,
+        specifications: specifications !== undefined
+          ? (Array.isArray(specifications) ? JSON.stringify(specifications) : specifications)
+          : (fallback.specifications ? JSON.stringify(fallback.specifications) : null),
+        features: features !== undefined
+          ? (Array.isArray(features) ? JSON.stringify(features) : features)
+          : (fallback.features ? JSON.stringify(fallback.features) : null),
+      }
+
+      updatedProduct = await db.product.create({
+        data: createData
+      })
     }
 
     return NextResponse.json({

@@ -28,7 +28,7 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
 
   if (q.includes("cnc") || q.includes("spindle") || q.includes("product") || q.includes("catalog") || q.includes("machine")) {
     return {
-      reply: "Namaste! We manufacture precision CNC Spindle Assemblies (₹1,85,000), Hydrostatic Bearings (₹98,000), Drive Rings (₹42,500), and Flow Forming Mandrels (₹1,45,000) in Bangalore. Guiding you to our catalog! [REDIRECT:/products]",
+      reply: "Namaste! We manufacture precision CNC Spindle Assemblies (₹1,85,000), Hydrostatic Bearings (₹98,000), Drive Rings (₹42,500), and Flow Forming Mandrels (₹1,45,000) in Bangalore. Guiding you to our products! [REDIRECT:/products]",
       redirect: "/products",
     }
   }
@@ -42,7 +42,7 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
 
   if (q.includes("price") || q.includes("quote") || q.includes("enquiry") || q.includes("cart")) {
     return {
-      reply: "All prices include GST. Add items to your Enquiry Cart to generate an instant quotation request! Guiding you to the Enquiry page. [REDIRECT:/enquiry]",
+      reply: "Add items to your Enquiry Cart to request a custom quotation! Directing you to the Enquiry Cart. [REDIRECT:/enquiry]",
       redirect: "/enquiry",
     }
   }
@@ -193,7 +193,7 @@ export default function AIAssistantBot() {
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: "bot",
-        text: "I am ready to assist you with Bharat Machine Tools products! Explore our Products Catalog or call our Bangalore team at +91 95302 08882.",
+        text: "I am ready to assist you with Bharat Machine Tools products! Explore our Products or call our Bangalore team at +91 95302 08882.",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       }
       setMessages((prev) => [...prev, errorMsg])

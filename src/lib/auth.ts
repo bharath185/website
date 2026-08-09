@@ -45,7 +45,7 @@ export async function getSessionUser() {
     try {
       const user = await db.user.findUnique({
         where: { id: decoded.userId },
-        select: { id: true, name: true, email: true, role: true, phone: true }
+        select: { id: true, name: true, email: true, role: true, phone: true, passwordResetRequired: true }
       })
       if (user) return user
     } catch (e) {
@@ -58,7 +58,8 @@ export async function getSessionUser() {
       name: decoded.name || (decoded.email.includes('admin') ? 'BMT Admin' : 'Valued Customer'),
       email: decoded.email,
       role: decoded.role || 'USER',
-      phone: '+91 95302 08882'
+      phone: '+91 95302 08882',
+      passwordResetRequired: false
     }
   } catch (error) {
     console.error('Error fetching session user:', error)

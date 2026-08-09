@@ -27,8 +27,8 @@ export default function EnquiryCart() {
   const handleWhatsAppEnquiry = () => {
     const message = encodeURIComponent(
       `*New Machine Tool Order Enquiry*%0A%0A` +
-      items.map(i => `- ${i.product.name} (Qty: ${i.quantity}) - ₹${((i.product.price || 10000) * i.quantity).toLocaleString('en-IN')}`).join('%0A') +
-      `%0A%0A*Estimated Total*: ₹${grandTotal.toLocaleString('en-IN')}`
+      items.map(i => `- ${i.product.name} (Qty: ${i.quantity})`).join('%0A') +
+      `%0A%0APlease contact me with a custom quotation.`
     );
     window.open(`https://wa.me/919530208882?text=${message}`, "_blank");
   };
@@ -85,9 +85,6 @@ export default function EnquiryCart() {
                     {product.category}
                   </span>
                   <h3 className="font-bold text-slate-900 text-sm truncate">{product.name}</h3>
-                  <p className="text-xs font-mono font-bold text-blue-900 mt-0.5">
-                    ₹{((product.price || 10000) * quantity).toLocaleString("en-IN")}
-                  </p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -121,43 +118,32 @@ export default function EnquiryCart() {
         <div>
           <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm sticky top-24">
             <h3 className="text-base font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100">
-              Order Summary &amp; Payment
+              Enquiry Summary
             </h3>
 
-            <div className="space-y-3 text-xs mb-6">
-              <div className="flex justify-between text-slate-600">
-                <span>Subtotal</span>
-                <span className="font-mono font-bold text-slate-900">₹{subtotal.toLocaleString("en-IN")}</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Estimated 18% GST</span>
-                <span className="font-mono font-bold text-slate-900">₹{gstEstimate.toLocaleString("en-IN")}</span>
-              </div>
-              <div className="flex justify-between text-slate-900 font-extrabold text-sm pt-3 border-t border-slate-100">
-                <span>Total Amount</span>
-                <span className="font-mono text-blue-900">₹{grandTotal.toLocaleString("en-IN")}</span>
-              </div>
-            </div>
+            <p className="text-xs text-slate-600 leading-relaxed mb-6">
+              Submit your quotation request. Once submitted, our sales engineering team will review the request and get in touch with you shortly with custom pricing.
+            </p>
 
             <div className="space-y-3">
               <button
                 onClick={handleCheckoutClick}
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-900/20"
               >
-                <CreditCard size={16} /> Pay Online via Razorpay
+                <Send size={16} /> Request Quotation
               </button>
 
               <button
                 onClick={handleWhatsAppEnquiry}
                 className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow"
               >
-                <Send size={16} /> Instant WhatsApp Quote
+                <Send size={16} /> Instant WhatsApp Enquiry
               </button>
             </div>
 
             <div className="mt-6 pt-4 border-t border-slate-100 text-[11px] text-slate-500 flex items-center gap-2">
               <Shield size={14} className="text-blue-900 shrink-0" />
-              <span>Razorpay 256-bit SSL encrypted checkout &amp; GST tax invoice provided.</span>
+              <span>Secure enquiry submission. Our team will contact you directly with custom pricing.</span>
             </div>
           </div>
         </div>

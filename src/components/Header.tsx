@@ -10,7 +10,7 @@ import { useAuth } from "@/context/AuthContext"
 
 const navLinks = [
   { href: "/", label: "Home", icon: Settings },
-  { href: "/products", label: "Products Catalog", icon: Package },
+  { href: "/products", label: "Products", icon: Package },
   { href: "/contact", label: "Contact Us", icon: Phone },
   { href: "/enquiry", label: "Cart / Order", icon: ShoppingCart },
 ]
@@ -48,7 +48,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <div className="bg-white rounded-xl p-1 shadow-sm border border-slate-200">
               <img
-                src="https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg"
+                src="/images/logo.jpg"
                 alt="Bharat Machine Tools"
                 className="h-7 sm:h-9 w-auto object-contain"
               />

@@ -13,9 +13,13 @@ import {
   CheckCircle2,
   Truck,
   Building2,
-  Package
+  Package,
+  FileText,
+  Mail,
+  Newspaper
 } from 'lucide-react'
 import { Order, OrderStatus } from '@/types'
+import { jsPDF } from 'jspdf'
 
 const orderStatuses = ['ALL', 'PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED']
 
@@ -36,6 +40,27 @@ export default function AdminOrdersPage() {
   const [editAdminNotes, setEditAdminNotes] = useState('')
   const [updating, setUpdating] = useState(false)
   const [updateSuccess, setUpdateSuccess] = useState('')
+
+  // PDF Quotation Modal State
+  const [pdfOrder, setPdfOrder] = useState<Order | null>(null)
+  const [pdfPrices, setPdfPrices] = useState<Record<string, string>>({})
+  const [pdfDiscount, setPdfDiscount] = useState('0')
+  const [pdfTerms, setPdfTerms] = useState(
+    "1. Price Basis: Ex-works Bangalore\n" +
+    "2. GST: 18% extra as applicable\n" +
+    "3. Delivery: Within 2-3 weeks from purchase order\n" +
+    "4. Payment: 100% advance against Proforma Invoice"
+  )
+
+  const handleOpenPdfGenerator = (order: Order) => {
+    const prices: Record<string, string> = {}
+    order.items?.forEach((item: any) => {
+      prices[item.id] = '10000'
+    })
+    setPdfPrices(prices)
+    setPdfDiscount('0')
+    setPdfOrder(order)
+  }
 
   const fetchOrders = async () => {
     try {
@@ -155,6 +180,163 @@ export default function AdminOrdersPage() {
       setUpdating(false)
     }
   }
+  const downloadPdf = async () => {
+    if (!pdfOrder) return
+
+    const img = new Image()
+    img.src = '/images/logo.jpg'
+    
+    const generateDoc = (logoImg?: HTMLImageElement) => {
+      const doc = new jsPDF()
+
+      // 1. Draw header background/branding
+      doc.setFillColor(18, 47, 135) // BMT Blue #122f87
+      doc.rect(0, 0, 210, 30, 'F')
+
+      let textX = 15
+
+      // Draw Logo if available
+      if (logoImg) {
+        let logoHeight = 20
+        let logoWidth = (logoImg.naturalWidth / logoImg.naturalHeight) * logoHeight
+        const maxLogoWidth = 70 // Capping logo width to prevent text truncation
+        if (logoWidth > maxLogoWidth) {
+          logoWidth = maxLogoWidth
+          logoHeight = (logoImg.naturalHeight / logoImg.naturalWidth) * logoWidth
+        }
+
+        const bannerHeight = 30
+        const cardHeight = logoHeight + 4
+        const cardWidth = logoWidth + 4
+        const cardY = (bannerHeight - cardHeight) / 2
+
+        // Draw white background card for logo
+        doc.setFillColor(255, 255, 255)
+        doc.roundedRect(15, cardY, cardWidth, cardHeight, 1.5, 1.5, 'F')
+        
+        // Draw logo inside card
+        doc.addImage(logoImg, 'JPEG', 17, cardY + 2, logoWidth, logoHeight)
+        
+        textX = 15 + cardWidth + 6 // Adjust text x offset
+      }
+
+      // Header text
+      doc.setTextColor(255, 255, 255)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(15)
+      doc.text('BHARAT MACHINE TOOLS', textX, 14)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8)
+      doc.text('Precision Industrial Machinery & Accessories | Bangalore', textX, 20)
+
+      // 2. Quotation Metadata Block
+      doc.setTextColor(51, 65, 85) // Slate 700
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(13)
+      doc.text('QUOTATION ESTIMATE', 15, 45)
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8.5)
+      doc.text(`Quotation No: BMT-QTN-${pdfOrder.id.split('-').pop()}`, 15, 52)
+      doc.text(`Date: ${new Date().toLocaleDateString('en-IN')}`, 15, 57)
+      doc.text('Validity: 30 Days', 15, 62)
+
+      // Customer details
+      doc.setFont('helvetica', 'bold')
+      doc.text('Prepared For:', 110, 45)
+      doc.setFont('helvetica', 'normal')
+      doc.text(`Company/Client: ${pdfOrder.user?.name || 'Valued Customer'}`, 110, 52)
+      doc.text(`Contact Phone: ${pdfOrder.contactPhone}`, 110, 57)
+      doc.text(`Email: ${pdfOrder.user?.email || 'guest@bmtbharat.com'}`, 110, 62)
+      doc.text(`Delivery/Factory Address:`, 110, 67)
+      
+      const splitAddress = doc.splitTextToSize(pdfOrder.shippingAddress || '', 85)
+      doc.text(splitAddress, 110, 72)
+
+      // Horizontal line
+      doc.setDrawColor(226, 232, 240)
+      doc.line(15, 82, 195, 82)
+
+      // 3. Table of Items
+      doc.setFont('helvetica', 'bold')
+      doc.text('Item Description', 15, 90)
+      doc.text('Qty', 125, 90, { align: 'right' })
+      doc.text('Unit Price (INR)', 160, 90, { align: 'right' })
+      doc.text('Total (INR)', 195, 90, { align: 'right' })
+
+      doc.line(15, 93, 195, 93)
+
+      let y = 100
+      let itemsSubtotal = 0
+
+      doc.setFont('helvetica', 'normal')
+      pdfOrder.items?.forEach((item: any, index: number) => {
+        const priceVal = parseFloat(pdfPrices[item.id] || '0')
+        const itemTotal = priceVal * item.quantity
+        itemsSubtotal += itemTotal
+
+        const splitName = doc.splitTextToSize(`${index + 1}. ${item.productName || item.product?.name}`, 95)
+        doc.text(splitName, 15, y)
+
+        doc.text(`${item.quantity}`, 125, y, { align: 'right' })
+        doc.text(`${priceVal.toLocaleString('en-IN')}`, 160, y, { align: 'right' })
+        doc.text(`${itemTotal.toLocaleString('en-IN')}`, 195, y, { align: 'right' })
+
+        y += 8 * splitName.length
+      })
+
+      doc.line(15, y, 195, y)
+      y += 8
+
+      const discountPct = parseFloat(pdfDiscount || '0')
+      const discountAmount = itemsSubtotal * (discountPct / 100)
+      const afterDiscount = itemsSubtotal - discountAmount
+      const gstAmount = afterDiscount * 0.18
+      const grandTotal = afterDiscount + gstAmount
+
+      doc.text('Subtotal:', 140, y)
+      doc.text(`${itemsSubtotal.toLocaleString('en-IN')}`, 195, y, { align: 'right' })
+      y += 6
+
+      if (discountPct > 0) {
+        doc.text(`Discount (${discountPct}%):`, 140, y)
+        doc.text(`-${discountAmount.toLocaleString('en-IN')}`, 195, y, { align: 'right' })
+        y += 6
+      }
+
+      doc.text('GST (18%):', 140, y)
+      doc.text(`${gstAmount.toLocaleString('en-IN')}`, 195, y, { align: 'right' })
+      y += 6
+
+      doc.setFont('helvetica', 'bold')
+      doc.text('Estimated Grand Total:', 140, y)
+      doc.text(`${grandTotal.toLocaleString('en-IN')}`, 195, y, { align: 'right' })
+      y += 12
+
+      // 4. Terms and Conditions
+      doc.setFontSize(10)
+      doc.text('Terms & Conditions:', 15, y)
+      y += 5
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8)
+      const splitTerms = doc.splitTextToSize(pdfTerms, 175)
+      doc.text(splitTerms, 15, y)
+
+      // Footer notes
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8)
+      doc.text('Bharat Machine Tools | Peenya Industrial Area, Bangalore | contact@bmtbharat.com', 15, 285)
+
+      doc.save(`BMT_Quotation_${pdfOrder.id}.pdf`)
+      setPdfOrder(null)
+    }
+
+    img.onload = () => generateDoc(img)
+    img.onerror = () => {
+      console.warn('BMT logo load error, rendering fallback PDF layout.')
+      generateDoc()
+    }
+  }
 
   const filteredOrders = orders.filter((o) => {
     const matchesStatus = selectedStatus === 'ALL' || o.status === selectedStatus
@@ -200,6 +382,20 @@ export default function AdminOrdersPage() {
                 <Package className="w-4 h-4" />
                 Manage Products
               </Link>
+              <Link
+                href="/admin/settings"
+                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
+              >
+                <Mail className="w-4 h-4" />
+                Mail Config
+              </Link>
+              <Link
+                href="/admin/updates"
+                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-205 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
+              >
+                <Newspaper className="w-4 h-4" />
+                News
+              </Link>
               <button
                 onClick={fetchOrders}
                 className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors border border-slate-200"
@@ -229,8 +425,8 @@ export default function AdminOrdersPage() {
               <span className="text-xl font-bold text-emerald-700 font-mono">{deliveredCount}</span>
             </div>
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 col-span-2 sm:col-span-1">
-              <span className="text-[10px] text-slate-500 font-bold block uppercase">Est. Revenue</span>
-              <span className="text-xl font-bold text-slate-900 font-mono">₹{totalRevenue.toLocaleString('en-IN')}</span>
+              <span className="text-[10px] text-slate-500 font-bold block uppercase">Pending Enquiries</span>
+              <span className="text-xl font-bold text-[#b91c1c] font-mono">{orders.filter(o => o.status === 'PENDING').length}</span>
             </div>
           </div>
         </div>
@@ -285,7 +481,7 @@ export default function AdminOrdersPage() {
                   <tr>
                     <th className="px-6 py-4">Order ID &amp; Date</th>
                     <th className="px-6 py-4">Customer Details</th>
-                    <th className="px-6 py-4">Total Amount</th>
+                    <th className="px-6 py-4">Items Count</th>
                     <th className="px-6 py-4">Current Status</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
@@ -308,8 +504,8 @@ export default function AdminOrdersPage() {
                         <span className="text-[11px] text-slate-500 block">{order.user?.email || 'guest@bmtbharat.com'}</span>
                         <span className="text-[11px] text-slate-500">{order.contactPhone}</span>
                       </td>
-                      <td className="px-6 py-4 font-mono font-bold text-blue-900">
-                        ₹{(order.totalAmount * 1.18).toLocaleString('en-IN')}
+                      <td className="px-6 py-4 font-mono font-bold text-slate-800">
+                        {order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0} units
                       </td>
                       <td className="px-6 py-4">
                         <span
@@ -325,13 +521,22 @@ export default function AdminOrdersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => handleOpenEdit(order)}
-                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl transition-colors text-xs uppercase tracking-wider shadow-sm"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                          Update Status
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleOpenEdit(order)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors text-xs uppercase tracking-wider border border-slate-200 shadow-sm"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            Update Status
+                          </button>
+                          <button
+                            onClick={() => handleOpenPdfGenerator(order)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl transition-colors text-xs uppercase tracking-wider shadow-sm"
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                            Generate Quote
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -422,6 +627,83 @@ export default function AdminOrdersPage() {
                 {updating ? 'Saving Status...' : 'Save & Update Customer Status'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Quotation PDF Generator Modal */}
+      {pdfOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <button
+              onClick={() => setPdfOrder(null)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-center text-blue-900 shadow-sm">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-extrabold text-slate-900">Generate Quotation PDF</h2>
+                <p className="text-xs text-slate-500">Configure prices and download official document</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div>
+                <p className="block font-bold text-slate-700 uppercase tracking-wider mb-2">Item Prices (₹)</p>
+                <div className="space-y-3 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                  {pdfOrder.items?.map((item: any) => (
+                    <div key={item.id} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="font-bold text-slate-800 line-clamp-1">{item.productName || item.product?.name} (x{item.quantity})</span>
+                      <input
+                        type="number"
+                        required
+                        value={pdfPrices[item.id] || ''}
+                        onChange={(e) => setPdfPrices({...pdfPrices, [item.id]: e.target.value})}
+                        placeholder="Unit Price"
+                        className="w-full sm:w-32 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-900 font-mono focus:outline-none focus:border-blue-600 font-bold"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Add Discount (%)</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={pdfDiscount}
+                  onChange={(e) => setPdfDiscount(e.target.value)}
+                  placeholder="0"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Terms &amp; Conditions</label>
+                <textarea
+                  rows={4}
+                  value={pdfTerms}
+                  onChange={(e) => setPdfTerms(e.target.value)}
+                  placeholder="Standard terms..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 resize-none font-medium"
+                />
+              </div>
+
+              <button
+                onClick={downloadPdf}
+                className="w-full py-3.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-md shadow-blue-900/20 text-xs uppercase tracking-wider flex items-center justify-center gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                Download PDF Quotation
+              </button>
+            </div>
           </div>
         </div>
       )}

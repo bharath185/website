@@ -1246,6 +1246,380 @@ function RotaryTableModel({
 }
 
 // ----------------------------------------------------
+// 4.5. SPM Machine Tool Model
+// ----------------------------------------------------
+function SpmMachineModel({
+  explode,
+  paintColor,
+  clippingPlanes,
+  wireframe
+}: {
+  explode: number
+  paintColor: string
+  clippingPlanes: THREE.Plane[]
+  wireframe: boolean
+}) {
+  const spindleRef = useRef<THREE.Group>(null!)
+  const pulleyRef = useRef<THREE.Group>(null!)
+
+  useFrame((state) => {
+    if (!wireframe && !explode) {
+      if (spindleRef.current) {
+        spindleRef.current.rotation.z = state.clock.getElapsedTime() * 0.4
+      }
+      if (pulleyRef.current) {
+        pulleyRef.current.rotation.z = state.clock.getElapsedTime() * 1.2
+      }
+    }
+  })
+
+  // Explode positions
+  const yBase = explode * -0.6
+  const zChuck = explode * 1.5
+  const xPulley = explode * -1.2
+  const yTubes = explode * 1.0
+  const zBackPlate = explode * -1.4
+  const radialJaws = explode * 0.35
+
+  return (
+    <group position={[0, 0, 0]}>
+      {/* 1. Heavy Base Casting Platform */}
+      <mesh position={[-0.2, -1.0 + yBase, 0]} castShadow receiveShadow>
+        <boxGeometry args={[3.2, 0.3, 2.2]} />
+        <meshStandardMaterial
+          color="#1e293b"
+          roughness={0.4}
+          metalness={0.8}
+          wireframe={wireframe}
+          clippingPlanes={clippingPlanes}
+          clipShadows
+        />
+      </mesh>
+
+      {/* Base mounting bolts (4 units) */}
+      {[-1.5, 1.1].map((x) =>
+        [-0.9, 0.9].map((z) => (
+          <Bolt
+            key={`${x}-${z}`}
+            position={[x, -0.85 + yBase, z]}
+            scale={1.2}
+            clippingPlanes={clippingPlanes}
+            wireframe={wireframe}
+          />
+        ))
+      )}
+
+      {/* 2. Main Casing Body - Asymmetrical Cream Casting (Merged shapes) */}
+      {/* Right-hand side large spindle cylinder housing */}
+      <mesh position={[0.3, -0.05 + yBase, -0.05]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[1.22, 1.22, 1.7, 32]} />
+        <meshStandardMaterial
+          color={paintColor}
+          roughness={0.3}
+          metalness={0.5}
+          wireframe={wireframe}
+          clippingPlanes={clippingPlanes}
+          clipShadows
+        />
+      </mesh>
+
+      {/* Left-hand side lower block housing (pulley support block) */}
+      <mesh position={[-0.95, -0.3 + yBase, -0.05]} castShadow receiveShadow>
+        <boxGeometry args={[1.3, 1.2, 1.6]} />
+        <meshStandardMaterial
+          color={paintColor}
+          roughness={0.3}
+          metalness={0.5}
+          wireframe={wireframe}
+          clippingPlanes={clippingPlanes}
+          clipShadows
+        />
+      </mesh>
+
+      {/* 3. Front Faceplate Flange Assembly (Polished Silver Flange) */}
+      <group position={[0.3, -0.05 + yBase, 0.8 + zChuck]}>
+        {/* Large steel ring/flange flush with front cylinder face */}
+        <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[1.22, 1.22, 0.12, 32]} />
+          <meshStandardMaterial
+            color="#cbd5e1"
+            roughness={0.15}
+            metalness={0.9}
+            wireframe={wireframe}
+            clippingPlanes={clippingPlanes}
+          />
+        </mesh>
+
+        {/* 16 flange rim mounting screws */}
+        {Array.from({ length: 16 }).map((_, sIdx) => {
+          const angle = (sIdx * Math.PI * 2) / 16
+          const rx = Math.cos(angle) * 1.08
+          const ry = Math.sin(angle) * 1.08
+          return (
+            <mesh key={sIdx} position={[rx, ry, 0.05]} rotation={[Math.PI / 2, 0, -angle]}>
+              <cylinderGeometry args={[0.024, 0.024, 0.03, 8]} />
+              <meshStandardMaterial color="#0f172a" roughness={0.5} />
+            </mesh>
+          )
+        })}
+
+        {/* Inner steel collar recess */}
+        <mesh position={[0, 0, 0.04]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.9, 0.9, 0.08, 32]} />
+          <meshStandardMaterial
+            color="#475569"
+            roughness={0.2}
+            metalness={0.95}
+            wireframe={wireframe}
+            clippingPlanes={clippingPlanes}
+          />
+        </mesh>
+      </group>
+
+      {/* 4. Rotating Spindle Chuck Assembly (Center core & Jaws) */}
+      <group ref={spindleRef} position={[0.3, -0.05 + yBase, 0.82 + zChuck]}>
+        {/* Steel core chuck spindle */}
+        <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.7, 0.7, 0.15, 32]} />
+          <meshStandardMaterial
+            color="#94a3b8"
+            roughness={0.1}
+            metalness={0.95}
+            wireframe={wireframe}
+            clippingPlanes={clippingPlanes}
+          />
+        </mesh>
+
+        {/* 4 Segmented Jaws (trapezoidal sliding clamp wedges) */}
+        {Array.from({ length: 4 }).map((_, j) => {
+          const angle = (j * Math.PI * 2) / 4
+          const rBase = 0.28 + radialJaws
+          return (
+            <group key={j} rotation={[0, 0, angle]}>
+              {/* Main trapezoidal jaw block */}
+              <mesh position={[0, rBase, 0.08]} castShadow>
+                <boxGeometry args={[0.28, 0.28, 0.14]} />
+                <meshStandardMaterial
+                  color="#64748b"
+                  roughness={0.2}
+                  metalness={0.9}
+                  wireframe={wireframe}
+                  clippingPlanes={clippingPlanes}
+                />
+              </mesh>
+              {/* Jaw tooth/gripper segment */}
+              <mesh position={[0, rBase - 0.1, 0.12]} castShadow>
+                <boxGeometry args={[0.18, 0.12, 0.06]} />
+                <meshStandardMaterial
+                  color="#e2e8f0"
+                  roughness={0.1}
+                  metalness={0.95}
+                  wireframe={wireframe}
+                  clippingPlanes={clippingPlanes}
+                />
+              </mesh>
+            </group>
+          )
+        })}
+      </group>
+
+      {/* 5. Drive Pulley (Left side) */}
+      <group ref={pulleyRef} position={[-1.5 + xPulley, -0.2 + yBase, 0.3]}>
+        {/* Main Drive Shaft */}
+        <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.14, 0.14, 0.8, 16]} />
+          <meshStandardMaterial
+            color="#94a3b8"
+            roughness={0.15}
+            metalness={0.92}
+            clippingPlanes={clippingPlanes}
+          />
+        </mesh>
+
+        {/* Brown grooved pulley body */}
+        <mesh position={[0, 0, 0.08]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.52, 0.52, 0.45, 32]} />
+          <meshStandardMaterial
+            color="#5e4c44"
+            roughness={0.35}
+            metalness={0.7}
+            wireframe={wireframe}
+            clippingPlanes={clippingPlanes}
+          />
+        </mesh>
+
+        {/* 4 grooves */}
+        {[-0.15, -0.05, 0.05, 0.15].map((zOffset, gIdx) => (
+          <mesh key={gIdx} position={[0, 0, 0.08 + zOffset]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.52, 0.024, 8, 32]} />
+            <meshStandardMaterial color="#0f172a" roughness={0.8} />
+          </mesh>
+        ))}
+
+        {/* Central locking bolt */}
+        <mesh position={[0, 0, 0.32]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.2, 0.2, 0.06, 12]} />
+          <meshStandardMaterial color="#cbd5e1" metalness={0.9} roughness={0.1} />
+        </mesh>
+        <mesh position={[0, 0, 0.355]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.03, 6]} />
+          <meshStandardMaterial color="#0f172a" />
+        </mesh>
+      </group>
+
+      {/* 6. Top Controller Block */}
+      <mesh position={[0.3, 1.2 + yBase, -0.05]} castShadow receiveShadow>
+        <boxGeometry args={[0.6, 0.3, 0.8]} />
+        <meshStandardMaterial
+          color={paintColor}
+          roughness={0.35}
+          metalness={0.5}
+          wireframe={wireframe}
+          clippingPlanes={clippingPlanes}
+        />
+      </mesh>
+
+      {/* Top flange outlet */}
+      <mesh position={[0.3, 1.2 + yBase, 0.38]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <cylinderGeometry args={[0.16, 0.16, 0.08, 16]} />
+        <meshStandardMaterial color="#cbd5e1" metalness={0.95} />
+      </mesh>
+
+      {/* 7. White Tube Lines & Coils on Top */}
+      <group position={[0.5, 1.35 + yTubes, -0.1]}>
+        {/* Bundled coil loops */}
+        {Array.from({ length: 5 }).map((_, cIdx) => {
+          const rx = Math.sin(cIdx * 1.2) * 0.03
+          const ry = cIdx * 0.035
+          const rz = Math.cos(cIdx * 0.7) * 0.03
+          const tiltX = Math.PI / 2 + (cIdx - 2) * 0.08
+          const tiltY = (cIdx - 2) * 0.05
+          return (
+            <mesh key={cIdx} position={[rx, ry, rz]} rotation={[tiltX, tiltY, 0]}>
+              <torusGeometry args={[0.42, 0.016, 8, 48]} />
+              <meshStandardMaterial color="#f8fafc" roughness={0.55} metalness={0.1} />
+            </mesh>
+          )
+        })}
+      </group>
+
+      {/* Procedural curved lines representing individual pneumatic feeds */}
+      {!wireframe && (
+        <>
+          <Line
+            points={[
+              [0.5, 1.4 + yTubes, 0.0],
+              [0.4, 1.2 + yTubes, 0.4],
+              [0.3, 1.3 + yBase, 0.45]
+            ]}
+            color="#f8fafc"
+            lineWidth={2.2}
+            clippingPlanes={clippingPlanes}
+          />
+          <Line
+            points={[
+              [0.6, 1.35 + yTubes, -0.1],
+              [0.8, 1.0 + yTubes, 0.1],
+              [0.8, 0.6 + yBase, 0.4]
+            ]}
+            color="#f8fafc"
+            lineWidth={2.2}
+            clippingPlanes={clippingPlanes}
+          />
+          <Line
+            points={[
+              [0.3, 1.35 + yTubes, -0.3],
+              [-0.2, 1.0 + yTubes, -0.4],
+              [-0.6, 0.5 + yBase, -0.2]
+            ]}
+            color="#f8fafc"
+            lineWidth={2.2}
+            clippingPlanes={clippingPlanes}
+          />
+        </>
+      )}
+
+      {/* Brass fittings for the tubes */}
+      {[
+        [0.3, 1.2 + yBase, 0.42],
+        [0.8, 0.6 + yBase, 0.42],
+        [-0.6, 0.5 + yBase, -0.22]
+      ].map((pos, fIdx) => (
+        <mesh key={fIdx} position={pos as [number, number, number]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.06, 8]} />
+          <meshStandardMaterial color="#ca8a04" roughness={0.2} metalness={0.9} />
+        </mesh>
+      ))}
+
+      {/* 8. Rear Plate & Star Tube Distributor (Rear manifold distribution) */}
+      <group position={[0.3, -0.05 + yBase, -0.9 + zBackPlate]}>
+        {/* Steel plate */}
+        <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.9, 0.9, 0.04, 32]} />
+          <meshStandardMaterial
+            color="#475569"
+            roughness={0.2}
+            metalness={0.88}
+            wireframe={wireframe}
+            clippingPlanes={clippingPlanes}
+          />
+        </mesh>
+
+        {/* Distributor center hub */}
+        <mesh position={[0, 0, -0.06]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.26, 0.26, 0.12, 16]} />
+          <meshStandardMaterial color="#0f172a" roughness={0.15} metalness={0.95} />
+        </mesh>
+
+        {/* 8 Radial feed pipes */}
+        {Array.from({ length: 8 }).map((_, pIdx) => {
+          const angle = (pIdx * Math.PI * 2) / 8
+          const dx = Math.cos(angle)
+          const dy = Math.sin(angle)
+          return (
+            <group key={pIdx} rotation={[0, 0, angle]}>
+              {/* Radial pipe */}
+              <mesh position={[0.25, 0, -0.08]} rotation={[0, Math.PI / 2, 0]} castShadow>
+                <cylinderGeometry args={[0.016, 0.016, 0.5, 8]} />
+                <meshStandardMaterial color="#cbd5e1" metalness={0.95} roughness={0.1} />
+              </mesh>
+              {/* 90 degree elbow joint */}
+              <mesh position={[0.5, 0, -0.08]} castShadow>
+                <sphereGeometry args={[0.026, 8, 8]} />
+                <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+              </mesh>
+              {/* Axial connector going forward into plate */}
+              <mesh position={[0.5, 0, -0.03]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+                <cylinderGeometry args={[0.016, 0.016, 0.1, 8]} />
+                <meshStandardMaterial color="#cbd5e1" metalness={0.95} roughness={0.1} />
+              </mesh>
+            </group>
+          )
+        })}
+      </group>
+
+      {/* 9. BMT Logo Emblem on Front Base */}
+      <Html position={[-1.2, -0.5 + yBase, 0.78]} transform distanceFactor={1.5}>
+        <div className="flex items-center gap-1 bg-white border border-slate-300 rounded px-1.5 py-0.5 shadow-sm select-none">
+          <svg className="w-3.5 h-3.5 text-red-600 animate-[spin_10s_linear_infinite]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <circle cx="12" cy="12" r="10" strokeDasharray="4,3" />
+          </svg>
+          <span className="text-[10px] font-black tracking-tighter text-blue-900 font-sans">BMT</span>
+        </div>
+      </Html>
+
+      {/* 10. Dimension overlay guides in CAD mode */}
+      {wireframe && (
+        <>
+          <DimensionHelper start={[-1.6, -1.0 + yBase, 0]} end={[1.5, -1.0 + yBase, 0]} label="W: 310mm" color="#22c55e" />
+          <DimensionHelper start={[0.3, -0.05 + yBase, 0.9 + zChuck]} end={[0.3, -0.05 + yBase, -0.9 + zBackPlate]} label="L: 180mm" color="#3b82f6" textOffset={[0.6, 0, 0]} />
+        </>
+      )}
+    </group>
+  )
+}
+
+// ----------------------------------------------------
 // 5. Cross Roller / YRT Bearing Model (Smart Default)
 // ----------------------------------------------------
 function BearingModel({
@@ -1400,6 +1774,16 @@ interface ModelSelectorProps {
 
 function ModelSelector({ slug, explode, paintColor, clippingPlanes, wireframe }: ModelSelectorProps) {
   switch (slug) {
+    case 'spm-machine-tools':
+    case 'flow-forming-machine-mandrels':
+      return (
+        <SpmMachineModel
+          explode={explode}
+          paintColor={paintColor}
+          clippingPlanes={clippingPlanes}
+          wireframe={wireframe}
+        />
+      )
     case 'planetary-gear-box':
       return (
         <PlanetaryGearboxModel
@@ -1520,6 +1904,16 @@ export default function VisualizerContent({ product }: VisualizerContentProps) {
   const specData = useMemo(() => {
     const slug = product.slug
     switch (slug) {
+      case 'spm-machine-tools':
+      case 'flow-forming-machine-mandrels':
+        return {
+          id: 'BMT-SPM-400',
+          mass: '185.0 kg',
+          material: 'High-Tensile Structural Cast & Alloy Steel',
+          precision: 'Clamping force 120 kN / Runout ≤ 0.005 mm',
+          parts: 'Beige Casing, Segmented Clamping Jaws, Main Pulley, Hydraulic Star distributor, Manifold Lines',
+          polyCount: '49,800 vertices'
+        }
       case 'planetary-gear-box':
         return {
           id: 'BMT-PG-170',

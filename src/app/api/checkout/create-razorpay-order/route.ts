@@ -11,7 +11,8 @@ export async function POST(req: Request) {
         name: 'Guest Customer',
         email: 'guest@bmtbharat.com',
         role: 'USER',
-        phone: '+91 95302 08882'
+        phone: '+91 95302 08882',
+        passwordResetRequired: false
       }
     }
 
@@ -27,20 +28,17 @@ export async function POST(req: Request) {
 
     let totalAmount = 0
     const orderItemsData = items.map((item: any) => {
-      const price = item.price || item.product?.price || 10000
       const qty = item.quantity || 1
-      totalAmount += price * qty
       return {
         id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
         productId: item.productId || item.product?.id || 'p-1',
         productName: item.productName || item.product?.name || 'Machine Tool Unit',
         quantity: qty,
-        price: price
+        price: 0
       }
     })
 
     const dbOrderId = `BMT-ORD-${Date.now().toString().slice(-6)}`
-    const razorpayPaymentId = `pay_mock_${Date.now().toString().slice(-8)}`
 
     let order: any = null
 
@@ -49,11 +47,11 @@ export async function POST(req: Request) {
         data: {
           id: dbOrderId,
           userId: user.id,
-          totalAmount,
-          status: 'PAID',
-          paymentStatus: 'PAID',
-          razorpayOrderId: `rzp_order_${Date.now()}`,
-          razorpayPaymentId: razorpayPaymentId,
+          totalAmount: 0,
+          status: 'PENDING',
+          paymentStatus: 'PENDING',
+          razorpayOrderId: null,
+          razorpayPaymentId: null,
           shippingAddress,
           contactPhone,
           items: {
@@ -61,7 +59,7 @@ export async function POST(req: Request) {
               productId: i.productId,
               productName: i.productName,
               quantity: i.quantity,
-              price: i.price
+              price: 0
             }))
           }
         },
@@ -74,11 +72,11 @@ export async function POST(req: Request) {
       order = {
         id: dbOrderId,
         userId: user.id,
-        totalAmount,
-        status: 'PAID',
-        paymentStatus: 'PAID',
-        razorpayOrderId: `rzp_order_${Date.now()}`,
-        razorpayPaymentId: razorpayPaymentId,
+        totalAmount: 0,
+        status: 'PENDING',
+        paymentStatus: 'PENDING',
+        razorpayOrderId: null,
+        razorpayPaymentId: null,
         shippingAddress,
         contactPhone,
         createdAt: new Date().toISOString(),
@@ -90,8 +88,7 @@ export async function POST(req: Request) {
       success: true,
       order,
       dbOrderId: order.id,
-      razorpayPaymentId: razorpayPaymentId,
-      message: 'Payment Successful!'
+      message: 'Quotation Request Submitted Successfully!'
     })
   } catch (error) {
     console.error('Create order error:', error)

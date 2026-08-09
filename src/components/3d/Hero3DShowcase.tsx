@@ -1,8 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
-import { RefreshCw, ArrowUpRight, Compass, Sparkles } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 
 const HeroSceneContent = dynamic(() => import('./HeroSceneContent'), {
   ssr: false,

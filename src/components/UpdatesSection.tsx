@@ -1,9 +1,9 @@
 "use client"
 
+import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Calendar } from "lucide-react"
+import { Calendar, RefreshCw } from "lucide-react"
 import ScrollReveal from "@/components/ScrollReveal"
-import { updates } from "@/data/products"
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-IN", {
@@ -13,7 +13,37 @@ function formatDate(iso: string) {
   })
 }
 
+interface UpdatePost {
+  id?: string
+  title: string
+  date: string
+  image: string
+  slug: string
+}
+
 export default function UpdatesSection() {
+  const [posts, setPosts] = useState<UpdatePost[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchUpdates = async () => {
+    try {
+      setLoading(true)
+      const res = await fetch('/api/updates')
+      if (res.ok) {
+        const data = await res.json()
+        setPosts(data.updates || [])
+      }
+    } catch (e) {
+      console.error('Failed to load dynamic updates:', e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchUpdates()
+  }, [])
+
   return (
     <section id="updates" className="py-16 lg:py-24 bg-[#060b14]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,36 +62,45 @@ export default function UpdatesSection() {
           </div>
         </ScrollReveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {updates.map((post, i) => (
-            <motion.article
-              key={post.slug}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group bg-slate-900/80 rounded-xl border border-slate-800 overflow-hidden hover:border-blue-500/40 transition-colors shadow-md"
-            >
-              <div className="aspect-[16/9] overflow-hidden bg-slate-950">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                  <Calendar className="w-3.5 h-3.5 text-blue-400" />
-                  {formatDate(post.date)}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400 gap-3">
+            <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
+            <span className="text-xs font-bold uppercase tracking-wider">Fetching Updates...</span>
+          </div>
+        ) : posts.length === 0 ? (
+          <p className="text-center text-slate-500 text-sm py-12">No engineering updates posted yet.</p>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post, i) => (
+              <motion.article
+                key={post.slug || i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="group bg-slate-900/80 rounded-xl border border-slate-800 overflow-hidden hover:border-blue-500/40 transition-colors shadow-md"
+              >
+                <div className="aspect-[16/9] overflow-hidden bg-slate-950">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
-                <h3 className="text-base font-semibold text-white leading-snug group-hover:text-blue-400 transition-colors">
-                  {post.title}
-                </h3>
-              </div>
-            </motion.article>
-          ))}
-        </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
+                    <Calendar className="w-3.5 h-3.5 text-blue-400" />
+                    {formatDate(post.date)}
+                  </div>
+                  <h3 className="text-base font-semibold text-white leading-snug group-hover:text-blue-400 transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

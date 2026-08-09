@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useEnquiry } from '@/context/EnquiryContext'
 import { useAuth } from '@/context/AuthContext'
-import { X, CreditCard, MapPin, Phone, ShieldCheck, CheckCircle2, Sparkles } from 'lucide-react'
+import { X, CreditCard, MapPin, Phone, ShieldCheck, CheckCircle2, Sparkles, Send } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface CheckoutModalProps {
@@ -102,11 +102,11 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             </div>
             <div>
               <span className="px-3 py-1 bg-emerald-50 text-emerald-700 font-extrabold text-[11px] uppercase tracking-wider rounded-full border border-emerald-200 inline-flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-500" /> Payment Successful
+                <Sparkles className="w-3 h-3 text-amber-500" /> Submission Successful
               </span>
-              <h2 className="text-2xl font-extrabold text-slate-900 mt-2">Order Confirmed!</h2>
+              <h2 className="text-2xl font-extrabold text-slate-900 mt-2">Enquiry Sent!</h2>
               <p className="text-xs text-slate-600 max-w-xs mx-auto mt-1">
-                Thank you! Your machine tool order has been confirmed. Redirecting you to live order tracking...
+                Thank you! Your quotation request has been submitted. Our engineering team will contact you shortly. Redirecting you to status tracking...
               </p>
             </div>
           </div>
@@ -114,11 +114,11 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           <>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-center text-blue-900 shadow-sm">
-                <CreditCard className="w-5 h-5" />
+                <Send className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-xl font-extrabold text-slate-900">Instant Order Checkout</h2>
-                <p className="text-xs text-slate-500">Shipping details &amp; payment confirmation</p>
+                <h2 className="text-xl font-extrabold text-slate-900">Request Quotation</h2>
+                <p className="text-xs text-slate-500">Submit your engineering enquiry details</p>
               </div>
             </div>
 
@@ -163,35 +163,19 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 </div>
               </div>
 
-              {/* Price Breakdown */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 text-xs">
-                <div className="flex justify-between text-slate-600">
-                  <span>Items Total ({items.length})</span>
-                  <span className="font-mono font-bold text-slate-900">₹{subtotal.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between text-slate-600">
-                  <span>GST (18%)</span>
-                  <span className="font-mono font-bold text-slate-900">₹{gst.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between text-slate-900 font-extrabold text-sm pt-2 border-t border-slate-200">
-                  <span>Grand Total</span>
-                  <span className="font-mono text-blue-900">₹{grandTotal.toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full py-3.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-900/20 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                <ShieldCheck className="w-4 h-4" />
-                {loading ? 'Confirming Order...' : `Pay ₹${grandTotal.toLocaleString('en-IN')} & Complete Order`}
+                <Send className="w-4 h-4" />
+                {loading ? 'Submitting Enquiry...' : 'Submit Quotation Request'}
               </button>
             </form>
 
             <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-slate-500 font-medium">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Instant order confirmation &amp; GST invoice generation</span>
+              <span>Our sales engineering team will call you within 1-2 business hours.</span>
             </div>
           </>
         )}

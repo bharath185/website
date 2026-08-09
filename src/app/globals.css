@@ -7,11 +7,11 @@
   --font-mono: var(--font-geist-mono);
   
   /* BMT Logo Exact Brand Colors */
-  --color-bmt-blue: #062594;
+  --color-bmt-blue: #122f87;
   --color-bmt-red: #e60000;
   --color-bmt-slate: #475569;
   
-  --color-primary: #062594;
+  --color-primary: #122f87;
   --color-primary-hover: #1d4ed8;
   --color-accent: #e60000;
   --color-accent-hover: #dc2626;
@@ -25,7 +25,7 @@ body {
   background-color: #f8fafc;
   color: #0f172a;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(6, 37, 148, 0.04) 0px, transparent 50%),
+    radial-gradient(at 0% 0%, rgba(18, 47, 135, 0.04) 0px, transparent 50%),
     radial-gradient(at 100% 100%, rgba(230, 0, 0, 0.03) 0px, transparent 50%);
   background-attachment: fixed;
 }
@@ -45,8 +45,8 @@ body {
 }
 .glass-panel-hover:hover {
   background: #ffffff;
-  border-color: rgba(6, 37, 148, 0.3);
-  box-shadow: 0 15px 35px -10px rgba(6, 37, 148, 0.15);
+  border-color: rgba(18, 47, 135, 0.3);
+  box-shadow: 0 15px 35px -10px rgba(18, 47, 135, 0.15);
 }
 
 /* Mobile safe area padding for bottom navbar */
@@ -71,7 +71,7 @@ body {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #062594;
+  background: #122f87;
 }
 
 /* Hide Next.js corner dev indicator overlay badges/buttons */

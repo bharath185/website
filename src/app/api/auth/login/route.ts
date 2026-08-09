@@ -3,6 +3,25 @@ import { db } from '@/lib/db'
 import { comparePassword, signToken, TOKEN_NAME, hashPassword } from '@/lib/auth'
 import { ensureAdminUser } from '@/lib/seed'
 
+// Simple in-memory tracker for failed login attempts to prevent brute force attacks.
+const loginAttempts = new Map<string, { count: number; lockUntil: number }>();
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+
+function recordFailure(key: string) {
+  const now = Date.now();
+  const attemptInfo = loginAttempts.get(key) || { count: 0, lockUntil: 0 };
+  attemptInfo.count += 1;
+  if (attemptInfo.count >= MAX_ATTEMPTS) {
+    attemptInfo.lockUntil = now + LOCKOUT_DURATION;
+  }
+  loginAttempts.set(key, attemptInfo);
+}
+
+function recordSuccess(key: string) {
+  loginAttempts.delete(key);
+}
+
 export async function POST(req: Request) {
   try {
     try {
@@ -27,6 +46,20 @@ export async function POST(req: Request) {
     // Shortcut: if user types "admin" as email, map to admin@bmtbharat.com
     if (cleanEmail === 'admin') {
       cleanEmail = 'admin@bmtbharat.com'
+    }
+
+    const rawIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
+    const ip = rawIp.split(',')[0].trim();
+    const trackerKey = `${ip}:${cleanEmail}`;
+
+    const now = Date.now();
+    const attemptInfo = loginAttempts.get(trackerKey);
+    if (attemptInfo && attemptInfo.lockUntil > now) {
+      const waitTime = Math.ceil((attemptInfo.lockUntil - now) / 1000 / 60);
+      return NextResponse.json(
+        { error: `Too many failed login attempts. Please wait ${waitTime} minutes.` },
+        { status: 429 }
+      );
     }
 
     let user: any = null
@@ -71,6 +104,7 @@ export async function POST(req: Request) {
           maxAge: 7 * 24 * 60 * 60
         })
 
+        recordSuccess(trackerKey)
         return response
       }
     }
@@ -106,9 +140,11 @@ export async function POST(req: Request) {
           maxAge: 7 * 24 * 60 * 60
         })
 
+        recordSuccess(trackerKey)
         return response
       }
 
+      recordFailure(trackerKey)
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -118,6 +154,7 @@ export async function POST(req: Request) {
     let isMatch = await comparePassword(cleanPassword, user.passwordHash)
 
     if (!isMatch) {
+      recordFailure(trackerKey)
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -138,7 +175,8 @@ export async function POST(req: Request) {
         name: user.name,
         email: user.email,
         role: user.role,
-        phone: user.phone
+        phone: user.phone,
+        passwordResetRequired: user.passwordResetRequired
       }
     })
 
@@ -150,6 +188,7 @@ export async function POST(req: Request) {
       maxAge: 7 * 24 * 60 * 60
     })
 
+    recordSuccess(trackerKey)
     return response
   } catch (error) {
     console.error('Login API error:', error)

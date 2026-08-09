@@ -32,12 +32,12 @@ export default function ProductsSection() {
   }, [])
 
   return (
-    <section id="products" className="py-16 lg:py-24 bg-[#f8fafc]">
+    <section id="products" className="py-16 lg:py-24 bg-[#fdfdfd]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-12">
             <span className="text-xs font-bold text-blue-900 bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-              Our Product Catalog
+              Our Products
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4">
               Featured Machine Tools &amp; Components
@@ -67,7 +67,7 @@ export default function ProductsSection() {
               href="/products"
               className="inline-flex items-center gap-2 px-7 py-3.5 border border-slate-300 bg-white text-slate-800 font-bold rounded-xl hover:border-blue-700 hover:text-blue-900 transition-all text-xs uppercase tracking-wider shadow-sm"
             >
-              Explore Full Product Catalog
+              Explore All Products
               <ArrowRight className="w-4 h-4 text-blue-700" />
             </Link>
           </div>

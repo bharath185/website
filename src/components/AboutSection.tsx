@@ -73,15 +73,15 @@ export default function AboutSection() {
               </p>
             </div>
             <div className="relative">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 shadow-md">
+              <div className="aspect-[3/2] rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-white flex items-center justify-center">
                 <img
-                  src="https://fpimages.withfloats.com/actual/64a80389ab2fb40001bec441.jpg"
-                  alt="Bharat Machine Tools"
+                  src="/images/gallery/bmt-product-wheel.jpg"
+                  alt="Bharat Machine Tools Product Wheel"
                   loading="lazy"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
-              <div className="absolute -bottom-4 -right-4 w-20 h-20 rounded-2xl bg-white border border-slate-200 flex items-center justify-center backdrop-blur-md text-blue-900 shadow-xl">
+              <div className="absolute -bottom-4 -right-4 w-20 h-20 rounded-2xl bg-white/90 border border-slate-200 flex items-center justify-center backdrop-blur-md text-blue-900 shadow-xl">
                 <Award className="w-9 h-9" />
               </div>
             </div>

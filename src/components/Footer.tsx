@@ -36,7 +36,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-4">
               <div className="bg-white border border-slate-200 rounded-lg p-1.5 shadow-sm">
                 <img
-                  src="https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg"
+                  src="/images/logo.jpg"
                   alt="Bharat Machine Tools"
                   className="h-10 w-auto object-contain"
                 />
@@ -82,7 +82,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {[
                 { label: "Home", href: "/" },
-                { label: "Products Catalog", href: "/products" },
+                { label: "Products", href: "/products" },
                 { label: "Contact Us", href: "/contact" },
                 { label: "Cart & Order", href: "/enquiry" },
               ].map((link) => (

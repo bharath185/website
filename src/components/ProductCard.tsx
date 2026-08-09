@@ -51,12 +51,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       >
         <div style={{ transform: "translateZ(20px)" }}>
           <Link href={`/products/${product.slug}`} className="block p-5">
-            <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 border border-slate-100 bg-slate-50 group-hover:border-slate-200 transition-colors">
+            <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 border border-slate-100 bg-[#fdfdfd] group-hover:border-slate-200 transition-colors flex items-center justify-center">
               <img
                 src={product.image}
                 alt={product.name}
                 loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                className="w-full h-full object-contain p-2 group-hover:scale-112 transition-transform duration-300 ease-in-out"
               />
               <div className="absolute top-3 left-3">
                 <span className="px-2.5 py-1 bg-white/90 backdrop-blur-md border border-slate-200 text-blue-900 font-extrabold text-[10px] rounded-md uppercase tracking-wider shadow-sm">
@@ -69,9 +69,6 @@ export default function ProductCard({ product }: ProductCardProps) {
               <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-900 transition-colors line-clamp-1">
                 {product.name}
               </h3>
-              <span className="text-sm font-mono font-bold text-blue-900 flex-shrink-0">
-                ₹{itemPrice.toLocaleString("en-IN")}
-              </span>
             </div>
 
             <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">

@@ -14,7 +14,9 @@ import {
   X,
   CheckCircle2,
   ArrowLeft,
-  Upload
+  Upload,
+  Mail,
+  Newspaper
 } from 'lucide-react'
 import { Product } from '@/types'
 import { products as fallbackProducts } from '@/data/products'
@@ -38,13 +40,34 @@ export default function AdminProductsPage() {
   // Form State
   const [formName, setFormName] = useState('')
   const [formCategory, setFormCategory] = useState('Machinery')
-  const [formPrice, setFormPrice] = useState('15000')
+  const [formPrice, setFormPrice] = useState('0')
   const [formShortDesc, setFormShortDesc] = useState('')
   const [formDesc, setFormDesc] = useState('')
   const [formImage, setFormImage] = useState('')
   const [formFeatures, setFormFeatures] = useState('')
 
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false)
+  const [newCategoryValue, setNewCategoryValue] = useState('')
+
+  const categoriesList = Array.from(new Set([
+    'Machinery',
+    'Bearings',
+    'Spindles',
+    'Accessories',
+    ...products.map(p => p.category)
+  ]))
+
+  const handleCategoryChange = (val: string) => {
+    if (val === 'ADD_NEW') {
+      setShowNewCategoryInput(true)
+      setNewCategoryValue('')
+      setFormCategory('')
+    } else {
+      setShowNewCategoryInput(false)
+      setFormCategory(val)
+    }
+  }
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -110,7 +133,7 @@ export default function AdminProductsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] pt-28 pb-16 flex items-center justify-center text-blue-600">
+      <div className="min-h-screen bg-[#fdfdfd] pt-28 pb-16 flex items-center justify-center text-blue-600">
         <RefreshCw className="w-8 h-8 animate-spin" />
       </div>
     )
@@ -123,7 +146,7 @@ export default function AdminProductsPage() {
   const handleOpenAdd = () => {
     setFormName('')
     setFormCategory('Machinery')
-    setFormPrice('15000')
+    setFormPrice('0')
     setFormShortDesc('')
     setFormDesc('')
     setFormImage('https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg')
@@ -131,19 +154,23 @@ export default function AdminProductsPage() {
     setError('')
     setSuccessMsg('')
     setIsAddOpen(true)
+    setShowNewCategoryInput(false)
+    setNewCategoryValue('')
   }
 
   const handleOpenEdit = (p: Product) => {
     setEditProduct(p)
     setFormName(p.name)
     setFormCategory(p.category)
-    setFormPrice((p.price || 10000).toString())
+    setFormPrice((p.price || 0).toString())
     setFormShortDesc(p.shortDescription)
     setFormDesc(p.description)
     setFormImage(p.image)
     setFormFeatures(p.features ? p.features.join(', ') : '')
     setError('')
     setSuccessMsg('')
+    setShowNewCategoryInput(false)
+    setNewCategoryValue('')
   }
 
   const handleAddSubmit = async (e: React.FormEvent) => {
@@ -189,6 +216,8 @@ export default function AdminProductsPage() {
       setTimeout(() => {
         setIsAddOpen(false)
         setSuccessMsg('')
+        setShowNewCategoryInput(false)
+        setNewCategoryValue('')
       }, 1000)
     } catch {
       setError('Network error while saving product')
@@ -237,6 +266,8 @@ export default function AdminProductsPage() {
       setTimeout(() => {
         setEditProduct(null)
         setSuccessMsg('')
+        setShowNewCategoryInput(false)
+        setNewCategoryValue('')
       }, 1000)
     } catch {
       setError('Network error while updating product')
@@ -267,9 +298,9 @@ export default function AdminProductsPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] pt-20 lg:pt-24 pb-16">
+    <div className="min-h-screen bg-[#fdfdfd] pt-20 lg:pt-24 pb-16">
       {/* Header Banner */}
-      <section className="bg-white border-b border-slate-200 py-10 mb-8 shadow-sm">
+      <section className="bg-[#fdfdfd] border-b border-slate-200 py-10 mb-8 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
@@ -293,6 +324,20 @@ export default function AdminProductsPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              <Link
+                href="/admin/settings"
+                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
+              >
+                <Mail className="w-4 h-4" />
+                Mail Config
+              </Link>
+              <Link
+                href="/admin/updates"
+                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
+              >
+                <Newspaper className="w-4 h-4" />
+                News
+              </Link>
               <button
                 onClick={fetchProducts}
                 className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors border border-slate-200"
@@ -305,7 +350,7 @@ export default function AdminProductsPage() {
                 className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-600/20"
               >
                 <Plus className="w-4 h-4" />
-                Add New Product
+                Add Product
               </button>
             </div>
           </div>
@@ -366,9 +411,6 @@ export default function AdminProductsPage() {
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <h3 className="text-base font-bold text-slate-900 truncate">{product.name}</h3>
-                    <span className="text-sm font-mono font-bold text-blue-700">
-                      ₹{(product.price || 10000).toLocaleString('en-IN')}
-                    </span>
                   </div>
                   <p className="text-xs text-slate-500 line-clamp-2 mt-1">{product.shortDescription || product.description}</p>
                 </div>
@@ -422,44 +464,46 @@ export default function AdminProductsPage() {
             )}
 
             <form onSubmit={handleAddSubmit} className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    placeholder="e.g. CNC Spindle Unit"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Price (₹) *</label>
-                  <input
-                    type="number"
-                    required
-                    value={formPrice}
-                    onChange={(e) => setFormPrice(e.target.value)}
-                    placeholder="15000"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-mono"
-                  />
-                </div>
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="e.g. CNC Spindle Unit"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Category *</label>
                   <select
-                    value={formCategory}
-                    onChange={(e) => setFormCategory(e.target.value)}
+                    value={showNewCategoryInput ? 'ADD_NEW' : formCategory}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
                   >
-                    <option value="Machinery">Machinery</option>
-                    <option value="Bearings">Bearings</option>
-                    <option value="Spindles">Spindles</option>
-                    <option value="Accessories">Accessories</option>
+                    {categoriesList.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                    <option value="ADD_NEW">+ Add New Category...</option>
                   </select>
+                  {showNewCategoryInput && (
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        required
+                        value={newCategoryValue}
+                        onChange={(e) => {
+                          setNewCategoryValue(e.target.value)
+                          setFormCategory(e.target.value)
+                        }}
+                        placeholder="Enter new category name"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Image *</label>
@@ -592,42 +636,45 @@ export default function AdminProductsPage() {
             )}
 
             <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Price (₹) *</label>
-                  <input
-                    type="number"
-                    required
-                    value={formPrice}
-                    onChange={(e) => setFormPrice(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-mono"
-                  />
-                </div>
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Category *</label>
                   <select
-                    value={formCategory}
-                    onChange={(e) => setFormCategory(e.target.value)}
+                    value={showNewCategoryInput ? 'ADD_NEW' : formCategory}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
                   >
-                    <option value="Machinery">Machinery</option>
-                    <option value="Bearings">Bearings</option>
-                    <option value="Spindles">Spindles</option>
-                    <option value="Accessories">Accessories</option>
+                    {categoriesList.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                    <option value="ADD_NEW">+ Add New Category...</option>
                   </select>
+                  {showNewCategoryInput && (
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        required
+                        value={newCategoryValue}
+                        onChange={(e) => {
+                          setNewCategoryValue(e.target.value)
+                          setFormCategory(e.target.value)
+                        }}
+                        placeholder="Enter new category name"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Image *</label>

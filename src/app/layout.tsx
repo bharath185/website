@@ -42,13 +42,14 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [
-      { url: "https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg", type: "image/jpeg" },
-      { url: "https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg", sizes: "32x32", type: "image/jpeg" },
-      { url: "https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg", sizes: "16x16", type: "image/jpeg" },
+      { url: "/favicon/favicon.ico", sizes: "any" },
+      { url: "/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon/favicon.svg", type: "image/svg+xml" },
     ],
-    shortcut: "https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg",
-    apple: "https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg",
+    shortcut: "/favicon/favicon.ico",
+    apple: "/favicon/apple-touch-icon.png",
   },
+  manifest: "/favicon/site.webmanifest",
   openGraph: {
     title: "Bharat Machine Tools in Bangalore",
     description:
@@ -59,7 +60,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://fplogoimages.withfloats.com/actual/687f42983064204ed5f1a18b.jpg",
+        url: "https://www.bmtbharat.com/images/logo.jpg",
         alt: "Bharat Machine Tools",
       },
     ],
@@ -78,10 +79,33 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <head>
-        <link rel="icon" href="https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg" type="image/jpeg" />
-        <link rel="shortcut icon" href="https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg" type="image/jpeg" />
-        <link rel="apple-touch-icon" href="https://fplogoimages.withfloats.com/tile/687f42983064204ed5f1a18b.jpg" />
+        <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
         <link rel="canonical" href="https://www.bmtbharat.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Bharat Machine Tools",
+              "image": "https://www.bmtbharat.com/images/logo.jpg",
+              "telephone": "+919530208882",
+              "email": "contact@bmtbharat.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Peenya Industrial Area",
+                "addressLocality": "Bangalore",
+                "addressRegion": "Karnataka",
+                "addressCountry": "IN",
+                "postalCode": "560058"
+              },
+              "url": "https://www.bmtbharat.com"
+            })
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col bg-[#f8fafc] text-slate-900">
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />

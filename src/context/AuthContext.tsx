@@ -7,10 +7,10 @@ interface AuthContextType {
   user: User | null
   loading: boolean
   isAuthModalOpen: boolean
-  authMode: 'login' | 'register'
-  openAuthModal: (mode?: 'login' | 'register') => void
+  authMode: 'login' | 'register' | 'forgot' | 'change-password'
+  openAuthModal: (mode?: 'login' | 'register' | 'forgot' | 'change-password') => void
   closeAuthModal: () => void
-  setAuthMode: (mode: 'login' | 'register') => void
+  setAuthMode: (mode: 'login' | 'register' | 'forgot' | 'change-password') => void
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot' | 'change-password'>('login')
 
   const checkUser = async () => {
     try {
@@ -32,6 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const data = await res.json()
         setUser(data.user || null)
+        if (data.user?.passwordResetRequired) {
+          setAuthMode('change-password')
+          setIsAuthModalOpen(true)
+        }
       } else {
         setUser(null)
       }
@@ -46,12 +50,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkUser()
   }, [])
 
-  const openAuthModal = (mode: 'login' | 'register' = 'login') => {
+  const openAuthModal = (mode: 'login' | 'register' | 'forgot' | 'change-password' = 'login') => {
     setAuthMode(mode)
     setIsAuthModalOpen(true)
   }
 
   const closeAuthModal = () => {
+    // Prevent closing if user is forced to change password
+    if (user?.passwordResetRequired) return
     setIsAuthModalOpen(false)
   }
 
@@ -67,7 +73,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: data.error || 'Login failed' }
       }
       setUser(data.user)
-      closeAuthModal()
+      if (data.user?.passwordResetRequired) {
+        setAuthMode('change-password')
+      } else {
+        closeAuthModal()
+      }
       return { success: true }
     } catch (err) {
       console.error('Login error:', err)

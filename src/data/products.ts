@@ -271,7 +271,14 @@ export const products: Product[] = [
       "Extrusion & flow forming tooling",
       "Retrofitting & reconditioning",
     ],
-    image: IMG.gallery2,
+    image: "/images/gallery/spm-front.jpg",
+    images: [
+      "/images/gallery/spm-front.jpg",
+      "/images/gallery/spm-front-face.jpg",
+      "/images/gallery/spm-top.jpg",
+      "/images/gallery/spm-side.jpg",
+      "/images/gallery/spm-rear.jpg",
+    ],
     features: [
       "Process-specific engineering",
       "Complete tooling packages",
