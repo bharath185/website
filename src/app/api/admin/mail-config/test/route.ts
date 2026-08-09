@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSessionUser } from '@/lib/auth'
 import nodemailer from 'nodemailer'
+import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
   try {
@@ -16,8 +17,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'All fields (Host, Port, User, Pass, Recipient) are required to test' }, { status: 400 })
     }
 
+    // Resolve masked password from database if needed
+    let finalPass = pass
+    if (pass === '******') {
+      const existing = await db.mailConfig.findUnique({
+        where: { id: 'smtp-settings' }
+      })
+      finalPass = existing?.pass || ''
+    }
+
     // Automatically strip all whitespaces from Gmail app passwords
-    const cleanPass = pass.replace(/\s+/g, '')
+    const cleanPass = finalPass.replace(/\s+/g, '')
 
     console.log('SMTP Test Connection Params:', {
       host,
