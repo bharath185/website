@@ -459,17 +459,21 @@ export default function AdminUpdatesPage() {
                     placeholder="https://..."
                     className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
                   />
-                  <label className="cursor-pointer shrink-0 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-250 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-sm text-center">
+                  <label 
+                    htmlFor="add-image-upload"
+                    className="cursor-pointer shrink-0 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-sm text-center select-none"
+                  >
                     <Upload className="w-4 h-4 text-slate-500" />
                     {uploadingImage ? 'Uploading...' : 'Upload'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      disabled={uploadingImage}
-                    />
                   </label>
+                  <input
+                    id="add-image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploadingImage}
+                  />
                 </div>
               </div>
 
@@ -548,17 +552,21 @@ export default function AdminUpdatesPage() {
                     placeholder="https://..."
                     className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
                   />
-                  <label className="cursor-pointer shrink-0 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-250 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-sm text-center">
+                  <label 
+                    htmlFor="edit-image-upload"
+                    className="cursor-pointer shrink-0 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-sm text-center select-none"
+                  >
                     <Upload className="w-4 h-4 text-slate-500" />
                     {uploadingImage ? 'Uploading...' : 'Upload'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      disabled={uploadingImage}
-                    />
                   </label>
+                  <input
+                    id="edit-image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploadingImage}
+                  />
                 </div>
               </div>
 
