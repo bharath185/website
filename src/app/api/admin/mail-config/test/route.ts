@@ -16,13 +16,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'All fields (Host, Port, User, Pass, Recipient) are required to test' }, { status: 400 })
     }
 
+    // Automatically strip all whitespaces from Gmail app passwords
+    const cleanPass = pass.replace(/\s+/g, '')
+
     const transporter = nodemailer.createTransport({
       host,
       port: parseInt(port),
       secure: !!secure,
       auth: {
         user: smtpUser,
-        pass
+        pass: cleanPass
       },
       connectionTimeout: 10000 // 10 seconds timeout
     })

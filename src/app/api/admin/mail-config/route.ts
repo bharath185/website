@@ -53,13 +53,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Host, Port, SMTP User and From Email are required' }, { status: 400 })
     }
 
-    // Check existing pass
+    // Check existing pass and strip spaces if updated
     let finalPass = pass
     if (pass === '******') {
       const existing = await db.mailConfig.findUnique({
         where: { id: 'smtp-settings' }
       })
       finalPass = existing?.pass || ''
+    } else if (pass) {
+      finalPass = pass.replace(/\s+/g, '')
     }
 
     const updatedConfig = await db.mailConfig.upsert({
