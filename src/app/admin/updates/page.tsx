@@ -17,7 +17,8 @@ import {
   Save,
   Package,
   Mail,
-  ShieldAlert
+  ShieldAlert,
+  Upload
 } from 'lucide-react'
 
 interface UpdatePost {
@@ -46,6 +47,99 @@ export default function AdminUpdatesPage() {
   const [formTitle, setFormTitle] = useState('')
   const [formDate, setFormDate] = useState('')
   const [formImage, setFormImage] = useState('')
+  const [uploadingImage, setUploadingImage] = useState(false)
+
+  const compressImage = (file: File): Promise<Blob | File> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith('image/')) {
+        resolve(file)
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          let width = img.width
+          let height = img.height
+
+          const MAX_WIDTH = 1000
+          const MAX_HEIGHT = 1000
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width
+              width = MAX_WIDTH
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height
+              height = MAX_HEIGHT
+            }
+          }
+
+          canvas.width = width
+          canvas.height = height
+
+          const ctx = canvas.getContext('2d')
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height)
+            canvas.toBlob(
+              (blob) => {
+                if (blob) {
+                  const compressedFile = new File([blob], file.name, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                  })
+                  resolve(compressedFile)
+                } else {
+                  resolve(file)
+                }
+              },
+              'image/jpeg',
+              0.75
+            )
+          } else {
+            resolve(file)
+          }
+        }
+        img.src = event.target?.result as string
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingImage(true)
+    setError('')
+    setSuccessMsg('')
+
+    try {
+      const compressedFile = await compressImage(file)
+      const formData = new FormData()
+      formData.append('file', compressedFile)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await res.json()
+      if (res.ok && data.url) {
+        setFormImage(data.url)
+      } else {
+        setError(data.error || 'Failed to upload image')
+      }
+    } catch {
+      setError('Network error while uploading image')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
 
   const fetchUpdates = async () => {
     try {
@@ -343,27 +437,39 @@ export default function AdminUpdatesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Publish Date *</label>
-                  <input
-                    type="date"
-                    required
-                    value={formDate}
-                    onChange={(e) => setFormDate(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Cover Image URL *</label>
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Publish Date *</label>
+                <input
+                  type="date"
+                  required
+                  value={formDate}
+                  onChange={(e) => setFormDate(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Cover Image *</label>
+                <div className="flex items-center gap-3">
                   <input
                     type="text"
                     required
                     value={formImage}
                     onChange={(e) => setFormImage(e.target.value)}
                     placeholder="https://..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
                   />
+                  <label className="cursor-pointer shrink-0 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-250 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-sm text-center">
+                    <Upload className="w-4 h-4 text-slate-500" />
+                    {uploadingImage ? 'Uploading...' : 'Upload'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={uploadingImage}
+                    />
+                  </label>
                 </div>
               </div>
 
@@ -420,26 +526,39 @@ export default function AdminUpdatesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Publish Date *</label>
-                  <input
-                    type="date"
-                    required
-                    value={formDate}
-                    onChange={(e) => setFormDate(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Cover Image URL *</label>
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Publish Date *</label>
+                <input
+                  type="date"
+                  required
+                  value={formDate}
+                  onChange={(e) => setFormDate(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Cover Image *</label>
+                <div className="flex items-center gap-3">
                   <input
                     type="text"
                     required
                     value={formImage}
                     onChange={(e) => setFormImage(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
+                    placeholder="https://..."
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold font-mono"
                   />
+                  <label className="cursor-pointer shrink-0 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-250 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-sm text-center">
+                    <Upload className="w-4 h-4 text-slate-500" />
+                    {uploadingImage ? 'Uploading...' : 'Upload'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={uploadingImage}
+                    />
+                  </label>
                 </div>
               </div>
 
