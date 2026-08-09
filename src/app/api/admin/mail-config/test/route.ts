@@ -30,10 +30,13 @@ export async function POST(req: Request) {
       passFirstLast: cleanPass.length > 0 ? `${cleanPass[0]}...${cleanPass[cleanPass.length - 1]}` : 'empty'
     })
 
+    const smtpPort = parseInt(port)
+    const isSecure = smtpPort === 465 ? true : (smtpPort === 587 ? false : !!secure)
+
     const transporter = nodemailer.createTransport({
       host,
-      port: parseInt(port),
-      secure: !!secure,
+      port: smtpPort,
+      secure: isSecure,
       auth: {
         user: smtpUser,
         pass: cleanPass

@@ -56,10 +56,13 @@ export async function POST(req: Request) {
     // Configure transport and strip spaces from password
     const cleanMailPass = (mailConfig.pass || '').replace(/\s+/g, '')
 
+    const smtpPort = mailConfig.port || 587
+    const isSecure = smtpPort === 465 ? true : (smtpPort === 587 ? false : !!mailConfig.secure)
+
     const transporter = nodemailer.createTransport({
       host: mailConfig.host,
-      port: mailConfig.port,
-      secure: mailConfig.secure,
+      port: smtpPort,
+      secure: isSecure,
       auth: {
         user: mailConfig.user,
         pass: cleanMailPass
