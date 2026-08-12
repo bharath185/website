@@ -23,6 +23,10 @@ export default function Header() {
   const { itemCount } = useEnquiry()
   const { user, openAuthModal, logout } = useAuth()
 
+  if (pathname.startsWith('/v2') || pathname.startsWith('/redesign')) {
+    return null
+  }
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener("scroll", handleScroll, { passive: true })

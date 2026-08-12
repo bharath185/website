@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import { Phone, Mail, MapPin } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -28,6 +31,11 @@ function XIcon({ className }: { className?: string }) {
 }
 
 export default function Footer() {
+  const pathname = usePathname()
+
+  if (pathname.startsWith('/v2') || pathname.startsWith('/redesign')) {
+    return null
+  }
   return (
     <footer className="bg-white border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">

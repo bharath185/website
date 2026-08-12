@@ -23,6 +23,10 @@ import { useAuth } from '@/context/AuthContext'
 export default function MobileBottomNav() {
   const pathname = usePathname()
   const router = useRouter()
+
+  if (pathname.startsWith('/v2') || pathname.startsWith('/redesign')) {
+    return null
+  }
   const { itemCount } = useEnquiry()
   const { user, openAuthModal, logout } = useAuth()
   const [adminSheetOpen, setAdminSheetOpen] = useState(false)

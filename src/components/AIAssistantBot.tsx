@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Bot, Sparkles, X, Send, RefreshCw, ChevronRight, Compass, PhoneCall, CheckCircle2, User, Phone, MessageSquare, Zap } from "lucide-react"
 
@@ -28,14 +28,28 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
 
   if (q.includes("cnc") || q.includes("spindle") || q.includes("product") || q.includes("catalog") || q.includes("machine")) {
     return {
-      reply: "Namaste! We manufacture precision CNC Spindle Assemblies (₹1,85,000), Hydrostatic Bearings (₹98,000), Drive Rings (₹42,500), and Flow Forming Mandrels (₹1,45,000) in Bangalore. Guiding you to our products! [REDIRECT:/products]",
+      reply: "We stock premium Machine Spindles, Bearings, Ball Screws, and drive accessories in our Bangalore warehouse. Let me direct you to our Catalogue:",
       redirect: "/products",
     }
   }
 
-  if (q.includes("order") || q.includes("track") || q.includes("status")) {
+  if (q.includes("address") || q.includes("location") || q.includes("where") || q.includes("office") || q.includes("bangalore")) {
     return {
-      reply: "You can track your live order status and delivery updates right on our Orders page! Opening your tracking dashboard now. [REDIRECT:/orders]",
+      reply: "Our main BMT corporate office and warehouse is located in Peenya Industrial Area, Bangalore. Let me direct you to our Contact page:",
+      redirect: "/contact",
+    }
+  }
+
+  if (q.includes("forgot") || q.includes("reset") || q.includes("password") || q.includes("change password")) {
+    return {
+      reply: "If you forgot your password or need a reset request, you can perform it in the login panel or the settings page. Let me direct you:",
+      redirect: "/admin/settings",
+    }
+  }
+
+  if (q.includes("order") || q.includes("status") || q.includes("track") || q.includes("my orders")) {
+    return {
+      reply: "To check your order history or track current statuses, visit the Orders panel:",
       redirect: "/orders",
     }
   }
@@ -66,6 +80,12 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
 
 export default function AIAssistantBot() {
   const router = useRouter()
+  const pathname = usePathname()
+
+  if (pathname.startsWith('/v2') || pathname.startsWith('/redesign')) {
+    return null
+  }
+
   const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
