@@ -24,8 +24,8 @@ export default function V2Header() {
   }, [])
 
   const navLinks = [
-    { href: "/v2", label: "Home" },
-    { href: "/v2/products", label: "Catalogue" },
+    { href: "/", label: "Home" },
+    { href: "/products", label: "Catalogue" },
     { href: "/contact", label: "Support & Contact" },
     { href: "/orders", label: "Track Orders" },
   ]
@@ -42,7 +42,7 @@ export default function V2Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/v2" className="flex items-center gap-2.5 group">
+        <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform duration-300">
             <Compass className="w-5 h-5 text-white animate-[spin_20s_linear_infinite]" />
           </div>

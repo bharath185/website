@@ -128,7 +128,7 @@ export default function ProductDetailClientV2({ product }: ProductDetailClientV2
         
         {/* Back Link */}
         <Link
-          href="/v2/products"
+          href="/products"
           className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white uppercase tracking-widest mb-10 transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

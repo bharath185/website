@@ -37,8 +37,8 @@ export default function V2Footer() {
               Corporate Links
             </h4>
             <div className="flex flex-col gap-3 font-light text-slate-400 text-xs">
-              <Link href="/v2" className="hover:text-blue-400 transition-colors">Home Landing</Link>
-              <Link href="/v2/products" className="hover:text-blue-400 transition-colors">Product Catalogue</Link>
+              <Link href="/" className="hover:text-blue-400 transition-colors">Home Landing</Link>
+              <Link href="/products" className="hover:text-blue-400 transition-colors">Product Catalogue</Link>
               <Link href="/contact" className="hover:text-blue-400 transition-colors">Support Center</Link>
               <Link href="/orders" className="hover:text-blue-400 transition-colors">Track Shipment</Link>
             </div>
@@ -50,10 +50,10 @@ export default function V2Footer() {
               Core Products
             </h4>
             <div className="flex flex-col gap-3 font-light text-slate-400 text-xs">
-              <Link href="/v2/products" className="hover:text-blue-400 transition-colors">Machine Spindles</Link>
-              <Link href="/v2/products" className="hover:text-blue-400 transition-colors">Hydrostatic Bearings</Link>
-              <Link href="/v2/products" className="hover:text-blue-400 transition-colors">Precision Ball Screws</Link>
-              <Link href="/v2/products" className="hover:text-blue-400 transition-colors">Drive Accessories</Link>
+              <Link href="/products" className="hover:text-blue-400 transition-colors">Machine Spindles</Link>
+              <Link href="/products" className="hover:text-blue-400 transition-colors">Hydrostatic Bearings</Link>
+              <Link href="/products" className="hover:text-blue-400 transition-colors">Precision Ball Screws</Link>
+              <Link href="/products" className="hover:text-blue-400 transition-colors">Drive Accessories</Link>
             </div>
           </div>
 

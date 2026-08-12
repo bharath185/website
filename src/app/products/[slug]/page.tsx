@@ -1,19 +1,19 @@
-import type { Metadata } from "next";
-import { getProductBySlug } from "@/data/products";
-import ProductDetailPageClient from "@/components/ProductDetailPageClient";
-import { notFound } from "next/navigation";
+import type { Metadata } from "next"
+import { getProductBySlug } from "@/data/products"
+import ProductDetailClientV2 from "@/components/v2/ProductDetailClientV2"
+import { notFound } from "next/navigation"
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const product = getProductBySlug(resolvedParams.slug);
+  const resolvedParams = await params
+  const product = getProductBySlug(resolvedParams.slug)
   if (!product) {
     return {
       title: "Product Not Found",
-    };
+    }
   }
   return {
     title: `${product.name} | Bharat Machine Tools`,
@@ -24,14 +24,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `https://www.bmtbharat.com/products/${product.slug}`,
       images: [{ url: product.image, alt: product.name }],
     },
-  };
+  }
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  const resolvedParams = await params;
-  const product = getProductBySlug(resolvedParams.slug);
+  const resolvedParams = await params
+  const product = getProductBySlug(resolvedParams.slug)
   if (!product) {
-    notFound();
+    notFound()
   }
 
   const jsonLd = {
@@ -43,11 +43,11 @@ export default async function ProductPage({ params }: PageProps) {
     "offers": {
       "@type": "Offer",
       "priceCurrency": "INR",
-      "price": product.price,
+      "price": product.price || 0,
       "availability": "https://schema.org/InStock",
       "url": `https://www.bmtbharat.com/products/${product.slug}`
     }
-  };
+  }
 
   return (
     <>
@@ -55,7 +55,7 @@ export default async function ProductPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ProductDetailPageClient slug={resolvedParams.slug} initialProduct={product} />
+      <ProductDetailClientV2 product={product} />
     </>
-  );
+  )
 }

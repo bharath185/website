@@ -82,7 +82,7 @@ export default function AIAssistantBot() {
   const router = useRouter()
   const pathname = usePathname()
 
-  if (pathname.startsWith('/v2') || pathname.startsWith('/redesign')) {
+  if (pathname.startsWith('/admin')) {
     return null
   }
 

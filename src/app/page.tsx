@@ -1,21 +1,19 @@
-import HeroSection from "@/components/HeroSection"
-import AboutSection from "@/components/AboutSection"
-import ProductsSection from "@/components/ProductsSection"
-import ServicesSection from "@/components/ServicesSection"
-import GallerySection from "@/components/GallerySection"
-import UpdatesSection from "@/components/UpdatesSection"
-import ContactForm from "@/components/ContactForm"
+import React from "react"
+import IntroVideo from "@/components/v2/IntroVideo"
+import V2Hero from "@/components/v2/V2Hero"
+import V2About from "@/components/v2/V2About"
+import V2Products from "@/components/v2/V2Products"
 
 export default function Home() {
   return (
     <>
-      <HeroSection />
-      <AboutSection />
-      <ProductsSection />
-      <ServicesSection />
-      <GallerySection />
-      <UpdatesSection />
-      <ContactForm />
+      {/* Immersive cinematic intro preloader */}
+      <IntroVideo />
+      
+      {/* High-end sections */}
+      <V2Hero />
+      <V2About />
+      <V2Products />
     </>
   )
 }

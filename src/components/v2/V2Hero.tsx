@@ -126,7 +126,7 @@ export default function V2Hero() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-20 w-full sm:w-auto">
             <Link
-              href="/v2/products"
+              href="/products"
               className="w-full sm:w-auto group px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
             >
               Explore Catalogue

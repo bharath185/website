@@ -29,7 +29,7 @@ export default function V2Products() {
           </div>
 
           <Link
-            href="/v2/products"
+            href="/products"
             className="group mt-6 md:mt-0 flex items-center gap-2 text-xs font-bold text-blue-400 hover:text-blue-300 uppercase tracking-widest transition-colors shrink-0"
           >
             Explore Catalogue
@@ -79,7 +79,7 @@ export default function V2Products() {
                   <span className="text-xs font-bold text-white">₹{(p.price || 0).toLocaleString("en-IN")}</span>
                 </div>
                 <Link
-                  href={`/v2/products/${p.slug}`}
+                  href={`/products/${p.slug}`}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all flex items-center gap-1 shadow-md shadow-blue-500/10"
                 >
                   View Details
