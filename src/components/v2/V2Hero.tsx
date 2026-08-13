@@ -1,187 +1,219 @@
 "use client"
 
-import React, { useEffect, useRef } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { ArrowRight, Settings, ShieldCheck, Zap } from "lucide-react"
+import React, { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { RefreshCw } from "lucide-react"
+import { products as fallbackProducts } from "@/data/products"
+import { Product } from "@/types"
 
 export default function V2Hero() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [productsList, setProductsList] = useState<Product[]>(fallbackProducts)
+  const [loading, setLoading] = useState(true)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [rotationOffset, setRotationOffset] = useState(270)
 
-  // Floating dots background animation
+  // Fetch real products from the API to get user's uploaded images
   useEffect(() => {
-    if (!canvasRef.current) return
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    let animationFrameId: number
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-
-    const particles: Array<{
-      x: number
-      y: number
-      radius: number
-      dx: number
-      dy: number
-      alpha: number
-    }> = []
-
-    for (let i = 0; i < 45; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 1.5 + 0.5,
-        dx: (Math.random() - 0.5) * 0.4,
-        dy: (Math.random() - 0.5) * 0.4,
-        alpha: Math.random() * 0.5 + 0.2
-      })
-    }
-
-    const render = () => {
-      ctx.fillStyle = "rgba(3, 7, 18, 0.2)"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      particles.forEach((p) => {
-        p.x += p.dx
-        p.y += p.dy
-
-        if (p.x < 0 || p.x > canvas.width) p.dx = -p.dx
-        if (p.y < 0 || p.y > canvas.height) p.dy = -p.dy
-
-        ctx.fillStyle = `rgba(59, 130, 246, ${p.alpha})`
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-        ctx.fill()
-      })
-
-      // Draw subtle connecting lines
-      ctx.strokeStyle = "rgba(59, 130, 246, 0.05)"
-      ctx.lineWidth = 0.5
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y)
-          if (dist < 150) {
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products")
+        if (res.ok) {
+          const data = await res.json()
+          if (data.products && data.products.length > 0) {
+            setProductsList(data.products)
           }
         }
+      } catch (err) {
+        console.error("Error loading products for large right-aligned hero wheel:", err)
+      } finally {
+        setLoading(false)
       }
-
-      animationFrameId = requestAnimationFrame(render)
     }
-
-    render()
-
-    const handleResize = () => {
-      if (!canvasRef.current) return
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    window.addEventListener("resize", handleResize)
-
-    return () => {
-      cancelAnimationFrame(animationFrameId)
-      window.removeEventListener("resize", handleResize)
-    }
+    fetchProducts()
   }, [])
 
+  const totalProducts = productsList.length
+
+  const selectProduct = (idx: number) => {
+    setActiveIndex(idx)
+    // Rotate the wheel so the active item is positioned at the top (270 degrees)
+    const anglePerItem = 360 / totalProducts
+    const targetAngle = idx * anglePerItem
+    setRotationOffset(270 - targetAngle)
+  }
+
+  // Auto cycle every 4.5 seconds
+  useEffect(() => {
+    if (totalProducts <= 1) return
+
+    const interval = setInterval(() => {
+      const nextIndex = (activeIndex + 1) % totalProducts
+      selectProduct(nextIndex)
+    }, 4500)
+
+    return () => clearInterval(interval)
+  }, [activeIndex, totalProducts])
+
+  const activeProduct = productsList[activeIndex]
+
+  if (loading) {
+    return (
+      <section className="min-h-screen bg-slate-50 relative overflow-hidden flex flex-col justify-center items-center text-blue-600 gap-3">
+        <RefreshCw className="w-8 h-8 animate-spin" />
+        <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">
+          Loading Robotic Console...
+        </span>
+      </section>
+    )
+  }
+
   return (
-    <section className="min-h-screen bg-[#030712] relative overflow-hidden flex flex-col justify-center pt-24 pb-16">
-      {/* Background elements */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />
+    <section className="min-h-screen bg-slate-50 relative overflow-hidden flex flex-col justify-center pt-24 pb-16">
+      
+      {/* Background Tooling Grid overlay (Light mode gray) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.025)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+      
+      {/* Dynamic Backlight Spotlight Glows */}
+      <div className="absolute top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2 w-[600px] lg:w-[750px] h-[600px] lg:h-[750px] bg-blue-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col items-center max-w-4xl mx-auto"
-        >
-          {/* Tech Pill Badge */}
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold text-xs uppercase tracking-widest mb-6 font-mono">
-            <Zap className="w-3.5 h-3.5 text-blue-500 animate-pulse" />
-            V2 DESIGN PLATFORM
-          </span>
-
-          {/* Heading */}
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 font-display leading-[1.1] uppercase">
-            Rotational
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 font-display">
-              Precision
+      {/* Main Grid Wrapper */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[600px]">
+          
+          {/* Left Column: Corporate About Details */}
+          <div className="lg:col-span-5 flex flex-col items-start text-left">
+            <span className="text-[10px] font-mono font-bold text-red-650 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-md border border-red-200/40 mb-6">
+              Est. 1999 • Bangalore Hub
             </span>
-          </h1>
-
-          {/* Description */}
-          <p className="text-slate-400 text-sm sm:text-base md:text-lg max-w-2xl mb-10 leading-relaxed font-light">
-            Aerospace-toleranced Spindles, High-Capacity Bearings, and Advanced Motion Control. Engineered in Bangalore for Global Machinery Leaders.
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-20 w-full sm:w-auto">
-            <Link
-              href="/products"
-              className="w-full sm:w-auto group px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
-            >
-              Explore Catalogue
-              <ArrowRight className="w-4 h-4 text-slate-200 group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            <Link
-              href="/contact"
-              className="w-full sm:w-auto px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider border border-white/10 hover:border-blue-500/30 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-md"
-            >
-              Request Custom Quote
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Stats Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
-        >
-          {/* Card 1 */}
-          <div className="relative group backdrop-blur-xl bg-slate-900/30 border border-white/5 hover:border-blue-500/30 p-6 rounded-3xl transition-all duration-300 text-left">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all" />
-            <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4">
-              <Settings className="w-5 h-5 animate-[spin_8s_linear_infinite]" />
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 uppercase tracking-tight leading-none mb-6 font-display">
+              We Can Make <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-red-550">
+                What You Can Imagine
+              </span>
+            </h1>
+            <p className="text-slate-650 text-xs sm:text-sm leading-relaxed font-light mb-8 max-w-lg">
+              Bharat Machine Tools (BMT) is India's premier manufacturer of high-precision mechanical assemblies. We supply aerospace-grade spindles, zero-backlash ball screws, and axial-radial YRT bearings built for high-stiffness industrial operations.
+            </p>
+            
+            {/* Trust highlights */}
+            <div className="grid grid-cols-2 gap-6 w-full max-w-sm border-t border-slate-200 pt-8">
+              <div>
+                <span className="text-xl font-bold text-slate-900 block font-display">25+ Years</span>
+                <span className="text-[9px] text-slate-500 uppercase tracking-widest font-mono font-medium block mt-1">Engineering Legacy</span>
+              </div>
+              <div>
+                <span className="text-xl font-bold text-slate-900 block font-display">Zero Defect</span>
+                <span className="text-[9px] text-slate-500 uppercase tracking-widest font-mono font-medium block mt-1">Quality Assurance</span>
+              </div>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-1 font-display">25+ Years</h3>
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-mono font-medium mb-1">Industrial Heritage</p>
-            <p className="text-xs text-slate-400 leading-relaxed font-light">Manufacturing high-precision assemblies for heavy industries across Bangalore.</p>
           </div>
 
-          {/* Card 2 */}
-          <div className="relative group backdrop-blur-xl bg-slate-900/30 border border-white/5 hover:border-cyan-500/30 p-6 rounded-3xl transition-all duration-300 text-left">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all" />
-            <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
-              <ShieldCheck className="w-5 h-5" />
+          {/* Right Column: Circular Products Carousel Wheel */}
+          <div className="lg:col-span-7 flex justify-center lg:justify-end items-center">
+            
+            <div className="relative w-[340px] h-[340px] sm:w-[520px] sm:h-[520px] lg:w-[680px] lg:h-[680px] flex items-center justify-center">
+              
+              {/* Dotted circular guide lines */}
+              <div className="absolute inset-0 rounded-full border border-dashed border-slate-200 pointer-events-none" />
+              <div className="absolute inset-16 rounded-full border border-white/5 pointer-events-none" />
+              
+              {/* Rotating outer ring of product thumbnails */}
+              <motion.div
+                animate={{ rotate: rotationOffset }}
+                transition={{ type: "spring", stiffness: 60, damping: 16 }}
+                className="absolute inset-0 w-full h-full flex items-center justify-center z-10"
+              >
+                {productsList.map((p, idx) => {
+                  const anglePerItem = 360 / totalProducts
+                  const angle = idx * anglePerItem
+                  // Radius of outer nodes: 130px on mobile, 270px on desktop
+                  const radius = typeof window !== "undefined" && window.innerWidth < 640 ? 130 : 270
+                  const isSelected = activeIndex === idx
+
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => selectProduct(idx)}
+                      style={{
+                        position: "absolute",
+                        transform: `rotate(${angle}deg) translate(${radius}px)`,
+                      }}
+                      className="group focus:outline-none z-20"
+                    >
+                      {/* Node bubble with product thumbnail (Light Theme - Sized Up) */}
+                      <motion.div
+                        animate={{
+                          scale: isSelected ? 1.55 : 1,
+                          rotate: -rotationOffset - angle,
+                          borderColor: isSelected ? "#ef233c" : "rgba(15,23,42,0.08)",
+                          backgroundColor: isSelected ? "#ffffff" : "rgba(255,255,255,0.9)",
+                          boxShadow: isSelected ? "0 0 25px rgba(239,35,60,0.25)" : "0 4px 10px rgba(0,0,0,0.03)"
+                        }}
+                        transition={{ type: "spring", stiffness: 60, damping: 16 }}
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 flex items-center justify-center transition-all overflow-hidden relative"
+                      >
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          className="w-8 h-8 sm:w-11 sm:h-11 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                        />
+                        {isSelected && (
+                          <span className="absolute bottom-1 w-1 h-1 rounded-full bg-red-500 animate-ping" />
+                        )}
+                      </motion.div>
+                    </button>
+                  )
+                })}
+              </motion.div>
+
+              {/* Central Hub displaying Image, Category, Title, and Description inside (Sized Up) */}
+              <div className="absolute w-[220px] h-[220px] sm:w-[340px] sm:h-[340px] lg:w-[420px] lg:h-[420px] rounded-full bg-white border border-slate-200 z-30 flex flex-col items-center justify-center p-6 sm:p-10 text-center shadow-lg relative overflow-hidden">
+                
+                {/* Spinning gauge element */}
+                <div className="absolute inset-3 rounded-full border border-dashed border-blue-500/20 animate-[spin_50s_linear_infinite] pointer-events-none" />
+                
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, scale: 0.88 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.88 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="flex flex-col items-center justify-center w-full h-full relative z-10"
+                  >
+                    {/* Product Image (Sized Up) */}
+                    <motion.img
+                      animate={{ y: [0, -4, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      src={activeProduct.image}
+                      alt={activeProduct.name}
+                      className="w-24 h-24 sm:w-40 sm:h-40 lg:w-56 lg:h-56 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)] mb-4"
+                    />
+                    
+                    {/* Category Badge */}
+                    <span className="text-[5.5px] sm:text-[7.5px] lg:text-[9px] font-mono text-red-650 font-extrabold uppercase tracking-wider bg-red-500/10 px-2.5 py-0.5 rounded border border-red-500/20 mb-2">
+                      {activeProduct.category}
+                    </span>
+                    
+                    {/* Product Name (Heading) */}
+                    <h3 className="text-slate-900 font-extrabold text-[10px] sm:text-xs lg:text-sm uppercase tracking-tight max-w-[160px] sm:max-w-[240px] lg:max-w-[310px] line-clamp-1 mb-2">
+                      {activeProduct.name}
+                    </h3>
+
+                    {/* Product Description */}
+                    <p className="text-slate-600 text-[8px] sm:text-[9.5px] lg:text-[11px] font-normal leading-relaxed max-w-[150px] sm:max-w-[220px] lg:max-w-[280px] line-clamp-3">
+                      {activeProduct.shortDescription || activeProduct.description}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
             </div>
-            <h3 className="text-2xl font-bold text-white mb-1 font-display">10k+ Units</h3>
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-mono font-medium mb-1">Shipped Nationally</p>
-            <p className="text-xs text-slate-400 leading-relaxed font-light">Spindles, bearings, and locknuts delivered to top CNC machining and automotive hubs.</p>
+
           </div>
 
-          {/* Card 3 */}
-          <div className="relative group backdrop-blur-xl bg-slate-900/30 border border-white/5 hover:border-indigo-500/30 p-6 rounded-3xl transition-all duration-300 text-left">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-all" />
-            <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mb-4">
-              <Zap className="w-5 h-5" />
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-1 font-display">0.002 mm</h3>
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-mono font-medium mb-1">Rotational Tolerance</p>
-            <p className="text-xs text-slate-400 leading-relaxed font-light">Ultra-precise manufacturing balancing specifications to guarantee runout tolerances.</p>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

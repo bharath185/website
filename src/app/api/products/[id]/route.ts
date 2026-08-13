@@ -165,11 +165,11 @@ export async function DELETE(
       await db.product.delete({
         where: { id }
       })
-    } catch {
-      // Fallback
+      return NextResponse.json({ success: true, message: 'Product deleted successfully' })
+    } catch (e) {
+      console.error('Prisma error deleting product:', e)
+      return NextResponse.json({ error: 'Failed to delete product from database' }, { status: 500 })
     }
-
-    return NextResponse.json({ success: true, message: 'Product deleted successfully' })
   } catch (error) {
     console.error('Error deleting product:', error)
     return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 })

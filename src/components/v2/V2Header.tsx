@@ -36,27 +36,20 @@ export default function V2Header() {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled 
-          ? "py-4 bg-slate-950/70 border-b border-white/5 backdrop-blur-xl shadow-2xl" 
+          ? "py-4 bg-white/90 border-b border-slate-200 backdrop-blur-xl shadow-sm" 
           : "py-6 bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform duration-300">
-            <Compass className="w-5 h-5 text-white animate-[spin_20s_linear_infinite]" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-sm sm:text-base tracking-widest text-white uppercase font-display leading-tight drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]">
-              BHARAT
-            </span>
-            <span className="text-[9px] font-bold text-cyan-400 font-mono tracking-widest uppercase -mt-0.5">
-              MACHINE TOOLS • V2
-            </span>
-          </div>
+        <Link href="/" className="flex items-center gap-2.5 group hover:opacity-95 transition-opacity">
+          <img 
+            src="/logo.jpg" 
+            alt="Bharat Machine Tools Logo" 
+            className="h-9 sm:h-11 w-auto object-contain bg-white px-2.5 py-1 rounded-xl border border-slate-200" 
+          />
         </Link>
 
-        {/* Desktop Navbar Links */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => {
             const isActive = pathname === link.href
@@ -66,15 +59,15 @@ export default function V2Header() {
                 href={link.href}
                 className={`text-xs font-bold uppercase tracking-wider transition-colors relative py-1 ${
                   isActive 
-                    ? "text-blue-400 font-semibold" 
-                    : "text-slate-400 hover:text-white"
+                    ? "text-blue-600 font-semibold" 
+                    : scrolled ? "text-slate-600 hover:text-slate-950" : "text-slate-200 hover:text-white"
                 }`}
               >
                 {link.label}
                 {isActive && (
                   <motion.span 
                     layoutId="activeHeaderDot" 
-                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-blue-500 rounded-full" 
+                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-blue-600 rounded-full" 
                   />
                 )}
               </Link>
@@ -87,11 +80,15 @@ export default function V2Header() {
           {/* Cart Icon */}
           <Link
             href="/enquiry"
-            className="p-2.5 bg-slate-900/50 hover:bg-slate-900 border border-white/5 hover:border-white/10 rounded-2xl transition-all relative flex items-center justify-center text-slate-400 hover:text-white"
+            className={`p-2.5 rounded-2xl transition-all relative flex items-center justify-center border ${
+              scrolled 
+                ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700 hover:text-slate-950" 
+                : "bg-slate-900/50 hover:bg-slate-900 border-white/5 text-slate-300 hover:text-white"
+            }`}
           >
             <ShoppingCart className="w-4 h-4" />
             {itemCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-blue-600 text-white font-mono text-[9px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border border-[#030712] animate-pulse">
+              <span className="absolute -top-1.5 -right-1.5 bg-blue-600 text-white font-mono text-[9px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border border-white animate-pulse">
                 {itemCount}
               </span>
             )}
@@ -102,17 +99,21 @@ export default function V2Header() {
             <div className="relative">
               <button
                 onClick={() => setUserDropdown(!userDropdown)}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-900/50 hover:bg-slate-900 border border-white/5 rounded-2xl transition-all text-xs font-bold text-slate-300 hover:text-white"
+                className={`flex items-center gap-2 px-4 py-2 border rounded-2xl transition-all text-xs font-bold ${
+                  scrolled
+                    ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-750 hover:text-slate-950"
+                    : "bg-slate-900/50 hover:bg-slate-900 border-white/5 text-slate-300 hover:text-white"
+                }`}
               >
-                <User className="w-3.5 h-3.5 text-blue-400" />
+                <User className="w-3.5 h-3.5 text-blue-600" />
                 {user.name.split(" ")[0]}
               </button>
               {userDropdown && (
-                <div className="absolute right-0 mt-2.5 w-48 bg-slate-950/95 border border-white/10 rounded-2xl shadow-2xl backdrop-blur-md p-1.5 z-50">
+                <div className="absolute right-0 mt-2.5 w-48 bg-white border border-slate-200 rounded-2xl shadow-2xl p-1.5 z-50">
                   {user.role === "ADMIN" && (
                     <Link
                       href="/admin/products"
-                      className="flex items-center gap-2 px-3.5 py-2.5 text-xs text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all font-medium"
+                      className="flex items-center gap-2 px-3.5 py-2.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all font-medium"
                     >
                       <ShieldAlert className="w-3.5 h-3.5 text-blue-500" />
                       Admin Panel

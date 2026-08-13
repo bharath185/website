@@ -5,44 +5,49 @@ import { products as defaultProducts } from '@/data/products'
 
 export async function GET() {
   try {
-    let products: any[] = []
+    let products = await db.product.findMany({
+      orderBy: { createdAt: 'desc' }
+    })
 
-    try {
+    // Auto seed fallback products in database if empty
+    if (products.length === 0) {
+      for (const p of defaultProducts) {
+        try {
+          await db.product.create({
+            data: {
+              id: p.id,
+              name: p.name,
+              slug: p.slug,
+              category: p.category,
+              price: p.price,
+              shortDescription: p.shortDescription,
+              description: p.description,
+              image: p.image,
+              specifications: JSON.stringify(p.specifications || []),
+              features: JSON.stringify(p.features || [])
+            }
+          })
+        } catch (seedErr) {
+          console.error(`Failed to seed default product: ${p.name}`, seedErr)
+        }
+      }
+
       products = await db.product.findMany({
         orderBy: { createdAt: 'desc' }
       })
-    } catch (e) {
-      console.warn("DB connection warning during findMany in GET:", e)
     }
 
-    // Merge default products with database products
-    const mergedMap = new Map<string, any>()
-
-    // 1. Load all defaults first
-    defaultProducts.forEach((p) => {
-      mergedMap.set(p.slug, {
+    const parsedProducts = products.map((p) => {
+      const parsedSpec = typeof p.specifications === 'string' ? JSON.parse(p.specifications) : (p.specifications || [])
+      const parsedFeat = typeof p.features === 'string' ? JSON.parse(p.features) : (p.features || [])
+      return {
         ...p,
-        specifications: p.specifications || [],
-        features: p.features || []
-      })
+        specifications: parsedSpec,
+        features: parsedFeat
+      }
     })
 
-    // 2. Overwrite with database entries (or add new ones)
-    if (products && products.length > 0) {
-      products.forEach((p) => {
-        const parsedSpec = typeof p.specifications === 'string' ? JSON.parse(p.specifications) : (p.specifications || [])
-        const parsedFeat = typeof p.features === 'string' ? JSON.parse(p.features) : (p.features || [])
-        
-        mergedMap.set(p.slug, {
-          ...p,
-          specifications: parsedSpec,
-          features: parsedFeat
-        })
-      })
-    }
-
-    const finalProducts = Array.from(mergedMap.values())
-    return NextResponse.json({ products: finalProducts })
+    return NextResponse.json({ products: parsedProducts })
   } catch (error) {
     console.error('Error fetching products:', error)
     return NextResponse.json({ products: defaultProducts })

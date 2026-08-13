@@ -49,36 +49,18 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 pt-28 pb-20 relative">
+    <div className="min-h-screen bg-white text-slate-800 pt-28 pb-20 relative">
       {/* Immersive Glowing Backdrop Background */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Hero Header */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16 relative z-10">
-        <motion.span 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold text-xs uppercase tracking-widest mb-4 font-mono"
-        >
-          PRECISION ENGINEERED CATALOGUE
-        </motion.span>
-        
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-blue-500 mb-6 tracking-tight font-display">
-          World-Class Machining Systems
-        </h1>
-        
-        <p className="text-slate-400 max-w-2xl mx-auto text-xs sm:text-sm leading-relaxed font-light">
-          Explore BMT's high-precision engineering components. Built with aerospace-grade tolerances, ready for immediate delivery from our warehouse hub in Bangalore.
-        </p>
-      </section>
+
 
       {/* Catalog Grid Area with 2-Column layout matching reference image */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
           
-          {/* Left Column: Vertical Category List with active green segment */}
-          <div className="md:col-span-3 flex md:flex-col border-b md:border-b-0 md:border-r border-slate-800/60 pb-4 md:pb-0 gap-1 overflow-x-auto no-scrollbar">
+          {/* Left Column: Vertical Category List with active red segment */}
+          <div className="md:col-span-3 flex md:flex-col border-b md:border-b-0 md:border-r border-slate-200 pb-4 md:pb-0 gap-1 overflow-x-auto no-scrollbar">
             {categories.map((cat) => {
               const isActive = activeCategory.toLowerCase() === cat.toLowerCase()
               return (
@@ -87,15 +69,15 @@ export default function ProductsPage() {
                   onClick={() => setActiveCategory(cat)}
                   className={`w-full text-left md:text-right pr-6 pl-4 md:pl-0 py-4 text-xs font-extrabold tracking-widest transition-all uppercase shrink-0 relative ${
                     isActive
-                      ? "text-emerald-400"
+                      ? "text-red-500"
                       : "text-slate-500 hover:text-slate-350"
                   }`}
                 >
                   {cat === "All" ? "ALL PRODUCTS" : cat}
                   {isActive && (
                     <motion.div
-                      layoutId="verticalGreenIndicatorCatalog"
-                      className="absolute bottom-0 md:bottom-auto right-0 top-auto md:top-2 md:bottom-2 w-full md:w-[3px] h-[3px] md:h-auto bg-emerald-400 rounded-full"
+                      layoutId="verticalRedIndicatorCatalog"
+                      className="absolute bottom-0 md:bottom-auto right-0 top-auto md:top-2 md:bottom-2 w-full md:w-[3px] h-[3px] md:h-auto bg-red-500 rounded-full"
                     />
                   )}
                 </button>
@@ -115,7 +97,7 @@ export default function ProductsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search components..."
-                  className="w-full bg-slate-950/60 border border-white/5 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600 transition-colors"
                 />
               </div>
             </div>
@@ -144,26 +126,26 @@ export default function ProductsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -15 }}
                       transition={{ duration: 0.35 }}
-                      className="group bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] border border-slate-300/40 rounded-3xl p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 min-h-[245px]"
+                      className="group bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] border border-slate-300/40 rounded-3xl p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 min-h-[260px]"
                     >
                       <div>
                         {/* Product Name (title) */}
-                        <h3 className="text-slate-900 font-extrabold text-base uppercase tracking-tight mb-2 max-w-[70%]">
+                        <h3 className="text-slate-900 font-extrabold text-base uppercase tracking-tight mb-2 max-w-[55%]">
                           {p.name}
                         </h3>
                         
                         {/* Product Subtitle / Short Description */}
-                        <p className="text-slate-650 text-[11px] font-normal leading-relaxed max-w-[62%] line-clamp-3 mb-6">
+                        <p className="text-slate-600 text-[11px] font-normal leading-relaxed max-w-[55%] line-clamp-3 mb-6">
                           {p.shortDescription}
                         </p>
                       </div>
 
                       {/* Floating Product Image (Bottom-Right cutout style) */}
-                      <div className="absolute bottom-4 right-4 w-28 h-28 flex items-center justify-center pointer-events-none">
+                      <div className="absolute bottom-4 right-4 w-36 h-36 flex items-center justify-center pointer-events-none">
                         <img 
                           src={p.image} 
                           alt={p.name} 
-                          className="max-w-full max-h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500" 
+                          className="max-w-full max-h-full object-contain drop-shadow-sm group-hover:scale-115 transition-transform duration-500 ease-out" 
                         />
                       </div>
 
@@ -172,7 +154,7 @@ export default function ProductsPage() {
                         {/* Read More Link (Underlined) */}
                         <Link
                           href={`/products/${p.slug}`}
-                          className="text-xs font-bold text-slate-800 hover:text-emerald-500 underline decoration-2 underline-offset-4 transition-colors shrink-0"
+                          className="text-xs font-bold text-slate-800 hover:text-red-500 underline decoration-2 underline-offset-4 transition-colors shrink-0"
                         >
                           Read More
                         </Link>
@@ -180,7 +162,7 @@ export default function ProductsPage() {
                         {/* Add to Cart button */}
                         {isItemInCart(p.id) ? (
                           <button
-                            className="px-4 py-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 rounded-xl text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1.5"
+                            className="px-4 py-2.5 bg-red-500/10 border border-red-500/30 text-red-600 rounded-xl text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1.5"
                           >
                             <Check className="w-3.5 h-3.5" />
                             Added

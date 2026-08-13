@@ -85,11 +85,23 @@ export default function AdminUpdatesPage() {
           const ctx = canvas.getContext('2d')
           if (ctx) {
             ctx.drawImage(img, 0, 0, width, height)
+            
+            const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png')
+            const isWebp = file.type === 'image/webp' || file.name.toLowerCase().endsWith('.webp')
+            const outputType = isPng ? 'image/png' : (isWebp ? 'image/webp' : 'image/jpeg')
+            
+            console.log('Image upload compression audit:', {
+              fileName: file.name,
+              originalType: file.type,
+              selectedOutputType: outputType,
+              dimensions: `${width}x${height}`
+            })
+
             canvas.toBlob(
               (blob) => {
                 if (blob) {
                   const compressedFile = new File([blob], file.name, {
-                    type: 'image/jpeg',
+                    type: outputType,
                     lastModified: Date.now(),
                   })
                   resolve(compressedFile)
@@ -97,8 +109,8 @@ export default function AdminUpdatesPage() {
                   resolve(file)
                 }
               },
-              'image/jpeg',
-              0.75
+              outputType,
+              outputType === 'image/jpeg' ? 0.75 : undefined
             )
           } else {
             resolve(file)
