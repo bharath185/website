@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { EnquiryProvider } from "@/context/EnquiryContext";
 import { AuthProvider } from "@/context/AuthContext";
-import V2Header from "@/components/v2/V2Header";
-import V2Footer from "@/components/v2/V2Footer";
+import ClientLayoutShell from "@/components/v2/ClientLayoutShell";
 import AIAssistantBot from "@/components/AIAssistantBot";
 import AuthModal from "@/components/AuthModal";
 import Script from "next/script";
@@ -59,7 +58,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.bmtbharat.com/images/logo.jpg",
+        url: "https://www.bmtbharat.com/images/logo.png",
         alt: "Bharat Machine Tools",
       },
     ],
@@ -93,7 +92,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "LocalBusiness",
               "name": "Bharat Machine Tools",
-              "image": "https://www.bmtbharat.com/images/logo.jpg",
+              "image": "https://www.bmtbharat.com/images/logo.png",
               "telephone": "+919530208882",
               "email": "contact@bmtbharat.com",
               "address": {
@@ -113,9 +112,9 @@ export default function RootLayout({
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
         <AuthProvider>
           <EnquiryProvider>
-            <V2Header />
-            <main className="flex-1 relative z-10 w-full">{children}</main>
-            <V2Footer />
+            <ClientLayoutShell>
+              {children}
+            </ClientLayoutShell>
             <AIAssistantBot />
             <AuthModal />
           </EnquiryProvider>

@@ -30,29 +30,6 @@ export default function V2Products() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Header Block */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16">
-          <div className="max-w-xl">
-            <span className="text-[10px] font-mono font-bold text-red-650 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-md border border-red-200/40">
-              FEATURED CATALOGUE
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 uppercase mt-4 mb-2 font-display">
-              Precision Engineering Components
-            </h2>
-            <p className="text-slate-650 text-xs font-light leading-relaxed">
-              Discover high-stiffness spindles, zero-backlash ball screws, and custom machine tool accessories manufactured to sub-micron standards.
-            </p>
-          </div>
-
-          <Link
-            href="/products"
-            className="group mt-6 md:mt-0 flex items-center gap-2 text-xs font-bold text-blue-600 hover:text-blue-500 uppercase tracking-widest transition-colors shrink-0"
-          >
-            Explore Catalogue
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-
         {/* 2-Column Layout based on provided reference image */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
           

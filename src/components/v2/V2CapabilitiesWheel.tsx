@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ShieldCheck, Award, Heart, CheckCircle2, Navigation, Settings, Globe, Shield, Star } from "lucide-react"
+import { ShieldCheck, Award, Heart, CheckCircle2, Navigation, Settings, Globe, Shield, Star, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface CapabilityItem {
   id: number
@@ -15,6 +15,23 @@ interface CapabilityItem {
 export default function V2CapabilitiesWheel() {
   const [activeIndex, setActiveIndex] = useState<number>(0)
   const [rotationOffset, setRotationOffset] = useState<number>(0)
+  const [radius, setRadius] = useState<number>(140)
+
+  // Dynamically scale radius based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setRadius(115) // Compact radius for mobile screens
+      } else if (window.innerWidth < 1024) {
+        setRadius(145) // Medium radius for tablets
+      } else {
+        setRadius(175) // Spacious radius for desktop
+      }
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   // Segment items from the static brochure wheel
   const capabilities: CapabilityItem[] = [
@@ -156,12 +173,26 @@ export default function V2CapabilitiesWheel() {
           </div>
 
           {/* Central Column: Animated SVG/CSS Rotating Capabilities Wheel */}
-          <div className="lg:col-span-6 flex justify-center items-center py-10 order-1 lg:order-2">
+          <div className="lg:col-span-6 flex flex-col justify-center items-center py-10 order-1 lg:order-2">
             <div className="relative w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] flex items-center justify-center">
               
-              {/* Outer Circular Track Glow */}
-              <div className="absolute inset-0 rounded-full border border-dashed border-slate-800/80 pointer-events-none" />
-              <div className="absolute inset-8 rounded-full border border-white/5 pointer-events-none shadow-[0_0_50px_rgba(59,130,246,0.02)]" />
+              {/* Dynamic dotted guide line passing through the centers of node bubbles */}
+              <div
+                style={{
+                  width: `${radius * 2}px`,
+                  height: `${radius * 2}px`,
+                }}
+                className="absolute rounded-full border border-dashed border-slate-800/80 pointer-events-none"
+              />
+              
+              {/* Concentric inner track ring */}
+              <div
+                style={{
+                  width: `${radius * 2 - 60}px`,
+                  height: `${radius * 2 - 60}px`,
+                }}
+                className="absolute rounded-full border border-dotted border-white/5 pointer-events-none shadow-[0_0_50px_rgba(59,130,246,0.02)]"
+              />
               
               {/* Rotating Segment Container */}
               <motion.div
@@ -170,8 +201,6 @@ export default function V2CapabilitiesWheel() {
                 className="absolute inset-0 w-full h-full flex items-center justify-center"
               >
                 {capabilities.map((cap, idx) => {
-                  const angleRad = (cap.angle * Math.PI) / 180
-                  const radius = 150 // distance from center in px (scales with responsive layout)
                   const isSelected = activeIndex === idx
                   
                   // Calculate absolute position on the wheel ring
@@ -194,12 +223,19 @@ export default function V2CapabilitiesWheel() {
                         }}
                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 flex items-center justify-center transition-shadow shadow-md hover:shadow-emerald-500/20 overflow-hidden relative"
                       >
-                        {/* Segment Icon Preview */}
-                        <img 
-                          src={cap.image} 
-                          alt={cap.title}
-                          className="w-7 h-7 sm:w-8 sm:h-8 object-contain opacity-80 group-hover:opacity-100 transition-opacity" 
-                        />
+                        {/* Counter-rotate inner content to stay 0° upright */}
+                        <motion.div
+                          animate={{ rotate: -rotationOffset }}
+                          transition={{ type: "spring", stiffness: 70, damping: 18 }}
+                          className="flex items-center justify-center w-full h-full"
+                        >
+                          {/* Segment Icon Preview */}
+                          <img 
+                            src={cap.image} 
+                            alt={cap.title}
+                            className="w-7 h-7 sm:w-8 sm:h-8 object-contain opacity-80 group-hover:opacity-100 transition-opacity" 
+                          />
+                        </motion.div>
                         {/* Selected Indicator Dot */}
                         {isSelected && (
                           <span className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
@@ -232,17 +268,40 @@ export default function V2CapabilitiesWheel() {
                       className="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-[0_4px_10px_rgba(59,130,246,0.3)] mb-3" 
                     />
                     
-                    {/* Central Text */}
-                    <span className="text-[7px] font-mono text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                      BMT HUB
-                    </span>
-                    <h3 className="text-white font-extrabold text-[10px] sm:text-xs uppercase tracking-tight mt-1 max-w-[130px] line-clamp-2">
-                      {activeCapability.title}
-                    </h3>
+                    {/* Central Text (Hidden on mobile for clarity) */}
+                    <div className="hidden sm:flex flex-col items-center">
+                      <span className="text-[7px] font-mono text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 mt-2">
+                        BMT HUB
+                      </span>
+                      <h3 className="text-white font-extrabold text-[10px] sm:text-xs uppercase tracking-tight mt-1 max-w-[130px] line-clamp-2">
+                        {activeCapability.title}
+                      </h3>
+                    </div>
                   </motion.div>
                 </AnimatePresence>
               </div>
 
+            </div>
+
+            {/* Touch Navigation Controls for Mobile */}
+            <div className="flex items-center justify-center gap-4 mt-6 lg:hidden">
+              <button
+                onClick={() => selectCapability((activeIndex - 1 + capabilities.length) % capabilities.length)}
+                className="p-2.5 rounded-full bg-slate-900 border border-white/10 text-slate-400 hover:text-white hover:bg-slate-800 transition shadow-sm"
+                aria-label="Previous capability"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <span className="text-xs font-mono text-slate-400">
+                {activeIndex + 1} / {capabilities.length}
+              </span>
+              <button
+                onClick={() => selectCapability((activeIndex + 1) % capabilities.length)}
+                className="p-2.5 rounded-full bg-slate-900 border border-white/10 text-slate-400 hover:text-white hover:bg-slate-800 transition shadow-sm"
+                aria-label="Next capability"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
           </div>
 

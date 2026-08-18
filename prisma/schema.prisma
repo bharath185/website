@@ -42,8 +42,10 @@ model Product {
   image            String
   specifications   String?  // JSON string array
   features         String?  // JSON string array
+  tag              String?  // e.g. "NEW_ARRIVAL", "FEATURED", etc.
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  reviews          ProductReview[]
 }
 
 model Order {
@@ -59,6 +61,8 @@ model Order {
   contactPhone      String
   trackingNumber    String?
   adminNotes        String?
+  overallRating     Int?
+  overallFeedback   String?
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
   items             OrderItem[]
@@ -75,11 +79,83 @@ model OrderItem {
 }
 
 model UpdatePost {
-  id        String   @id @default(uuid())
-  title     String
-  date      String
-  image     String
-  slug      String   @unique
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  title       String
+  date        String
+  image       String
+  slug        String   @unique
+  description String   @default("")
+  content     String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MDInfo {
+  id             String   @id @default("md-info")
+  name           String   @default("Mr. B.R. Gowda")
+  role           String   @default("Founder & Managing Director")
+  image          String   @default("/images/md_portrait.jpg")
+  bioParagraph1  String   @default("Welcome to Bharat Machine Tools (BMT). When we established BMT in Bangalore, our objective was single-focused: to engineer and build dynamic mechanical systems that match the sub-micron tolerances demanded by advanced aerospace, military, and automation OEMs.")
+  bioParagraph2  String   @default("Over the past 25 years, precision manufacturing has evolved, but our foundational promise remains absolute. We invest continuously in our cleanrooms, dynamic testing bays, and state-of-the-art grinding machinery to ensure that every spindle, hydrostatic bearing, and custom part leaving our cells is an operational masterpiece.")
+  quote          String   @default("Precision is not a measurement constraint; it is our corporate culture. We don't build machines—we craft high-speed rotational masterpieces with sub-micron engineering.")
+  quoteAuthor    String   @default("B. R. Gowda")
+  expTitle       String   @default("Experience")
+  expDescription String   @default("30+ Years in rotodynamic systems design.")
+  stdTitle       String   @default("Standards")
+  stdDescription String   @default("Direct supervisor of BMT Zero-Defect QA cell.")
+  affTitle       String   @default("Affiliations")
+  affDescription String   @default("Technical panelist at CMTI & AMTI Bangalore.")
+  badgeTitle     String   @default("MD Credentials")
+  badgeText      String   @default("CMTI Panelist")
+  updatedAt      DateTime @updatedAt
+}
+
+model Job {
+  id           String         @id @default(uuid())
+  title        String
+  department   String
+  location     String
+  type         String         // e.g. "Full-time" | "Part-time" | "Contract"
+  description  String
+  requirements String
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  applicants   JobApplicant[]
+}
+
+model JobApplicant {
+  id          String   @id @default(uuid())
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  phone       String
+  experience  String
+  resumeUrl   String?
+  appliedAt   DateTime @default(now())
+}
+
+model ProductReview {
+  id         String   @id @default(uuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String
+  email      String
+  rating     Int      // 1 to 5
+  comment    String
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model SocialSettings {
+  id        String   @id @default("social-settings")
+  facebook  String   @default("")
+  instagram String   @default("")
+  linkedin  String   @default("")
+  youtube   String   @default("")
+  twitter   String   @default("")
+  whatsapp  String   @default("")
   updatedAt DateTime @updatedAt
 }
+

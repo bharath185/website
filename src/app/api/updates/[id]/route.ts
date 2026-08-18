@@ -11,7 +11,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     const { id } = await params
     const body = await req.json()
-    const { title, date, image } = body
+    const { title, date, image, description, content } = body
 
     if (!title || !date || !image) {
       return NextResponse.json({ error: 'Title, date and image are required' }, { status: 400 })
@@ -25,7 +25,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         title,
         date,
         image,
-        slug
+        slug,
+        description: description || '',
+        content: content || ''
       }
     })
 

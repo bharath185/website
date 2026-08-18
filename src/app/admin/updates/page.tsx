@@ -169,14 +169,8 @@ export default function AdminUpdatesPage() {
   }
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user || user.role !== 'ADMIN') {
-        router.push('/')
-      } else {
-        fetchUpdates()
-      }
-    }
-  }, [user, authLoading, router])
+    fetchUpdates();
+  }, [])
 
   const handleOpenAdd = () => {
     setFormTitle('')
@@ -281,75 +275,44 @@ export default function AdminUpdatesPage() {
     }
   }
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] pt-28 pb-16 flex flex-col items-center justify-center text-blue-900 gap-3">
-        <RefreshCw className="w-8 h-8 animate-spin text-[#122f87]" />
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Loading Updates Manager...</span>
+      <div className="flex items-center justify-center py-20 text-blue-900">
+        <RefreshCw className="w-8 h-8 animate-spin" />
       </div>
-    )
+    );
   }
 
-  return (
-    <div className="min-h-screen bg-[#fdfdfd] pt-20 lg:pt-24 pb-16">
-      {/* Header Banner */}
-      <section className="bg-white border-b border-slate-200 py-10 mb-8 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Link
-                href="/admin/orders"
-                className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors border border-slate-200"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Link>
-              <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-[#122f87] shadow-sm">
-                <Newspaper className="w-6 h-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-black text-slate-900">Engineering Updates Manager</h1>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Publish technical insights and announcements directly to the homepage updates feed.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Link
-                href="/admin/products"
-                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
-              >
-                <Package className="w-4 h-4" />
-                Products
-              </Link>
-              <Link
-                href="/admin/settings"
-                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
-              >
-                <Mail className="w-4 h-4" />
-                Mail Setup
-              </Link>
-              <button
-                onClick={fetchUpdates}
-                className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors border border-slate-200"
-                title="Refresh Updates"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-              <button
-                onClick={handleOpenAdd}
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-900/10"
-              >
-                <Plus className="w-4 h-4" />
-                Add Update
-              </button>
-            </div>
-          </div>
+    return (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900">Engineering Updates Manager</h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Publish technical insights and announcements directly to the homepage updates feed.
+          </p>
         </div>
-      </section>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={fetchUpdates}
+            className="p-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl transition-colors border border-slate-200 shadow-sm"
+            title="Refresh Updates"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleOpenAdd}
+            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md"
+          >
+            <Plus className="w-4 h-4" />
+            Add
+          </button>
+        </div>
+      </div>
 
       {/* Main Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div>
         {posts.length === 0 ? (
           <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center shadow-sm">
             <Newspaper className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -376,7 +339,7 @@ export default function AdminUpdatesPage() {
                     <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="p-5">
-                    <div className="flex items-center gap-1.5 text-[10px] text-slate-450 font-bold mb-2">
+                    <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold mb-2">
                       <Calendar className="w-3.5 h-3.5 text-blue-500" />
                       {post.date}
                     </div>

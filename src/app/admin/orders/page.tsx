@@ -101,26 +101,18 @@ export default function AdminOrdersPage() {
   }
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user || user.role !== 'ADMIN') {
-        router.push('/')
-      } else {
-        fetchOrders()
-      }
-    }
-  }, [user, authLoading, router])
+    fetchOrders();
+  }, [])
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] pt-28 pb-16 flex items-center justify-center text-blue-900">
+      <div className="flex items-center justify-center py-20 text-blue-900">
         <RefreshCw className="w-8 h-8 animate-spin" />
       </div>
-    )
+    );
   }
 
-  if (!user || user.role !== 'ADMIN') {
-    return null
-  }
+  
 
   const handleOpenEdit = (order: Order) => {
     setSelectedOrder(order)
@@ -184,7 +176,7 @@ export default function AdminOrdersPage() {
     if (!pdfOrder) return
 
     const img = new Image()
-    img.src = '/images/logo.jpg'
+    img.src = '/images/logo.png'
     
     const generateDoc = (logoImg?: HTMLImageElement) => {
       const doc = new jsPDF()
@@ -356,84 +348,51 @@ export default function AdminOrdersPage() {
   const shippedCount = orders.filter((o) => o.status === 'SHIPPED').length
   const deliveredCount = orders.filter((o) => o.status === 'DELIVERED').length
 
-  return (
-    <div className="min-h-screen bg-[#f8fafc] pt-20 lg:pt-24 pb-16">
-      {/* Admin Header Banner */}
-      <section className="bg-white border-b border-slate-200 py-10 mb-8 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-center text-red-600 shadow-sm">
-                <ShieldAlert className="w-6 h-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-extrabold text-slate-900">Admin Order Status Manager</h1>
-                <p className="text-xs text-slate-500">
-                  Update customer order statuses, add courier tracking numbers, and add notes anytime.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Link
-                href="/admin/products"
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-900/20"
-              >
-                <Package className="w-4 h-4" />
-                Manage Products
-              </Link>
-              <Link
-                href="/admin/settings"
-                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
-              >
-                <Mail className="w-4 h-4" />
-                Mail Config
-              </Link>
-              <Link
-                href="/admin/updates"
-                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-205 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
-              >
-                <Newspaper className="w-4 h-4" />
-                News
-              </Link>
-              <button
-                onClick={fetchOrders}
-                className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors border border-slate-200"
-                title="Refresh Orders"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Metric Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-6">
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
-              <span className="text-[10px] text-slate-500 font-bold block uppercase">Total Orders</span>
-              <span className="text-xl font-bold text-slate-900 font-mono">{orders.length}</span>
-            </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
-              <span className="text-[10px] text-slate-500 font-bold block uppercase">Processing</span>
-              <span className="text-xl font-bold text-blue-900 font-mono">{processingCount}</span>
-            </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
-              <span className="text-[10px] text-slate-500 font-bold block uppercase">Shipped</span>
-              <span className="text-xl font-bold text-indigo-700 font-mono">{shippedCount}</span>
-            </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
-              <span className="text-[10px] text-slate-500 font-bold block uppercase">Delivered</span>
-              <span className="text-xl font-bold text-emerald-700 font-mono">{deliveredCount}</span>
-            </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 col-span-2 sm:col-span-1">
-              <span className="text-[10px] text-slate-500 font-bold block uppercase">Pending Enquiries</span>
-              <span className="text-xl font-bold text-[#b91c1c] font-mono">{orders.filter(o => o.status === 'PENDING').length}</span>
-            </div>
-          </div>
+    return (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-900">Admin Order Status Manager</h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Update customer order statuses, add courier tracking numbers, and add notes anytime.
+          </p>
         </div>
-      </section>
+        <button
+          onClick={fetchOrders}
+          className="flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Refresh Orders
+        </button>
+      </div>
+
+      {/* Metric Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <span className="text-[10px] text-slate-500 font-bold block uppercase">Total Orders</span>
+          <span className="text-xl font-bold text-slate-900 font-mono">{orders.length}</span>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <span className="text-[10px] text-slate-500 font-bold block uppercase">Processing</span>
+          <span className="text-xl font-bold text-blue-900 font-mono">{processingCount}</span>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <span className="text-[10px] text-slate-500 font-bold block uppercase">Shipped</span>
+          <span className="text-xl font-bold text-indigo-700 font-mono">{shippedCount}</span>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <span className="text-[10px] text-slate-500 font-bold block uppercase">Delivered</span>
+          <span className="text-xl font-bold text-emerald-700 font-mono">{deliveredCount}</span>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm col-span-2 sm:col-span-1">
+          <span className="text-[10px] text-slate-500 font-bold block uppercase">Pending Enquiries</span>
+          <span className="text-xl font-bold text-[#b91c1c] font-mono">{orders.filter(o => o.status === 'PENDING').length}</span>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div>
         {/* Controls */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6">
           <div className="relative flex-1 max-w-md">

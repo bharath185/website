@@ -10,6 +10,8 @@ export interface Product {
   images?: string[]
   features?: string[]
   price?: number
+  tag?: string | null
+  reviews?: { rating: number }[]
 }
 
 export interface EnquiryItem {
@@ -53,6 +55,8 @@ export interface Order {
   contactPhone: string
   trackingNumber?: string | null
   adminNotes?: string | null
+  overallRating?: number | null
+  overallFeedback?: string | null
   items: OrderItem[]
   createdAt: string
   updatedAt: string

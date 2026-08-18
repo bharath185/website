@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
-import { X, Lock, Mail, User as UserIcon, Phone, KeyRound, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react'
+import { X, Lock, Mail, User as UserIcon, Phone, ShieldAlert, CheckCircle2, ArrowRight } from 'lucide-react'
 
 export default function AuthModal() {
   const { isAuthModalOpen, closeAuthModal, authMode, setAuthMode, login, register, checkUser, user } = useAuth()
@@ -119,7 +120,6 @@ export default function AuthModal() {
 
       setSuccessMsg('Password updated successfully! Redirecting...')
       setTimeout(async () => {
-        // Clear reset required flag locally in session
         if (user) {
           user.passwordResetRequired = false
         }
@@ -139,207 +139,71 @@ export default function AuthModal() {
   const isForcedReset = authMode === 'change-password' || !!user?.passwordResetRequired
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-md transition-all duration-300">
+      
+      {/* Background click-away dismissal layer */}
+      {!isForcedReset && (
+        <div className="absolute inset-0 cursor-pointer" onClick={closeAuthModal} />
+      )}
+
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ type: "spring", damping: 30, stiffness: 320 }}
+        className="relative w-full max-w-md bg-white border-t sm:border border-slate-200 rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 sm:p-8 shadow-2xl z-10 max-h-[92vh] sm:max-h-none overflow-y-auto sm:overflow-visible flex flex-col"
+      >
         
-        {/* Hide Close X Button during forced password reset */}
+        {/* iOS/Android style drag handle bar (visible on mobile only) */}
+        {!isForcedReset && (
+          <div 
+            onClick={closeAuthModal} 
+            className="w-12 h-1.5 bg-slate-200 hover:bg-slate-300 rounded-full mx-auto mb-5 sm:hidden cursor-pointer shrink-0" 
+            aria-label="Drag down to close"
+          />
+        )}
+
+        {/* Hide Close X Button during forced password reset on desktop */}
         {!isForcedReset && (
           <button
             onClick={closeAuthModal}
-            className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors"
+            className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-50 rounded-xl transition-all cursor-pointer hidden sm:block animate-fade-in animate-duration-200"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         )}
 
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-blue-50 border border-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-3 text-blue-900 shadow-sm">
-            {isForcedReset ? <Lock className="w-6 h-6 text-red-600" /> : <KeyRound className="w-6 h-6" />}
-          </div>
-          <h2 className="text-2xl font-extrabold text-slate-900">
+        {/* Logo Header */}
+        <div className="flex justify-center mb-6 mt-2 shrink-0">
+          <img src="/logo.png" alt="BMT Logo" className="h-16 w-auto object-contain" />
+        </div>
+
+        {/* Title Block */}
+        <div className="text-center mb-6 shrink-0">
+          <h2 className="text-2xl font-extrabold text-slate-900 uppercase tracking-tight">
             {isForcedReset
-              ? 'Update Password Required'
+              ? 'Update Password'
               : authMode === 'login'
               ? 'Welcome Back'
               : authMode === 'register'
-              ? 'Create an Account'
+              ? 'Join BMT'
               : 'Reset Password'}
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-2 leading-relaxed">
             {isForcedReset
-              ? 'For security reasons, you must change your temporary default password before continuing'
+              ? 'For security reasons, you must change your temporary default password before continuing.'
               : authMode === 'login'
-              ? 'Log in to track your machine tool orders and access admin tools'
+              ? 'Log in to track your machine tool orders and access partner features.'
               : authMode === 'register'
-              ? 'Register to place machine tool orders and track live status'
-              : 'Enter your email address to request a temporary default password'}
+              ? 'Register to place machine tool orders and track live status.'
+              : 'Enter your email address to request a temporary default password.'}
           </p>
         </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-650 text-xs font-bold rounded-xl">
-            {error}
-          </div>
-        )}
-
-        {successMsg && (
-          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-250 text-emerald-700 text-xs font-bold rounded-xl flex items-start gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{successMsg}</span>
-          </div>
-        )}
-
-        {devTempPassword && (
-          <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-            <span className="text-[10px] text-amber-700 font-extrabold uppercase tracking-wider block mb-1">Temporary Password</span>
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-mono text-sm font-bold text-slate-900 select-all">{devTempPassword}</span>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(devTempPassword)
-                  alert('Temporary password copied!')
-                }}
-                className="px-2.5 py-1 bg-amber-900 text-white text-[9px] font-extrabold uppercase tracking-wider rounded"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Auth modes: Login or Register */}
-        {(authMode === 'login' || authMode === 'register') && (
-          <form onSubmit={handleAuthSubmit} className="space-y-4">
-            {authMode === 'register' && (
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="John Doe"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-bold"
-                  />
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-bold"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Password
-                </label>
-                {authMode === 'login' && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setError('')
-                      setSuccessMsg('')
-                      setDevTempPassword('')
-                      setAuthMode('forgot')
-                    }}
-                    className="text-[10px] text-blue-900 hover:underline font-bold"
-                  >
-                    Forgot Password?
-                  </button>
-                )}
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-bold"
-                />
-              </div>
-            </div>
-
-            {authMode === 'register' && (
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Phone Number (Optional)
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 9876543210"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-bold"
-                  />
-                </div>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full mt-2 py-3 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-900/10 disabled:opacity-50"
-            >
-              {submitting
-                ? 'Processing...'
-                : authMode === 'login'
-                ? 'Log In'
-                : 'Create Account'}
-            </button>
-          </form>
-        )}
-
-        {/* Forgot password mode */}
-        {authMode === 'forgot' && (
-          <form onSubmit={handleForgotSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-bold"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full mt-2 py-3 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-900/10 disabled:opacity-50"
-            >
-              {submitting ? 'Generating Password...' : 'Generate Temporary Password'}
-            </button>
-
+        {/* Sliding Pill Tab Switcher */}
+        {!isForcedReset && (authMode === 'login' || authMode === 'register') && (
+          <div className="flex bg-slate-105 bg-slate-100 p-1 rounded-2xl mb-6 border border-slate-200/50 shrink-0">
             <button
               type="button"
               onClick={() => {
@@ -348,117 +212,295 @@ export default function AuthModal() {
                 setDevTempPassword('')
                 setAuthMode('login')
               }}
-              className="w-full p-2.5 text-center text-xs font-bold text-slate-650 hover:underline block"
+              className={`flex-1 py-2.5 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all duration-200 cursor-pointer ${
+                authMode === 'login'
+                  ? 'bg-white text-[#122f87] shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
             >
-              Back to Log In
+              Sign In
             </button>
-          </form>
-        )}
-
-        {/* Change password mode (Forced Reset) */}
-        {isForcedReset && (
-          <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                New Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-bold"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Confirm New Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-bold"
-                />
-              </div>
-            </div>
-
             <button
-              type="submit"
-              disabled={submitting}
-              className="w-full mt-2 py-3 bg-red-700 hover:bg-red-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-red-900/10 disabled:opacity-50"
+              type="button"
+              onClick={() => {
+                setError('')
+                setSuccessMsg('')
+                setDevTempPassword('')
+                setAuthMode('register')
+              }}
+              className={`flex-1 py-2.5 text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all duration-200 cursor-pointer ${
+                authMode === 'register'
+                  ? 'bg-white text-[#122f87] shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
             >
-              {submitting ? 'Updating Password...' : 'Update Password & Continue'}
+              Register
             </button>
-          </form>
-        )}
-
-        {(authMode === 'login' || authMode === 'register') && (
-          <div className="mt-6 pt-4 border-t border-slate-100 text-center text-xs text-slate-650 font-bold">
-            {authMode === 'login' ? (
-              <>
-                Don&apos;t have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setError('')
-                    setSuccessMsg('')
-                    setDevTempPassword('')
-                    setAuthMode('register')
-                  }}
-                  className="text-[#122f87] hover:underline font-bold"
-                >
-                  Sign up
-                </button>
-              </>
-            ) : (
-              <>
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setError('')
-                    setSuccessMsg('')
-                    setDevTempPassword('')
-                    setAuthMode('login')
-                  }}
-                  className="text-[#122f87] hover:underline font-bold"
-                >
-                  Log in
-                </button>
-              </>
-            )}
           </div>
         )}
 
-        {authMode === 'login' && (
-          <button
-            type="button"
-            onClick={autofillAdmin}
-            className="w-full mt-3 p-2.5 text-left bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl transition-all group shadow-sm"
-          >
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs font-bold text-blue-900">
-                <ShieldAlert className="w-4 h-4 text-red-655" />
-                Auto-fill Admin Credentials
-              </span>
-              <span className="text-[10px] text-slate-500 group-hover:text-slate-900">Click to load</span>
+        {/* Form elements and scrolling alerts container */}
+        <div className="flex-1 overflow-y-auto sm:overflow-visible">
+          {/* Alert handlers */}
+          {error && (
+            <div className="mb-4 p-3.5 bg-red-50 border border-red-200 text-red-600 text-xs font-bold rounded-2xl animate-fade-in">
+              {error}
             </div>
-            <p className="text-[11px] text-slate-600 mt-1 font-mono">
-              Email: <span className="text-slate-900 font-bold">admin@bmtbharat.com</span> | Pass: <span className="text-slate-900 font-bold">Admin@123</span>
-            </p>
-          </button>
-        )}
-      </div>
+          )}
+
+          {successMsg && (
+            <div className="mb-4 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-2xl flex items-start gap-2.5 animate-fade-in">
+              <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{successMsg}</span>
+            </div>
+          )}
+
+          {devTempPassword && (
+            <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl animate-fade-in">
+              <span className="text-[10px] text-amber-700 font-extrabold uppercase tracking-wider block mb-1">Temporary Password</span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-sm font-bold text-slate-900 select-all">{devTempPassword}</span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(devTempPassword)
+                    alert('Temporary password copied!')
+                  }}
+                  className="px-3 py-1.5 bg-amber-900 hover:bg-amber-950 text-white text-[9px] font-extrabold uppercase tracking-wider rounded-lg transition-colors cursor-pointer"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Login or Register Form */}
+          {(authMode === 'login' || authMode === 'register') && (
+            <form onSubmit={handleAuthSubmit} className="space-y-4">
+              {authMode === 'register' && (
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#122f87] focus:ring-4 focus:ring-blue-900/5 transition-all duration-200"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#122f87] focus:ring-4 focus:ring-blue-900/5 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-1.5 ml-1">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Password
+                  </label>
+                  {authMode === 'login' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setError('')
+                        setSuccessMsg('')
+                        setDevTempPassword('')
+                        setAuthMode('forgot')
+                      }}
+                      className="text-[10px] text-blue-900 hover:text-red-500 hover:underline font-bold transition-colors cursor-pointer"
+                    >
+                      Forgot Password?
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#122f87] focus:ring-4 focus:ring-blue-900/5 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              {authMode === 'register' && (
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">
+                    Phone Number
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#122f87] focus:ring-4 focus:ring-blue-900/5 transition-all duration-200"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full mt-4 py-3.5 bg-[#122f87] hover:bg-[#1a3fa8] text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-md shadow-blue-900/10 hover:shadow-blue-900/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {submitting
+                  ? 'Processing...'
+                  : authMode === 'login'
+                  ? 'Sign In to Account'
+                  : 'Create Account'}
+                {!submitting && <ArrowRight className="w-4 h-4" />}
+              </button>
+            </form>
+          )}
+
+          {/* Forgot password mode */}
+          {authMode === 'forgot' && (
+            <form onSubmit={handleForgotSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#122f87] focus:ring-4 focus:ring-blue-900/5 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full mt-4 py-3.5 bg-[#122f87] hover:bg-[#1a3fa8] text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-md shadow-blue-900/10 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {submitting ? 'Generating Password...' : 'Generate Temporary Password'}
+                {!submitting && <ArrowRight className="w-4 h-4" />}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setError('')
+                  setSuccessMsg('')
+                  setDevTempPassword('')
+                  setAuthMode('login')
+                }}
+                className="w-full p-2.5 text-center text-xs font-bold text-slate-500 hover:text-slate-900 hover:underline block transition-colors cursor-pointer"
+              >
+                Back to Sign In
+              </button>
+            </form>
+          )}
+
+          {/* Change password mode (Forced Reset) */}
+          {isForcedReset && (
+            <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">
+                  New Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="At least 6 characters"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#122f87] focus:ring-4 focus:ring-blue-900/5 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 ml-1">
+                  Confirm New Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#122f87] focus:ring-4 focus:ring-blue-900/5 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full mt-4 py-3.5 bg-red-750 hover:bg-red-800 text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-md shadow-red-900/10 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {submitting ? 'Updating Password...' : 'Update Password & Continue'}
+                {!submitting && <ArrowRight className="w-4 h-4" />}
+              </button>
+            </form>
+          )}
+
+          {/* Quick autofill panel for development / demo convenience */}
+          {authMode === 'login' && (
+            <div className="mt-6 p-4 bg-gradient-to-br from-blue-50/60 to-indigo-50/20 border border-blue-100 rounded-[1.5rem] shadow-sm relative overflow-hidden shrink-0">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="flex items-center gap-1.5 text-[10px] font-bold text-blue-900">
+                  <ShieldAlert className="w-4.5 h-4.5 text-red-500 shrink-0" />
+                  Demo Credentials
+                </span>
+                <button
+                  type="button"
+                  onClick={autofillAdmin}
+                  className="px-2.5 py-1 bg-[#122f87] hover:bg-[#1a3fa8] text-white text-[8px] font-extrabold uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-sm shadow-blue-900/10 animate-pulse"
+                >
+                  Autofill
+                </button>
+              </div>
+              <div className="font-mono text-[9px] text-slate-600 bg-white/70 border border-slate-100 rounded-xl p-2.5 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Email:</span> 
+                  <span className="text-slate-900 font-bold select-all">admin@bmtbharat.com</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Pass:</span> 
+                  <span className="text-slate-900 font-bold select-all">Admin@123</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+      </motion.div>
     </div>
   )
 }

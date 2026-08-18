@@ -16,7 +16,8 @@ import {
   ArrowLeft,
   Upload,
   Mail,
-  Newspaper
+  Newspaper,
+  ShoppingCart
 } from 'lucide-react'
 import { Product } from '@/types'
 import { products as fallbackProducts } from '@/data/products'
@@ -45,6 +46,7 @@ export default function AdminProductsPage() {
   const [formDesc, setFormDesc] = useState('')
   const [formImage, setFormImage] = useState('')
   const [formFeatures, setFormFeatures] = useState('')
+  const [formTag, setFormTag] = useState('')
 
   const [uploadingImage, setUploadingImage] = useState(false)
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false)
@@ -197,27 +199,18 @@ export default function AdminProductsPage() {
   }
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user || user.role !== 'ADMIN') {
-        router.push('/')
-      } else {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        fetchProducts()
-      }
-    }
-  }, [user, authLoading, router])
+    fetchProducts();
+  }, [])
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-[#fdfdfd] pt-28 pb-16 flex items-center justify-center text-blue-600">
+      <div className="flex items-center justify-center py-20 text-blue-900">
         <RefreshCw className="w-8 h-8 animate-spin" />
       </div>
-    )
+    );
   }
 
-  if (!user || user.role !== 'ADMIN') {
-    return null
-  }
+  
 
   const handleOpenAdd = () => {
     setFormName('')
@@ -227,6 +220,7 @@ export default function AdminProductsPage() {
     setFormDesc('')
     setFormImage('https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg')
     setFormFeatures('Precision engineered, Superior durability, High efficiency')
+    setFormTag('')
     setError('')
     setSuccessMsg('')
     setIsAddOpen(true)
@@ -243,6 +237,7 @@ export default function AdminProductsPage() {
     setFormDesc(p.description)
     setFormImage(p.image)
     setFormFeatures(p.features ? p.features.join(', ') : '')
+    setFormTag(p.tag || '')
     setError('')
     setSuccessMsg('')
     setShowNewCategoryInput(false)
@@ -267,6 +262,7 @@ export default function AdminProductsPage() {
         description: formDesc || formName,
         image: formImage || 'https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg',
         features: featuresArray,
+        tag: formTag || null,
         specifications: ["High Precision", "Bangalore Made"]
       }
 
@@ -280,7 +276,8 @@ export default function AdminProductsPage() {
           shortDescription: formShortDesc,
           description: formDesc,
           image: formImage,
-          features: featuresArray
+          features: featuresArray,
+          tag: formTag || null
         })
       })
 
@@ -320,7 +317,8 @@ export default function AdminProductsPage() {
         shortDescription: formShortDesc,
         description: formDesc,
         image: formImage,
-        features: featuresArray
+        features: featuresArray,
+        tag: formTag || null
       }
 
       await fetch(`/api/products/${editProduct.id}`, {
@@ -333,7 +331,8 @@ export default function AdminProductsPage() {
           shortDescription: formShortDesc,
           description: formDesc,
           image: formImage,
-          features: featuresArray
+          features: featuresArray,
+          tag: formTag || null
         })
       })
 
@@ -373,68 +372,28 @@ export default function AdminProductsPage() {
     return matchesCat && matchesQ
   })
 
-  return (
-    <div className="min-h-screen bg-[#fdfdfd] pt-20 lg:pt-24 pb-16">
-      {/* Header Banner */}
-      <section className="bg-[#fdfdfd] border-b border-slate-200 py-10 mb-8 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/admin/orders"
-                  className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </Link>
-                <div className="w-10 h-10 bg-blue-600/10 border border-blue-500/20 rounded-xl flex items-center justify-center text-blue-600 font-bold">
-                  <Package className="w-5 h-5" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-extrabold text-slate-900">Admin Product Catalog Manager</h1>
-                  <p className="text-xs text-slate-500">
-                    Add new machine tools, update prices, change images, and edit descriptions across the entire site ({products.length} Products).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Link
-                href="/admin/settings"
-                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
-              >
-                <Mail className="w-4 h-4" />
-                Mail Config
-              </Link>
-              <Link
-                href="/admin/updates"
-                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
-              >
-                <Newspaper className="w-4 h-4" />
-                News
-              </Link>
-              <button
-                onClick={fetchProducts}
-                className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors border border-slate-200"
-                title="Refresh products"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-              <button
-                onClick={handleOpenAdd}
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-600/20"
-              >
-                <Plus className="w-4 h-4" />
-                Add Product
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+    return (
+    <div className="space-y-6">
+      {/* Page Header Actions */}
+      <div className="flex items-center justify-end gap-3 border-b border-slate-200 pb-5">
+        <button
+          onClick={fetchProducts}
+          className="p-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl transition-colors border border-slate-200 shadow-sm"
+          title="Refresh products"
+        >
+          <RefreshCw className="w-4 h-4" />
+        </button>
+        <button
+          onClick={handleOpenAdd}
+          className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-600/20"
+        >
+          <Plus className="w-4 h-4" />
+          Add
+        </button>
+      </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div>
         {/* Filter Controls */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6">
           <div className="relative flex-1 max-w-md">
@@ -639,6 +598,19 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Showcase Tag</label>
+                <select
+                  value={formTag}
+                  onChange={(e) => setFormTag(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
+                >
+                  <option value="">Standard Catalog Item (No Badge)</option>
+                  <option value="NEW_ARRIVAL">New Arrival (Highlight tag on Catalog)</option>
+                  <option value="FEATURED">Featured Product (Highlight badge on Card)</option>
+                </select>
+              </div>
+
+              <div>
                 <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Short Description *</label>
                 <input
                   type="text"
@@ -807,6 +779,19 @@ export default function AdminProductsPage() {
                     )}
                   </div>
                 </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Showcase Tag</label>
+                <select
+                  value={formTag}
+                  onChange={(e) => setFormTag(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
+                >
+                  <option value="">Standard Catalog Item (No Badge)</option>
+                  <option value="NEW_ARRIVAL">New Arrival (Highlight tag on Catalog)</option>
+                  <option value="FEATURED">Featured Product (Highlight badge on Card)</option>
+                </select>
               </div>
 
               <div>

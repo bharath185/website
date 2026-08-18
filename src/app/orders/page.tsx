@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   Sparkles,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Star
 } from 'lucide-react'
 import Link from 'next/link'
 import { Order } from '@/types'
@@ -56,12 +57,26 @@ function getStepIndex(status: string) {
 }
 
 export default function UserOrdersPage() {
-  const { user, loading: authLoading } = useAuth()
+  const { user, loading: authLoading, openAuthModal } = useAuth()
   const router = useRouter()
 
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({})
+
+  // Product item rating states (keyed by `${orderId}-${productId}`)
+  const [itemRatings, setItemRatings] = useState<Record<string, number>>({})
+  const [itemHoverRatings, setItemHoverRatings] = useState<Record<string, number>>({})
+  const [itemComments, setItemComments] = useState<Record<string, string>>({})
+  const [submittingItems, setSubmittingItems] = useState<Record<string, boolean>>({})
+  const [submittedItems, setSubmittedItems] = useState<Record<string, string>>({})
+
+  // Overall order rating states (keyed by `orderId`)
+  const [overallRatings, setOverallRatings] = useState<Record<string, number>>({})
+  const [overallHoverRatings, setOverallHoverRatings] = useState<Record<string, number>>({})
+  const [overallComments, setOverallComments] = useState<Record<string, string>>({})
+  const [submittingOverall, setSubmittingOverall] = useState<Record<string, boolean>>({})
+  const [overallFeedbackSuccess, setOverallFeedbackSuccess] = useState<Record<string, boolean>>({})
 
   const fetchOrders = async () => {
     try {
@@ -103,8 +118,10 @@ export default function UserOrdersPage() {
   }
 
   useEffect(() => {
-    fetchOrders()
-  }, [])
+    if (user) {
+      fetchOrders()
+    }
+  }, [user])
 
   useEffect(() => {
     if (orders.length > 0) {
@@ -125,6 +142,118 @@ export default function UserOrdersPage() {
     }))
   }
 
+  const handleItemReviewSubmit = async (order: Order, productId: string) => {
+    const key = `${order.id}-${productId}`
+    const rating = itemRatings[key]
+    const comment = itemComments[key] || ""
+
+    if (!rating) return
+
+    setSubmittingItems(prev => ({ ...prev, [key]: true }))
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId,
+          name: user?.name || order.shippingAddress.split(',')[0] || "Customer",
+          email: user?.email || "customer@bmt.com",
+          rating,
+          comment: comment || `Verified Purchaser Review (Order ID: ${order.id.split('-').pop()})`
+        })
+      })
+
+      if (res.ok) {
+        setSubmittedItems(prev => ({ ...prev, [key]: "Feedback submitted! Pending verification." }))
+      } else {
+        alert("Failed to submit review. Please try again.")
+      }
+    } catch (err) {
+      console.error("Error submitting item review:", err)
+    } finally {
+      setSubmittingItems(prev => ({ ...prev, [key]: false }))
+    }
+  }
+
+  const handleOverallFeedbackSubmit = async (orderId: string) => {
+    const rating = overallRatings[orderId]
+    const feedback = overallComments[orderId] || ""
+
+    if (!rating || !feedback) return
+
+    setSubmittingOverall(prev => ({ ...prev, [orderId]: true }))
+    try {
+      const res = await fetch(`/api/orders/${orderId}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          overallRating: rating,
+          overallFeedback: feedback
+        })
+      })
+
+      if (res.ok) {
+        setOverallFeedbackSuccess(prev => ({ ...prev, [orderId]: true }))
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, overallRating: rating, overallFeedback: feedback } : o))
+      } else {
+        alert("Failed to submit overall feedback. Please try again.")
+      }
+    } catch (err) {
+      console.error("Error submitting overall feedback:", err)
+    } finally {
+      setSubmittingOverall(prev => ({ ...prev, [orderId]: false }))
+    }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] pt-28 pb-16 flex flex-col items-center justify-center text-blue-900 gap-3">
+        <RefreshCw className="w-8 h-8 animate-spin text-[#122f87]" />
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Verifying Authentication...</span>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] pt-28 pb-16 flex flex-col items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white border border-slate-200 rounded-[2.5rem] p-8 text-center shadow-lg relative overflow-hidden">
+          {/* Decorative radial blur */}
+          <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-3xl flex items-center justify-center text-[#122f87] mx-auto mb-6 shadow-sm">
+            <ShieldCheck className="w-8 h-8 text-[#122f87]" />
+          </div>
+          
+          <h2 className="text-xl font-extrabold text-slate-900 uppercase tracking-tight mb-2">
+            Secure Area
+          </h2>
+          
+          <p className="text-slate-500 text-xs font-light leading-relaxed mb-8">
+            Order tracking and live enquiry status reports are restricted to verified BMT partners. Please sign in to view your dashboard.
+          </p>
+          
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => openAuthModal('login')}
+              className="w-full py-3 bg-[#122f87] hover:bg-[#1a3fa8] text-white text-xs font-bold uppercase tracking-wider rounded-2xl transition-colors shadow-md shadow-blue-900/10 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Sign In to Account
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            
+            <Link
+              href="/"
+              className="w-full py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider rounded-2xl transition-colors border border-slate-200 text-center flex items-center justify-center"
+            >
+              Back to Homepage
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] pt-28 pb-16 flex flex-col items-center justify-center text-blue-900 gap-3">
@@ -139,7 +268,7 @@ export default function UserOrdersPage() {
   const completedCount = orders.filter(o => o.status === 'DELIVERED').length
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] pt-20 lg:pt-24 pb-16">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 pt-20 lg:pt-24 pb-16">
       {/* Header Section */}
       <section className="bg-white border-b border-slate-200 py-6 mb-6 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -168,7 +297,7 @@ export default function UserOrdersPage() {
           {/* Quick Metrics */}
           {totalCount > 0 && (
             <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-100 max-w-xl">
-              <div className="bg-slate-50 border border-slate-150 rounded-xl p-2.5 text-center">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center">
                 <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Total</span>
                 <span className="text-base font-black text-slate-900 font-mono mt-0.5 block">{totalCount}</span>
               </div>
@@ -210,7 +339,7 @@ export default function UserOrdersPage() {
               return (
                 <div
                   key={order.id}
-                  className="bg-white rounded-2xl border border-slate-250 shadow-sm overflow-hidden hover:border-slate-350 transition-all duration-300"
+                  className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:border-slate-300 transition-all duration-300"
                 >
                   {/* Clickable Header Accordion Panel */}
                   <div
@@ -253,8 +382,8 @@ export default function UserOrdersPage() {
                     <div className="p-4 sm:p-6 space-y-5 border-t border-slate-100 animate-fade-in">
                       {/* Status Tracking Timelines */}
                       {isCancelled ? (
-                        <div className="bg-red-50/50 border border-red-150 rounded-xl p-3 flex items-start gap-2.5 text-xs text-red-900">
-                          <Clock className="w-4 h-4 text-red-650 shrink-0 mt-0.5" />
+                        <div className="bg-red-50/50 border border-red-200 rounded-xl p-3 flex items-start gap-2.5 text-xs text-red-900">
+                          <Clock className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                           <div>
                             <span className="font-extrabold block text-red-950">Enquiry Closed / Cancelled</span>
                             <p className="font-medium text-red-800 mt-0.5">
@@ -368,7 +497,7 @@ export default function UserOrdersPage() {
                       {order.trackingNumber && !isCancelled && (
                         <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-3 flex items-center justify-between text-xs text-blue-900">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 bg-white border border-blue-150 rounded-lg flex items-center justify-center text-[#122f87] shadow-sm shrink-0">
+                            <div className="w-8 h-8 bg-white border border-blue-200 rounded-lg flex items-center justify-center text-[#122f87] shadow-sm shrink-0">
                               <Truck className="w-4 h-4" />
                             </div>
                             <div>
@@ -391,7 +520,7 @@ export default function UserOrdersPage() {
                       {/* Admin Engineering Update notes */}
                       {order.adminNotes && (
                         <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 flex items-start gap-3 text-xs text-emerald-900">
-                          <div className="w-7 h-7 bg-white border border-emerald-150 rounded-lg flex items-center justify-center text-emerald-700 shadow-sm shrink-0 mt-0.5">
+                          <div className="w-7 h-7 bg-white border border-emerald-200 rounded-lg flex items-center justify-center text-emerald-700 shadow-sm shrink-0 mt-0.5">
                             <Sparkles className="w-4 h-4" />
                           </div>
                           <div>
@@ -404,17 +533,70 @@ export default function UserOrdersPage() {
                       {/* Split Details: Requested Items & Shipping Info */}
                       <div className="grid md:grid-cols-2 gap-4">
                         {/* Items */}
-                        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
-                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-3">Items Requested</span>
-                          <div className="space-y-2">
-                            {order.items?.map((item: any, idx: number) => (
-                              <div key={item.id || idx} className="flex items-center gap-2.5 text-xs pb-2 border-b border-slate-200/50 last:border-0 last:pb-0">
-                                <div className="w-6.5 h-6.5 bg-white border border-slate-150 rounded-md flex items-center justify-center text-slate-500 font-bold shrink-0 text-[10px] shadow-sm">
-                                  {idx + 1}
+                        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4">
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Items Requested</span>
+                          <div className="space-y-4">
+                            {order.items?.map((item: any, idx: number) => {
+                              const key = `${order.id}-${item.productId}`
+                              return (
+                                <div key={item.id || idx} className="space-y-3 pb-3 border-b border-slate-200/50 last:border-0 last:pb-0">
+                                  <div className="flex items-center gap-2.5 text-xs">
+                                    <div className="w-6.5 h-6.5 bg-white border border-slate-200 rounded-md flex items-center justify-center text-slate-500 font-bold shrink-0 text-[10px] shadow-sm">
+                                      {idx + 1}
+                                    </div>
+                                    <span className="font-bold text-slate-800 line-clamp-1">{item.productName || item.product?.name} (x{item.quantity})</span>
+                                  </div>
+
+                                  {/* Dynamic star rating trigger inline */}
+                                  <div className="pl-9">
+                                    {submittedItems[key] ? (
+                                      <span className="text-[9.5px] font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1">
+                                        <CheckCircle2 className="w-3.5 h-3.5" /> Feedback Saved
+                                      </span>
+                                    ) : (
+                                      <div className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-3 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
+                                        <span className="text-[8px] font-mono font-bold text-slate-400 uppercase tracking-widest block">Rate this precision tool</span>
+                                        <div className="flex gap-1.5 py-0.5">
+                                          {[1, 2, 3, 4, 5].map((s) => (
+                                            <button
+                                              key={s}
+                                              type="button"
+                                              onClick={() => setItemRatings(prev => ({ ...prev, [key]: s }))}
+                                              onMouseEnter={() => setItemHoverRatings(prev => ({ ...prev, [key]: s }))}
+                                              onMouseLeave={() => setItemHoverRatings(prev => ({ ...prev, [key]: 0 }))}
+                                              className="p-0.5 text-slate-300 hover:scale-110 transition-transform cursor-pointer"
+                                            >
+                                              <Star
+                                                className={`w-4.5 h-4.5 ${
+                                                  s <= (itemHoverRatings[key] || itemRatings[key] || 0)
+                                                    ? "fill-amber-400 text-amber-400"
+                                                    : "text-slate-250"
+                                                }`}
+                                              />
+                                            </button>
+                                          ))}
+                                        </div>
+                                        <textarea
+                                          value={itemComments[key] || ""}
+                                          onChange={(e) => setItemComments(prev => ({ ...prev, [key]: e.target.value }))}
+                                          placeholder="Share your engineering feedback for this tool..."
+                                          className="w-full bg-slate-50/50 border border-slate-200 rounded-xl p-2.5 text-[10px] focus:outline-none focus:border-[#122f87] leading-relaxed font-light"
+                                          rows={2}
+                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() => handleItemReviewSubmit(order, item.productId)}
+                                          disabled={submittingItems[key] || !itemRatings[key]}
+                                          className="px-3 py-1.5 bg-[#122f87] hover:bg-blue-600 disabled:opacity-50 text-white font-bold text-[8.5px] uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-sm shadow-blue-900/10"
+                                        >
+                                          {submittingItems[key] ? "Saving..." : "Save Product Rating"}
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                                <span className="font-bold text-slate-800 line-clamp-1">{item.productName || item.product?.name} (x{item.quantity})</span>
-                              </div>
-                            ))}
+                              )
+                            })}
                           </div>
                         </div>
 
@@ -422,7 +604,7 @@ export default function UserOrdersPage() {
                         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between gap-4">
                           <div>
                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-3">Client Factory Location</span>
-                            <div className="flex items-start gap-2.5 text-xs text-slate-650">
+                            <div className="flex items-start gap-2.5 text-xs text-slate-600">
                               <Building2 className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
                               <div>
                                 <span className="font-bold text-slate-900 block text-[11px]">Delivery Address</span>
@@ -448,6 +630,75 @@ export default function UserOrdersPage() {
                             </a>
                           </div>
                         </div>
+                      </div>
+
+                      {/* Overall Order Feedback */}
+                      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-3">Overall Order Experience Feedback</span>
+                        {order.overallRating ? (
+                          <div className="space-y-1.5">
+                            <div className="flex gap-0.5">
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                <Star
+                                  key={s}
+                                  className={`w-3.5 h-3.5 ${
+                                    s <= (order.overallRating || 0) ? "fill-amber-400 text-amber-400" : "text-slate-250"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                            <p className="text-[10px] text-slate-650 leading-relaxed font-light italic mt-1">
+                              &ldquo;{order.overallFeedback}&rdquo;
+                            </p>
+                          </div>
+                        ) : overallFeedbackSuccess[order.id] ? (
+                          <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Feedback Submitted
+                          </span>
+                        ) : (
+                          <div className="space-y-3.5 max-w-xl">
+                            <div className="flex items-center gap-3">
+                              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Rate service:</span>
+                              <div className="flex gap-1.5">
+                                {[1, 2, 3, 4, 5].map((s) => (
+                                  <button
+                                    key={s}
+                                    type="button"
+                                    onClick={() => setOverallRatings(prev => ({ ...prev, [order.id]: s }))}
+                                    onMouseEnter={() => setOverallHoverRatings(prev => ({ ...prev, [order.id]: s }))}
+                                    onMouseLeave={() => setOverallHoverRatings(prev => ({ ...prev, [order.id]: 0 }))}
+                                    className="p-0.5 text-slate-300 hover:scale-110 transition-transform cursor-pointer"
+                                  >
+                                    <Star
+                                      className={`w-4.5 h-4.5 ${
+                                        s <= (overallHoverRatings[order.id] || overallRatings[order.id] || 0)
+                                          ? "fill-amber-400 text-amber-400"
+                                          : "text-slate-250"
+                                      }`}
+                                    />
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            <textarea
+                              value={overallComments[order.id] || ""}
+                              onChange={(e) => setOverallComments(prev => ({ ...prev, [order.id]: e.target.value }))}
+                              placeholder="Share your overall experience with BMT's custom quoting and logistics team..."
+                              className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-[10px] focus:outline-none focus:border-[#122f87] leading-relaxed font-light"
+                              rows={2}
+                            />
+                            
+                            <button
+                              type="button"
+                              onClick={() => handleOverallFeedbackSubmit(order.id)}
+                              disabled={submittingOverall[order.id] || !overallRatings[order.id]}
+                              className="px-4 py-2 bg-slate-900 hover:bg-[#122f87] disabled:opacity-50 text-white font-bold text-[9px] uppercase tracking-wider rounded-xl transition-colors cursor-pointer shadow-sm shadow-slate-900/10"
+                            >
+                              {submittingOverall[order.id] ? "Submitting..." : "Submit Order Feedback"}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}

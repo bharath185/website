@@ -55,7 +55,7 @@ export async function getSessionUser() {
     // Serverless Fallback: Return decoded JWT user payload directly so login works 100% reliably on Vercel
     return {
       id: decoded.userId || 'user-id-1',
-      name: decoded.name || (decoded.email.includes('admin') ? 'BMT Admin' : 'Valued Customer'),
+      name: decoded.name || (decoded.email.includes('admin') ? 'BMTADMIN' : 'Valued Customer'),
       email: decoded.email,
       role: decoded.role || 'USER',
       phone: '+91 95302 08882',

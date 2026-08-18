@@ -17,7 +17,7 @@ export default function AboutSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <span className="text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
               About Us
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4">

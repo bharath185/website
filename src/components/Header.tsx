@@ -50,13 +50,11 @@ export default function Header() {
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="bg-white rounded-xl p-1 shadow-sm border border-slate-200">
-              <img
-                src="/images/logo.jpg"
-                alt="Bharat Machine Tools"
-                className="h-7 sm:h-9 w-auto object-contain"
-              />
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Bharat Machine Tools"
+              className="h-11 sm:h-14 w-auto object-contain"
+            />
           </Link>
 
           {/* Clean Desktop Navigation (No Admin Link Wrapping) */}

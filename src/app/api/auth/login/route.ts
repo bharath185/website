@@ -78,7 +78,7 @@ export async function POST(req: Request) {
       if (validAdminPasswords.includes(cleanPassword)) {
         const adminUser = {
           id: user?.id || 'admin-user-id-001',
-          name: 'BMT Admin',
+          name: 'BMTADMIN',
           email: 'admin@bmtbharat.com',
           role: 'ADMIN',
           phone: '+91 95302 08882'

@@ -2,14 +2,33 @@ import type { Metadata } from "next"
 import { getProductBySlug } from "@/data/products"
 import ProductDetailClientV2 from "@/components/v2/ProductDetailClientV2"
 import { notFound } from "next/navigation"
+import { db } from "@/lib/db"
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
+async function fetchProduct(slug: string) {
+  try {
+    const dbProduct = await db.product.findUnique({
+      where: { slug }
+    })
+    if (dbProduct) {
+      return {
+        ...dbProduct,
+        specifications: typeof dbProduct.specifications === 'string' ? JSON.parse(dbProduct.specifications) : (dbProduct.specifications || []),
+        features: typeof dbProduct.features === 'string' ? JSON.parse(dbProduct.features) : (dbProduct.features || [])
+      }
+    }
+  } catch (err) {
+    console.error("Database query failed for product slug:", err)
+  }
+  return getProductBySlug(slug)
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params
-  const product = getProductBySlug(resolvedParams.slug)
+  const product = await fetchProduct(resolvedParams.slug)
   if (!product) {
     return {
       title: "Product Not Found",
@@ -29,7 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProductPage({ params }: PageProps) {
   const resolvedParams = await params
-  const product = getProductBySlug(resolvedParams.slug)
+  const product = await fetchProduct(resolvedParams.slug)
   if (!product) {
     notFound()
   }

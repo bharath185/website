@@ -5,36 +5,19 @@ import { products as defaultProducts } from '@/data/products'
 
 export async function GET() {
   try {
-    let products = await db.product.findMany({
-      orderBy: { createdAt: 'desc' }
-    })
-
-    // Auto seed fallback products in database if empty
-    if (products.length === 0) {
-      for (const p of defaultProducts) {
-        try {
-          await db.product.create({
-            data: {
-              id: p.id,
-              name: p.name,
-              slug: p.slug,
-              category: p.category,
-              price: p.price,
-              shortDescription: p.shortDescription,
-              description: p.description,
-              image: p.image,
-              specifications: JSON.stringify(p.specifications || []),
-              features: JSON.stringify(p.features || [])
-            }
-          })
-        } catch (seedErr) {
-          console.error(`Failed to seed default product: ${p.name}`, seedErr)
-        }
-      }
-
+    let products: any[] = []
+    try {
       products = await db.product.findMany({
+        include: {
+          reviews: {
+            where: { isApproved: true },
+            select: { rating: true }
+          }
+        },
         orderBy: { createdAt: 'desc' }
       })
+    } catch (dbErr) {
+      console.error('Failed to query products from DB:', dbErr)
     }
 
     const parsedProducts = products.map((p) => {
@@ -43,14 +26,15 @@ export async function GET() {
       return {
         ...p,
         specifications: parsedSpec,
-        features: parsedFeat
+        features: parsedFeat,
+        reviews: p.reviews || []
       }
     })
 
     return NextResponse.json({ products: parsedProducts })
   } catch (error) {
     console.error('Error fetching products:', error)
-    return NextResponse.json({ products: defaultProducts })
+    return NextResponse.json({ products: [] })
   }
 }
 

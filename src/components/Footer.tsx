@@ -42,13 +42,11 @@ export default function Footer() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="bg-white border border-slate-200 rounded-lg p-1.5 shadow-sm">
-                <img
-                  src="/images/logo.jpg"
-                  alt="Bharat Machine Tools"
-                  className="h-10 w-auto object-contain"
-                />
-              </div>
+              <img
+                src="/images/logo.png"
+                alt="Bharat Machine Tools"
+                className="h-14 w-auto object-contain"
+              />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
               (WE CAN MAKE WHAT YOU CAN IMAGINE). Leading manufacturer, supplier, and exporter of

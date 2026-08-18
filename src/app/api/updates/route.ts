@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { title, date, image } = body
+    const { title, date, image, description, content } = body
 
     if (!title || !date || !image) {
       return NextResponse.json({ error: 'Title, date and image are required' }, { status: 400 })
@@ -91,7 +91,9 @@ export async function POST(req: Request) {
         title,
         date,
         image,
-        slug
+        slug,
+        description: description || '',
+        content: content || ''
       }
     })
 

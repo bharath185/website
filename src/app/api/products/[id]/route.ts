@@ -26,10 +26,6 @@ export async function GET(
     }
 
     if (!product) {
-      product = defaultProducts.find((p) => p.id === id || p.slug === id)
-    }
-
-    if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
@@ -42,11 +38,6 @@ export async function GET(
     })
   } catch (error) {
     console.error('Error fetching product:', error)
-    const { id } = await params
-    const fallback = defaultProducts.find((p) => p.id === id || p.slug === id)
-    if (fallback) {
-      return NextResponse.json({ product: fallback })
-    }
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
   }
 }
@@ -63,7 +54,7 @@ export async function PUT(
 
     const { id } = await params
     const body = await req.json()
-    const { name, category, price, shortDescription, description, image, specifications, features } = body
+    const { name, category, price, shortDescription, description, image, specifications, features, tag } = body
 
     const updateData: Record<string, any> = {}
     if (name) updateData.name = name
@@ -72,6 +63,7 @@ export async function PUT(
     if (shortDescription) updateData.shortDescription = shortDescription
     if (description) updateData.description = description
     if (image) updateData.image = image
+    if (tag !== undefined) updateData.tag = tag || null
     if (specifications !== undefined) {
       updateData.specifications = Array.isArray(specifications) ? JSON.stringify(specifications) : specifications
     }
@@ -105,34 +97,7 @@ export async function PUT(
         data: updateData
       })
     } else {
-      // Product does NOT exist in DB yet. It's in the defaultProducts fallback list.
-      // We must retrieve the default details to fill in any missing fields, and INSERT it!
-      const fallback = defaultProducts.find((p) => p.id === id || p.slug === id)
-      if (!fallback) {
-        return NextResponse.json({ error: 'Product not found in database or catalog fallbacks' }, { status: 404 })
-      }
-
-      // Prepare complete product details for creation
-      const createData = {
-        id: fallback.id, // preserve the existing id (e.g. "straightening-machine-rollers")
-        name: name || fallback.name,
-        slug: fallback.slug,
-        category: category || fallback.category,
-        price: price !== undefined ? parseFloat(price.toString()) : (fallback.price || 10000),
-        shortDescription: shortDescription || fallback.shortDescription,
-        description: description || fallback.description,
-        image: image || fallback.image,
-        specifications: specifications !== undefined
-          ? (Array.isArray(specifications) ? JSON.stringify(specifications) : specifications)
-          : (fallback.specifications ? JSON.stringify(fallback.specifications) : null),
-        features: features !== undefined
-          ? (Array.isArray(features) ? JSON.stringify(features) : features)
-          : (fallback.features ? JSON.stringify(fallback.features) : null),
-      }
-
-      updatedProduct = await db.product.create({
-        data: createData
-      })
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
     return NextResponse.json({

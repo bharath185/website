@@ -13,7 +13,7 @@ export async function ensureAdminUser() {
     if (!existing) {
       await db.user.create({
         data: {
-          name: 'BMT Admin',
+          name: 'BMTADMIN',
           email: adminEmail,
           passwordHash,
           role: 'ADMIN',
@@ -21,10 +21,14 @@ export async function ensureAdminUser() {
         }
       })
       console.log('Seeded admin user: admin@bmtbharat.com')
-    } else if (existing.role !== 'ADMIN') {
+    } else {
       await db.user.update({
         where: { id: existing.id },
-        data: { role: 'ADMIN', passwordHash }
+        data: {
+          name: 'BMTADMIN',
+          role: 'ADMIN',
+          passwordHash
+        }
       })
     }
 
@@ -50,6 +54,31 @@ export async function ensureAdminUser() {
       }
     })
     console.log('Seeded default MailConfig settings')
+
+    // Seed/upsert default MDInfo settings
+    await db.mDInfo.upsert({
+      where: { id: 'md-info' },
+      update: {},
+      create: {
+        id: 'md-info',
+        name: 'Mr. B.R. Gowda',
+        role: 'Founder & Managing Director',
+        image: '',
+        bioParagraph1: 'Welcome to Bharat Machine Tools (BMT). When we established BMT in Bangalore, our objective was single-focused: to engineer and build dynamic mechanical systems that match the sub-micron tolerances demanded by advanced aerospace, military, and automation OEMs.',
+        bioParagraph2: 'Over the past 25 years, precision manufacturing has evolved, but our foundational promise remains absolute. We invest continuously in our cleanrooms, dynamic testing bays, and state-of-the-art grinding machinery to ensure that every spindle, hydrostatic bearing, and custom part leaving our cells is an operational masterpiece.',
+        quote: 'Precision is not a measurement constraint; it is our corporate culture. We don\'t build machines—we craft high-speed rotational masterpieces with sub-micron engineering.',
+        quoteAuthor: 'B. R. Gowda',
+        expTitle: 'Experience',
+        expDescription: '30+ Years in rotodynamic systems design.',
+        stdTitle: 'Standards',
+        stdDescription: 'Direct supervisor of BMT Zero-Defect QA cell.',
+        affTitle: 'Affiliations',
+        affDescription: 'Technical panelist at CMTI & AMTI Bangalore.',
+        badgeTitle: 'MD Credentials',
+        badgeText: 'CMTI Panelist'
+      }
+    })
+    console.log('Seeded default MDInfo settings')
   } catch (error) {
     console.error('Error seeding admin user or mail config:', error)
   }

@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMT Skinned 3D Machine Studio</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #080b11;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #e2e8f0;
+      user-select: none;
+    }
+
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* Glassmorphism HUD */
+    .hud-panel {
+      position: absolute;
+      z-index: 10;
+      background: rgba(10, 15, 30, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      pointer-events: auto;
+    }
+
+    #header-hud {
+      top: 20px;
+      left: 20px;
+      max-width: 340px;
+    }
+
+    #header-hud h1 {
+      margin: 0 0 6px 0;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #ef233c;
+    }
+
+    #header-hud p {
+      margin: 0;
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    #controls-hud {
+      bottom: 20px;
+      left: 20px;
+      font-size: 10px;
+      font-family: monospace;
+      color: #64748b;
+      line-height: 1.8;
+      border-left: 3px solid #ef233c;
+      padding-left: 12px;
+    }
+
+    #controls-hud span {
+      color: #ffffff;
+      background: rgba(239, 35, 60, 0.2);
+      border: 1px solid rgba(239, 35, 60, 0.4);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    #info-panel {
+      top: 20px;
+      right: 20px;
+      width: 320px;
+      display: none;
+      transform: translateX(380px);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+      opacity: 0;
+    }
+
+    #info-panel.visible {
+      display: block;
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .info-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-header h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #ffffff;
+    }
+
+    .status-badge {
+      font-size: 9px;
+      font-family: monospace;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10b981;
+    }
+
+    .status-warn {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+
+    .spec-row {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .spec-row td {
+      padding: 6px 0;
+      font-size: 11px;
+      font-family: monospace;
+    }
+
+    .spec-label {
+      color: #64748b;
+      text-align: left;
+    }
+
+    .spec-value {
+      color: #ef233c;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .info-desc {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-top: 14px;
+      font-weight: 300;
+    }
+
+    .micro-diagram-box {
+      width: 100%;
+      height: 80px;
+      background: rgba(8, 12, 22, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      color: #ef233c;
+    }
+
+    .floating-label {
+      position: absolute;
+      z-index: 5;
+      transform: translate(-50%, -100%);
+      background: rgba(10, 15, 30, 0.9);
+      border: 1px solid rgba(239, 35, 60, 0.5);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 9px;
+      font-family: monospace;
+      color: #ffffff;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      transition: opacity 0.2s;
+    }
+
+    #status-overlay {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(239, 35, 60, 0.12);
+      border: 1px solid rgba(239, 35, 60, 0.35);
+      color: #ef233c;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-family: monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      pointer-events: none;
+      display: none;
+    }
+
+    #viewframe-overlay {
+      position: absolute;
+      inset: 20px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    .hud-corner {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      border-color: rgba(255, 255, 255, 0.15);
+      border-style: solid;
+    }
+    .c-tl { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+    .c-tr { top: -1px; right: -1px; border-width: 1px 1px 0 0; }
+    .c-bl { bottom: -1px; left: -1px; border-width: 0 0 1px 1px; }
+    .c-br { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+  </style>
+
+  <!-- Import stable script bundles -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+  <!-- WebGL Mounting Node -->
+  <div id="canvas-container"></div>
+  
+  <div id="viewframe-overlay">
+    <div class="hud-corner c-tl"></div>
+    <div class="hud-corner c-tr"></div>
+    <div class="hud-corner c-bl"></div>
+    <div class="hud-corner c-br"></div>
+  </div>
+
+  <div id="status-overlay">SYSTEM ANIMATIONS PAUSED</div>
+
+  <!-- HUD Panels -->
+  <div id="header-hud" class="hud-panel">
+    <h1>BMT Skinned 3D Studio</h1>
+    <p>Procedural skin heightmaps and safety markings. Press numeric keys to navigate quadrants.</p>
+  </div>
+
+  <div id="controls-hud" class="hud-panel">
+    <span>SPACE</span> Pause &bull; <span>R</span> Reset camera &bull; <span>M</span> Wireframe Mode<br>
+    <span>1</span> Robot Arm &bull; <span>2</span> Gear Drive &bull; <span>3</span> Press &bull; <span>4</span> Conveyor
+  </div>
+
+  <div id="info-panel" class="hud-panel">
+    <div class="info-header">
+      <h2 id="info-title">Model Node</h2>
+      <span id="info-status" class="status-badge status-active">Operational</span>
+    </div>
+    <table class="spec-table">
+      <tbody id="info-specs">
+        <!-- Specs dynamically loaded -->
+      </tbody>
+    </table>
+    <div id="info-text" class="info-desc">Descriptions.</div>
+    <div class="micro-diagram-box" id="info-diagram">
+      <!-- Animated inline SVG diagram -->
+    </div>
+    <button class="close-btn" style="position: absolute; top: 18px; right: 18px;" onclick="closeInfoPanel()">&times;</button>
+  </div>
+
+  <div id="labels-container" style="position: absolute; inset: 0; pointer-events: none; z-index: 5;"></div>
+
+  <script>
+    // --- SETUP GLOBAL CONFIG ---
+    var scene, camera, renderer, controls;
+    var clock = new THREE.Clock();
+    var isAnimating = true;
+    var isWireframe = false;
+
+    // Tween cameras
+    var targetCamPos = new THREE.Vector3(0, 7.5, 9.5);
+    var targetLookAt = new THREE.Vector3(0, 0.5, 0);
+    var currentLookAt = new THREE.Vector3(0, 0.5, 0);
+
+    var raycaster = new THREE.Raycaster();
+    var mouse = new THREE.Vector2();
+    var machineGroups = [];
+    var hoveredGroup = null;
+
+    var labelsData = [
+      { id: "robot", name: "Node A: Weld Robot", pos: new THREE.Vector3(-2.5, 1.6, -2.5) },
+      { id: "gear", name: "Node B: Helical Box", pos: new THREE.Vector3(2.5, 1.1, -2.5) },
+      { id: "press", name: "Node C: 250T Press", pos: new THREE.Vector3(-2.5, 1.5, 2.5) },
+      { id: "conveyor", name: "Node D: Conveyor", pos: new THREE.Vector3(2.5, 0.9, 2.5) }
+    ];
+    var labelElements = {};
+
+    var machineDb = {
+      robot: {
+        title: "Node A: Robot Arm weld cell",
+        status: "Operational",
+        statusClass: "status-active",
+        specs: [
+          { label: "NOMINAL POWER", value: "5.2 KW" },
+          { label: "AXIS FREQUENCY", value: "90° / SEC" },
+          { label: "TOOL ACCURACY", value: "0.02 MM" },
+          { label: "PAYLOAD LIMIT", value: "120 KG" }
+        ],
+        desc: "Precision 6-Axis articulating arm. Skins are procedurally textured with warning safety decals, hydraulic pistons, and a steel mounting base plate.",
+        diagram: '<svg width="100" height="60" viewBox="0 0 100 60"><path d="M20 50 L40 48 L55 25 L75 20" fill="none" stroke="#ef233c" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="50" r="4" fill="#ffffff"/><circle cx="40" cy="48" r="4" fill="#ffffff"/><circle cx="55" cy="25" r="4" fill="#ffffff"/><line x1="75" y1="20" x2="82" y2="15" stroke="#ffffff" stroke-width="2"/><line x1="82" y1="15" x2="86" y2="22" stroke="#ffffff" stroke-width="2"/></svg>'
+      },
+      gear: {
+        title: "Node B: Helical Gear Reducer",
+        status: "Maintenance Required",
+        statusClass: "status-warn",
+        specs: [
+          { label: "INPUT CAP SPEED", value: "1,500 RPM" },
+          { label: "DRIVE TORQUE", value: "650 N·M" },
+          { label: "TEETH MODULE", value: "M 3.5" },
+          { label: "OIL TEMPS", value: "54°C" }
+        ],
+        desc: "High-torque helical speed reducer. Uses clearcoat physical materials to emulate protective lubricating oil films over ground gear teeth.",
+        diagram: '<svg width="100" height="60" viewBox="0 0 100 60"><circle cx="35" cy="30" r="18" fill="none" stroke="#ef233c" stroke-width="3" stroke-dasharray="4,2"/><circle cx="65" cy="30" r="12" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="4,1"/><circle cx="35" cy="30" r="4" fill="#ffffff"/><circle cx="65" cy="30" r="4" fill="#ffffff"/></svg>'
+      },
+      press: {
+        title: "Node C: Hydraulic Press 250T",
+        status: "Operational",
+        statusClass: "status-active",
+        specs: [
+          { label: "PRESSURE FORCE", value: "250 TONNES" },
+          { label: "RAM SPEED STAMP", value: "80 MM/S" },
+          { label: "HYDRAULIC FLOW", value: "140 L/MIN" },
+          { label: "SAFETY SHIELDS", value: "INTERLOCKED" }
+        ],
+        desc: "250T bridge crown platen. Features safety warning stripes, structured C-frame pillars, flexible red hydraulic lines, and a T-slot plate.",
+        diagram: '<svg width="100" height="60" viewBox="0 0 100 60"><rect x="35" y="10" width="30" height="12" fill="#ef233c"/><rect x="42" y="22" width="16" height="24" fill="#ffffff"/><rect x="30" y="46" width="40" height="8" fill="#ef233c"/></svg>'
+      },
+      conveyor: {
+        title: "Node D: Segment Conveyor",
+        status: "Operational",
+        statusClass: "status-active",
+        specs: [
+          { label: "FEED VELOCITY", value: "1.6 M/S" },
+          { label: "GEARMOTOR SIZE", value: "0.75 HP" },
+          { label: "BELT TENSION", value: "4,200 N" },
+          { label: "SENSOR INDEX", value: "INFRARED" }
+        ],
+        desc: "Sorting conveyor track. Belt skinned in black rubber texture with chevron grooves. Boxes are procedurally skinned in cardboard styling with BMT labels.",
+        diagram: '<svg width="100" height="60" viewBox="0 0 100 60"><rect x="15" y="25" width="70" height="10" rx="5" fill="none" stroke="#ffffff" stroke-width="3"/><circle cx="22" cy="30" r="5" fill="#ef233c"/><circle cx="78" cy="30" r="5" fill="#ef233c"/><rect x="35" y="14" width="10" height="10" fill="#ffffff" transform="rotate(15, 35, 14)"/></svg>'
+      }
+    };
+
+    // Textures & Materials
+    var noiseBumpTexture, safetyStripeTexture, cardboardTexture;
+    var steelMaterial, darkIron, brassMaterial, copperMaterial, anodizedRed, cardboardBoxMaterial;
+    var gearPhysicalMaterial; // mesh physical with clearcoat
+    var particleSystem;
+
+    // --- PROCEDURAL TEXTURE GENERATION ---
+    function generateTextures() {
+      // 1. Noise heightmap for steel bump
+      var canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 128;
+      var ctx = canvas.getContext("2d");
+      var imgData = ctx.createImageData(128, 128);
+      for (var i = 0; i < imgData.data.length; i += 4) {
+        var val = Math.floor(Math.random() * 90) + 100;
+        imgData.data[i] = val;
+        imgData.data[i+1] = val;
+        imgData.data[i+2] = val;
+        imgData.data[i+3] = 255;
+      }
+      ctx.putImageData(imgData, 0, 0);
+      noiseBumpTexture = new THREE.CanvasTexture(canvas);
+      noiseBumpTexture.wrapS = THREE.RepeatWrapping;
+      noiseBumpTexture.wrapT = THREE.RepeatWrapping;
+      noiseBumpTexture.repeat.set(4, 4);
+
+      // 2. Yellow & Black Warning Stripes decal
+      var stripeCanvas = document.createElement("canvas");
+      stripeCanvas.width = 128;
+      stripeCanvas.height = 128;
+      var sCtx = stripeCanvas.getContext("2d");
+      sCtx.fillStyle = "#ffb800"; // yellow
+      sCtx.fillRect(0, 0, 128, 128);
+      sCtx.strokeStyle = "#111827"; // black gray
+      sCtx.lineWidth = 14;
+      for (var j = -128; j < 256; j += 32) {
+        sCtx.beginPath();
+        sCtx.moveTo(j, 0);
+        sCtx.lineTo(j + 128, 128);
+        sCtx.stroke();
+      }
+      safetyStripeTexture = new THREE.CanvasTexture(stripeCanvas);
+      safetyStripeTexture.wrapS = THREE.RepeatWrapping;
+      safetyStripeTexture.wrapT = THREE.RepeatWrapping;
+      safetyStripeTexture.repeat.set(2, 2);
+
+      // 3. Cardboard box texture with BMT stamp
+      var cardCanvas = document.createElement("canvas");
+      cardCanvas.width = 128;
+      cardCanvas.height = 128;
+      var cCtx = cardCanvas.getContext("2d");
+      cCtx.fillStyle = "#b45309"; // cardboard brown
+      cCtx.fillRect(0, 0, 128, 128);
+      // Horizontal pulp lines
+      cCtx.strokeStyle = "#92400e";
+      cCtx.lineWidth = 2;
+      for (var k = 0; k < 128; k += 8) {
+        cCtx.beginPath();
+        cCtx.moveTo(0, k);
+        cCtx.lineTo(128, k);
+        cCtx.stroke();
+      }
+      // BMT stamp logo
+      cCtx.fillStyle = "#1e293b";
+      cCtx.font = "bold 20px monospace";
+      cCtx.fillText("BMT", 40, 68);
+      cCtx.strokeRect(30, 42, 68, 36);
+      cardboardTexture = new THREE.CanvasTexture(cardCanvas);
+    }
+
+    // --- INITIALIZE APPLICATION ---
+    function init() {
+      var container = document.getElementById("canvas-container");
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x080b11, 0.075);
+
+      camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+      camera.position.copy(targetCamPos);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.maxPolarAngle = Math.PI / 2.05;
+      controls.minDistance = 2.8;
+      controls.maxDistance = 18.0;
+
+      // Generate textures
+      generateTextures();
+
+      createLights();
+      createFloor();
+      initMaterials();
+      
+      buildWorkspace();
+      createLabels();
+
+      window.addEventListener("resize", onWindowResize);
+      window.addEventListener("keydown", onKeyDown);
+      renderer.domElement.addEventListener("mousemove", onMouseMove);
+      renderer.domElement.addEventListener("click", onMouseClick);
+
+      animate();
+    }
+
+    function createFloor() {
+      var floorGeo = new THREE.PlaneGeometry(32, 32);
+      var floorMat = new THREE.MeshStandardMaterial({
+        color: 0x0a0f18,
+        roughness: 0.28,
+        metalness: 0.8,
+        bumpMap: noiseBumpTexture,
+        bumpScale: 0.015
+      });
+      var floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      var grid = new THREE.GridHelper(32, 32, 0xef233c, 0x111827);
+      grid.position.y = 0.005;
+      scene.add(grid);
+    }
+
+    function createLights() {
+      var ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+      scene.add(ambientLight);
+
+      var keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+      keyLight.position.set(6, 12, 6);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      keyLight.shadow.bias = -0.0001;
+      scene.add(keyLight);
+
+      var fillLight = new THREE.DirectionalLight(0xffffff, 0.45);
+      fillLight.position.set(-6, 3, -6);
+      scene.add(fillLight);
+
+      var rimLight = new THREE.PointLight(0xffffff, 1.0, 10);
+      rimLight.position.set(0, 6, -4);
+      scene.add(rimLight);
+
+      var neonBlue = new THREE.PointLight(0x3b82f6, 1.8, 12);
+      neonBlue.position.set(-4, 3, -4);
+      scene.add(neonBlue);
+
+      var neonRed = new THREE.PointLight(0xef233c, 1.8, 12);
+      neonRed.position.set(4, 3, 4);
+      scene.add(neonRed);
+    }
+
+    function initMaterials() {
+      // Skinned steel with bump map
+      steelMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd1d5db,
+        metalness: 0.95,
+        roughness: 0.16,
+        bumpMap: noiseBumpTexture,
+        bumpScale: 0.02,
+        name: "steel"
+      });
+
+      // Skinned cast iron (rough)
+      darkIron = new THREE.MeshStandardMaterial({
+        color: 0x334155,
+        metalness: 0.5,
+        roughness: 0.7,
+        bumpMap: noiseBumpTexture,
+        bumpScale: 0.06,
+        name: "darkIron"
+      });
+
+      brassMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd97706,
+        metalness: 0.9,
+        roughness: 0.2,
+        bumpMap: noiseBumpTexture,
+        bumpScale: 0.015,
+        name: "brass"
+      });
+
+      copperMaterial = new THREE.MeshStandardMaterial({
+        color: 0xb45309,
+        metalness: 0.92,
+        roughness: 0.25,
+        name: "copper"
+      });
+
+      anodizedRed = new THREE.MeshStandardMaterial({
+        color: 0xef233c,
+        metalness: 0.8,
+        roughness: 0.25,
+        name: "anodizedRed"
+      });
+
+      // Cardboard texture skin
+      cardboardBoxMaterial = new THREE.MeshStandardMaterial({
+        map: cardboardTexture,
+        roughness: 0.8,
+        metalness: 0.1
+      });
+
+      // Oily Physical Material for Gear train
+      gearPhysicalMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xcbd5e1,
+        metalness: 0.95,
+        roughness: 0.12,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.08
+      });
+    }
+
+    // Platforms builder
+    function buildWorkspace() {
+      var platformGeo = new THREE.BoxGeometry(4.2, 0.12, 4.2);
+      // Raised foundation in concrete texture skin
+      var platformMat = new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        roughness: 0.8,
+        metalness: 0.3,
+        bumpMap: noiseBumpTexture,
+        bumpScale: 0.08
+      });
+
+      var positions = [
+        { id: "robot", x: -2.5, z: -2.5, builder: createRobotArm },
+        { id: "gear", x: 2.5, z: -2.5, builder: createGearDriveSystem },
+        { id: "press", x: -2.5, z: 2.5, builder: createHydraulicPress },
+        { id: "conveyor", x: 2.5, z: 2.5, builder: createConveyorBelt }
+      ];
+
+      positions.forEach(function(pos) {
+        var platform = new THREE.Mesh(platformGeo, platformMat);
+        platform.position.set(pos.x, 0.06, pos.z);
+        platform.receiveShadow = true;
+        scene.add(platform);
+
+        var grid = new THREE.GridHelper(4.2, 8, 0xef233c, 0x475569);
+        grid.position.set(pos.x, 0.121, pos.z);
+        scene.add(grid);
+
+        var model = pos.builder();
+        model.position.set(pos.x, 0.12, pos.z);
+        scene.add(model);
+        machineGroups.push(model);
+
+        createControlPedestal(pos.x - 1.8, pos.z + 1.8);
+      });
+
+      createOilMistParticles();
+    }
+
+    function createControlPedestal(x, z) {
+      var pedestal = new THREE.Group();
+      
+      var post = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.5, 8), darkIron);
+      post.position.y = 0.25;
+      post.castShadow = true;
+      pedestal.add(post);
+
+      var panel = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.15, 0.15), darkIron);
+      panel.position.y = 0.5;
+      panel.rotation.x = -0.3;
+      panel.castShadow = true;
+      pedestal.add(panel);
+
+      var ledGeo = new THREE.SphereGeometry(0.016, 8, 8);
+      
+      var ledGreen = new THREE.Mesh(ledGeo, new THREE.MeshBasicMaterial({ color: 0x10b981 }));
+      ledGreen.position.set(-0.06, 0.52, 0.08);
+      pedestal.add(ledGreen);
+
+      var ledRed = new THREE.Mesh(ledGeo, new THREE.MeshBasicMaterial({ color: 0xef233c }));
+      ledRed.position.set(0.06, 0.52, 0.08);
+      pedestal.add(ledRed);
+
+      pedestal.position.set(x, 0.12, z);
+      scene.add(pedestal);
+
+      pedestal.userData = { ledGreen: ledGreen, ledRed: ledRed };
+      pedestal.name = "pedestal";
+    }
+
+    function createOilMistParticles() {
+      var particleCount = 200;
+      var geom = new THREE.BufferGeometry();
+      var positions = [];
+
+      for (var i = 0; i < particleCount; i++) {
+        var x = (Math.random() - 0.5) * 12;
+        var y = Math.random() * 2.5;
+        var z = (Math.random() - 0.5) * 12;
+        positions.push(x, y, z);
+      }
+
+      geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      
+      var mat = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.024,
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending
+      });
+
+      particleSystem = new THREE.Points(geom, mat);
+      scene.add(particleSystem);
+    }
+
+    function createHelicalGear(innerRad, outerRad, length, teeth, helixAngle) {
+      if (helixAngle === undefined) helixAngle = 0.25;
+      var gear = new THREE.Group();
+      
+      var core = new THREE.Mesh(new THREE.CylinderGeometry(innerRad, innerRad, length, 24), gearPhysicalMaterial);
+      core.rotation.x = Math.PI / 2;
+      core.castShadow = true;
+      core.receiveShadow = true;
+      gear.add(core);
+
+      var recess = new THREE.Mesh(new THREE.CylinderGeometry(innerRad * 0.8, innerRad * 0.8, length * 0.45, 24), gearPhysicalMaterial);
+      recess.rotation.x = Math.PI / 2;
+      gear.add(recess);
+
+      var toothWidth = (2 * Math.PI * innerRad) / (teeth * 2.2);
+      var toothThickness = outerRad - innerRad;
+      
+      var segments = 6;
+      var segLength = length / segments;
+
+      for (var i = 0; i < teeth; i++) {
+        var theta = (i * Math.PI * 2) / teeth;
+        for (var j = 0; j < segments; j++) {
+          var zOffset = (j / segments) * length - length / 2 + segLength / 2;
+          var angleOffset = (j / segments) * helixAngle;
+          var currentTheta = theta + angleOffset;
+
+          var toothGeom = new THREE.BoxGeometry(toothWidth, toothThickness, segLength);
+          var tooth = new THREE.Mesh(toothGeom, gearPhysicalMaterial);
+          tooth.position.set(Math.cos(currentTheta) * innerRad, Math.sin(currentTheta) * innerRad, zOffset);
+          tooth.rotation.z = currentTheta;
+          tooth.castShadow = true;
+          gear.add(tooth);
+        }
+      }
+      return gear;
+    }
+
+    // Robot Arm
+    function createRobotArm() {
+      var group = new THREE.Group();
+      group.userData = { id: "robot" };
+
+      var base = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.44, 0.28, 24), darkIron);
+      base.castShadow = true;
+      base.receiveShadow = true;
+      group.add(base);
+
+      for (var i = 0; i < 6; i++) {
+        var theta = (i * Math.PI * 2) / 6;
+        var bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 8), steelMaterial);
+        bolt.position.set(Math.cos(theta) * 0.41, 0.15, Math.sin(theta) * 0.41);
+        group.add(bolt);
+      }
+
+      var turret = new THREE.Group();
+      turret.position.y = 0.28;
+      var turretBody = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.32, 0.44), steelMaterial);
+      turretBody.castShadow = true;
+      turret.add(turretBody);
+      group.add(turret);
+
+      var upperArm = new THREE.Group();
+      upperArm.position.set(0, 0.16, 0);
+      var shoulder = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.4, 16), brassMaterial);
+      shoulder.rotation.x = Math.PI / 2;
+      upperArm.add(shoulder);
+      
+      // Robot link 1: Skinned in yellow safety markings
+      var link1 = new THREE.Mesh(
+        new THREE.BoxGeometry(0.16, 0.8, 0.18),
+        new THREE.MeshStandardMaterial({
+          map: safetyStripeTexture,
+          roughness: 0.3,
+          metalness: 0.8
+        })
+      );
+      link1.position.y = 0.4;
+      link1.castShadow = true;
+      upperArm.add(link1);
+
+      var hydraulicBody = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 12), darkIron);
+      hydraulicBody.position.set(0.12, 0.2, 0);
+      upperArm.add(hydraulicBody);
+      var hydraulicPiston = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.35, 12), steelMaterial);
+      hydraulicPiston.position.set(0.12, 0.45, 0);
+      upperArm.add(hydraulicPiston);
+
+      turret.add(upperArm);
+
+      var forearm = new THREE.Group();
+      forearm.position.y = 0.8;
+      var elbow = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.28, 16), brassMaterial);
+      elbow.rotation.x = Math.PI / 2;
+      forearm.add(elbow);
+
+      var link2 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.65, 0.12), steelMaterial);
+      link2.position.y = 0.325;
+      link2.castShadow = true;
+      forearm.add(link2);
+      upperArm.add(forearm);
+
+      var wrist = new THREE.Group();
+      wrist.position.y = 0.65;
+      var jointCap = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.12, 16), darkIron);
+      jointCap.rotation.x = Math.PI / 2;
+      wrist.add(jointCap);
+
+      var gripperPalm = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.08, 16), steelMaterial);
+      gripperPalm.position.y = 0.08;
+      wrist.add(gripperPalm);
+
+      for (var i = 0; i < 3; i++) {
+        var theta = (i * Math.PI * 2) / 3;
+        var fingerGroup = new THREE.Group();
+        fingerGroup.position.set(Math.cos(theta) * 0.08, 0.12, Math.sin(theta) * 0.08);
+        fingerGroup.rotation.y = -theta;
+        
+        var seg1 = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.08, 0.025), brassMaterial);
+        seg1.position.y = 0.04;
+        seg1.rotation.z = -0.15;
+        fingerGroup.add(seg1);
+
+        var seg2 = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.06, 0.02), steelMaterial);
+        seg2.position.set(0.015, 0.1, 0);
+        seg2.rotation.z = 0.35;
+        fingerGroup.add(seg2);
+
+        wrist.add(fingerGroup);
+      }
+
+      forearm.add(wrist);
+
+      group.userData.joints = { turret: turret, upperArm: upperArm, forearm: forearm, wrist: wrist };
+
+      return group;
+    }
+
+    // Gear Drive
+    function createGearDriveSystem() {
+      var group = new THREE.Group();
+      group.userData = { id: "gear" };
+
+      var baseBlock = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.15, 1.4), darkIron);
+      baseBlock.receiveShadow = true;
+      group.add(baseBlock);
+
+      var uprightL = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.52, 1.1), darkIron);
+      uprightL.position.set(-0.6, 0.26, 0);
+      uprightL.castShadow = true;
+      group.add(uprightL);
+
+      var uprightR = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.52, 1.1), darkIron);
+      uprightR.position.set(0.6, 0.26, 0);
+      uprightR.castShadow = true;
+      group.add(uprightR);
+
+      var shaftGeo = new THREE.CylinderGeometry(0.07, 0.07, 1.0, 16);
+      
+      var shaft1 = new THREE.Mesh(shaftGeo, steelMaterial);
+      shaft1.position.set(-0.3, 0.5, 0.1);
+      shaft1.rotation.x = Math.PI / 2;
+      group.add(shaft1);
+
+      var shaft2 = new THREE.Mesh(shaftGeo, steelMaterial);
+      shaft2.position.set(0.3, 0.5, 0.1);
+      shaft2.rotation.x = Math.PI / 2;
+      group.add(shaft2);
+
+      var gear1 = createHelicalGear(0.32, 0.4, 0.24, 24, 0.25);
+      gear1.position.set(-0.3, 0.5, 0.1);
+      group.add(gear1);
+
+      var gear2 = createHelicalGear(0.22, 0.28, 0.24, 16, -0.25);
+      // Give gear2 copper-like physically oiled coating
+      gear2.children.forEach(function(c) {
+        c.material = new THREE.MeshPhysicalMaterial({
+          color: 0xd97706,
+          metalness: 0.9,
+          roughness: 0.1,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.08
+        });
+      });
+      gear2.position.set(0.3, 0.5, 0.1);
+      group.add(gear2);
+
+      var casing = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 0.95, 0.95),
+        new THREE.MeshPhysicalMaterial({
+          color: 0xffffff,
+          roughness: 0.12,
+          transmission: 0.88,
+          thickness: 0.45,
+          transparent: true,
+          opacity: 0.28,
+          side: THREE.DoubleSide
+        })
+      );
+      casing.position.set(0, 0.5, 0.1);
+      group.add(casing);
+
+      var dialPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.02, 16), darkIron);
+      dialPlate.position.set(-0.3, 0.5, 0.52);
+      dialPlate.rotation.x = Math.PI / 2;
+      group.add(dialPlate);
+
+      var needle = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.12, 0.01), anodizedRed);
+      needle.position.set(-0.3, 0.5, 0.54);
+      group.add(needle);
+
+      var dropGeo = new THREE.SphereGeometry(0.018, 8, 8);
+      var dropMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+      var drops = [];
+      for (var i = 0; i < 3; i++) {
+        var drop = new THREE.Mesh(dropGeo, dropMat);
+        drop.position.set(0, 0.8, 0.1);
+        group.add(drop);
+        drops.push(drop);
+      }
+
+      group.userData.gears = { gear1: gear1, gear2: gear2, needle: needle, drops: drops };
+
+      return group;
+    }
+
+    // Hydraulic Press
+    function createHydraulicPress() {
+      var group = new THREE.Group();
+      group.userData = { id: "press" };
+
+      // H-frame base table
+      var bed = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.22, 0.95), new THREE.MeshStandardMaterial({ color: 0x2a5c8a, metalness: 0.75, roughness: 0.35, bumpMap: noiseBumpTexture, bumpScale: 0.05 }));
+      bed.position.y = 0.11;
+      bed.castShadow = true;
+      bed.receiveShadow = true;
+      group.add(bed);
+
+      var plate = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.05, 0.85), steelMaterial);
+      plate.position.y = 0.235;
+      group.add(plate);
+      
+      for (var i = -1; i <= 1; i++) {
+        var slot = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.06, 0.86), darkIron);
+        slot.position.set(i * 0.3, 0.235, 0);
+        group.add(slot);
+      }
+
+      var frameL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 1.4, 0.44), new THREE.MeshStandardMaterial({ color: 0x2a5c8a, metalness: 0.75, roughness: 0.35 }));
+      frameL.position.set(-0.55, 0.8, 0);
+      frameL.castShadow = true;
+      group.add(frameL);
+
+      var frameR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 1.4, 0.44), new THREE.MeshStandardMaterial({ color: 0x2a5c8a, metalness: 0.75, roughness: 0.35 }));
+      frameR.position.set(0.55, 0.8, 0);
+      frameR.castShadow = true;
+      group.add(frameR);
+
+      // Top bridge crown: skinned with warning stripes texture
+      var topBridge = new THREE.Mesh(
+        new THREE.BoxGeometry(1.28, 0.22, 0.44),
+        new THREE.MeshStandardMaterial({
+          map: safetyStripeTexture,
+          roughness: 0.35,
+          metalness: 0.75
+        })
+      );
+      topBridge.position.y = 1.5;
+      topBridge.castShadow = true;
+      group.add(topBridge);
+
+      var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.45, 24), brassMaterial);
+      cylinder.position.y = 1.2;
+      cylinder.castShadow = true;
+      group.add(cylinder);
+
+      var piston = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.55, 16), steelMaterial);
+      piston.position.y = 0.9;
+      group.add(piston);
+
+      var ram = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.48), steelMaterial);
+      ram.position.y = 0.65;
+      ram.castShadow = true;
+      group.add(ram);
+
+      var pinL = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9, 12), steelMaterial);
+      pinL.position.set(-0.4, 0.9, 0);
+      group.add(pinL);
+
+      var pinR = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9, 12), steelMaterial);
+      pinR.position.set(0.4, 0.9, 0);
+      group.add(pinR);
+
+      var hoseCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-0.45, 1.35, 0.2),
+        new THREE.Vector3(-0.25, 1.25, 0.4),
+        new THREE.Vector3(-0.16, 1.2, 0.15)
+      ]);
+      var hoseGeo = new THREE.TubeGeometry(hoseCurve, 16, 0.024, 8, false);
+      var hose = new THREE.Mesh(hoseGeo, anodizedRed);
+      group.add(hose);
+
+      var gaugeDial = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.02, 12), darkIron);
+      gaugeDial.position.set(-0.4, 1.2, 0.24);
+      gaugeDial.rotation.x = Math.PI / 2;
+      group.add(gaugeDial);
+      var gaugeNeedle = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.06, 0.01), anodizedRed);
+      gaugeNeedle.position.set(-0.4, 1.2, 0.255);
+      group.add(gaugeNeedle);
+
+      var guardGeo = new THREE.BoxGeometry(0.9, 1.1, 0.02);
+      var guardMat = new THREE.MeshBasicMaterial({ color: 0x64748b, wireframe: true, transparent: true, opacity: 0.3 });
+      var safetyGuard = new THREE.Mesh(guardGeo, guardMat);
+      safetyGuard.position.set(0, 0.75, -0.2);
+      group.add(safetyGuard);
+
+      group.userData.press = { piston: piston, ram: ram, gaugeNeedle: gaugeNeedle };
+
+      return group;
+    }
+
+    // Conveyor Belt
+    function createConveyorBelt() {
+      var group = new THREE.Group();
+      group.userData = { id: "conveyor" };
+
+      var legGeo = new THREE.BoxGeometry(0.08, 0.55, 0.08);
+      var legs = [
+        { x: -0.85, z: -0.25 },
+        { x: -0.85, z: 0.25 },
+        { x: 0.85, z: -0.25 },
+        { x: 0.85, z: 0.25 }
+      ];
+      legs.forEach(function(l) {
+        var leg = new THREE.Mesh(legGeo, steelMaterial);
+        leg.position.set(l.x, 0.275, l.z);
+        leg.castShadow = true;
+        group.add(leg);
+      });
+
+      var frameRailF = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.16, 0.05), new THREE.MeshStandardMaterial({ color: 0x2563eb, metalness: 0.7, roughness: 0.35 }));
+      frameRailF.position.set(0, 0.58, 0.28);
+      frameRailF.castShadow = true;
+      group.add(frameRailF);
+
+      var frameRailB = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.16, 0.05), new THREE.MeshStandardMaterial({ color: 0x2563eb, metalness: 0.7, roughness: 0.35 }));
+      frameRailB.position.set(0, 0.58, -0.28);
+      frameRailB.castShadow = true;
+      group.add(frameRailB);
+
+      var rollerGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.52, 16);
+      
+      var rollerL = new THREE.Mesh(rollerGeo, brassMaterial);
+      rollerL.position.set(-0.85, 0.58, 0);
+      rollerL.rotation.x = Math.PI / 2;
+      group.add(rollerL);
+
+      var rollerR = new THREE.Mesh(rollerGeo, brassMaterial);
+      rollerR.position.set(0.85, 0.58, 0);
+      rollerR.rotation.x = Math.PI / 2;
+      group.add(rollerR);
+
+      var driveMotor = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.22, 0.16), darkIron);
+      driveMotor.position.set(0.85, 0.58, -0.38);
+      driveMotor.castShadow = true;
+      group.add(driveMotor);
+
+      // Belt (Black rubber core block with bump map texture)
+      var beltCore = new THREE.Mesh(
+        new THREE.BoxGeometry(1.68, 0.19, 0.51),
+        new THREE.MeshStandardMaterial({
+          color: 0x111827,
+          roughness: 0.8,
+          metalness: 0.2,
+          bumpMap: noiseBumpTexture,
+          bumpScale: 0.04
+        })
+      );
+      beltCore.position.set(0, 0.58, 0);
+      group.add(beltCore);
+
+      // 3 packages (Skinned in Cardboard procedural maps)
+      var packages = [];
+      var packGeo = new THREE.BoxGeometry(0.18, 0.15, 0.18);
+      for (var i = 0; i < 3; i++) {
+        var pack = new THREE.Mesh(packGeo, cardboardBoxMaterial);
+        pack.position.set(-0.6 + i * 0.5, 0.76, 0);
+        pack.castShadow = true;
+        group.add(pack);
+        packages.push(pack);
+      }
+
+      var poleGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.36, 8);
+      var poles = [
+        { x: -0.92, z: 0.36 }, { x: 0.92, z: 0.36 },
+        { x: -0.92, z: -0.36 }, { x: 0.92, z: -0.36 }
+      ];
+      poles.forEach(function(p) {
+        var pole = new THREE.Mesh(poleGeo, steelMaterial);
+        pole.position.set(p.x, 0.72, p.z);
+        group.add(pole);
+      });
+
+      group.userData.conveyor = { rollerL: rollerL, rollerR: rollerR, packages: packages };
+
+      return group;
+    }
+
+    // --- HTML FLOATING LABELS HUD ---
+    function createLabels() {
+      var container = document.getElementById("labels-container");
+      labelsData.forEach(function(label) {
+        var div = document.createElement("div");
+        div.className = "floating-label";
+        div.innerText = label.name;
+        div.id = "label-" + label.id;
+        container.appendChild(div);
+        labelElements[label.id] = div;
+      });
+    }
+
+    function updateLabelsPosition() {
+      var tempV = new THREE.Vector3();
+      labelsData.forEach(function(label) {
+        var element = labelElements[label.id];
+        if (!element) return;
+
+        tempV.copy(label.pos);
+        tempV.project(camera);
+
+        if (tempV.z > 1) {
+          element.style.opacity = 0;
+          return;
+        }
+
+        var x = (tempV.x *  0.5 + 0.5) * window.innerWidth;
+        var y = (tempV.y * -0.5 + 0.5) * window.innerHeight;
+
+        element.style.left = x + "px";
+        element.style.top = y + "px";
+        element.style.opacity = 1;
+      });
+    }
+
+    // --- INTERACTIVE RAYCASTING EVENTS ---
+    function onMouseMove(event) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      var intersects = raycaster.intersectObjects(machineGroups, true);
+
+      if (intersects.length > 0) {
+        var parent = intersects[0].object;
+        while (parent && parent.parent && parent.parent !== scene) {
+          parent = parent.parent;
+        }
+
+        if (parent && parent.userData && parent.userData.id) {
+          if (hoveredGroup !== parent) {
+            resetHoverGlow();
+            hoveredGroup = parent;
+            applyHoverGlow(hoveredGroup);
+            document.body.style.cursor = "pointer";
+          }
+          return;
+        }
+      }
+
+      if (hoveredGroup) {
+        resetHoverGlow();
+        hoveredGroup = null;
+        document.body.style.cursor = "default";
+      }
+    }
+
+    function applyHoverGlow(group) {
+      group.traverse(function(node) {
+        if (node.isMesh && node.material) {
+          if (node.material.name === "steel") {
+            node.material.emissive.setHex(0x1a2436);
+          } else if (node.material.name === "brass") {
+            node.material.emissive.setHex(0x3d2003);
+          } else if (node.material.name === "anodizedRed") {
+            node.material.emissive.setHex(0x3a0005);
+          } else {
+            node.material.emissive.setHex(0x111111);
+          }
+        }
+      });
+    }
+
+    function resetHoverGlow() {
+      if (!hoveredGroup) return;
+      hoveredGroup.traverse(function(node) {
+        if (node.isMesh && node.material) {
+          node.material.emissive.setHex(node.material.name === "darkIron" ? 0x000000 : 0x111827);
+          if (node.material.name === "steel") node.material.emissive.setHex(0x111827);
+          if (node.material.name === "brass") node.material.emissive.setHex(0x000000);
+          if (node.material.name === "anodizedRed") node.material.emissive.setHex(0x000000);
+        }
+      });
+    }
+
+    function onMouseClick(event) {
+      if (!hoveredGroup) return;
+      var id = hoveredGroup.userData.id;
+      zoomToMachine(id);
+    }
+
+    function zoomToMachine(id) {
+      var targetPos, lookTarget;
+
+      if (id === "robot") {
+        targetPos = new THREE.Vector3(-2.5, 3.2, 1.2);
+        lookTarget = new THREE.Vector3(-2.5, 0.7, -2.5);
+      } else if (id === "gear") {
+        targetPos = new THREE.Vector3(2.5, 3.2, 1.2);
+        lookTarget = new THREE.Vector3(2.5, 0.5, -2.5);
+      } else if (id === "press") {
+        targetPos = new THREE.Vector3(-2.5, 3.2, 6.2);
+        lookTarget = new THREE.Vector3(-2.5, 0.7, 2.5);
+      } else if (id === "conveyor") {
+        targetPos = new THREE.Vector3(2.5, 3.2, 6.2);
+        lookTarget = new THREE.Vector3(2.5, 0.5, 2.5);
+      }
+
+      targetCamPos.copy(targetPos);
+      targetLookAt.copy(lookTarget);
+      
+      showInfoPanel(id);
+    }
+
+    // --- HTML DASHBOARD OVERLAYS ---
+    function showInfoPanel(id) {
+      var data = machineDb[id];
+      if (!data) return;
+
+      var titleNode = document.getElementById("info-title");
+      var textNode = document.getElementById("info-text");
+      var statusNode = document.getElementById("info-status");
+      var specsContainer = document.getElementById("info-specs");
+      var diagramBox = document.getElementById("info-diagram");
+
+      titleNode.innerText = data.title;
+      textNode.innerText = data.desc;
+      diagramBox.innerHTML = data.diagram;
+      
+      statusNode.innerText = data.status;
+      statusNode.className = "status-badge " + data.statusClass;
+
+      specsContainer.innerHTML = "";
+      data.specs.forEach(function(s) {
+        var row = document.createElement("tr");
+        row.className = "spec-row";
+        
+        var label = document.createElement("td");
+        label.className = "spec-label";
+        label.innerText = s.label;
+        row.appendChild(label);
+
+        var val = document.createElement("td");
+        val.className = "spec-value";
+        val.innerText = s.value;
+        row.appendChild(val);
+
+        specsContainer.appendChild(row);
+      });
+
+      var panel = document.getElementById("info-panel");
+      panel.style.display = "block";
+      void panel.offsetWidth;
+      panel.classList.add("visible");
+    }
+
+    window.closeInfoPanel = function() {
+      var panel = document.getElementById("info-panel");
+      panel.classList.remove("visible");
+      setTimeout(function() {
+        if (!panel.classList.contains("visible")) {
+          panel.style.display = "none";
+        }
+      }, 400);
+      
+      targetCamPos.set(0, 7.5, 9.5);
+      targetLookAt.set(0, 0.5, 0);
+    }
+
+    // --- EVENT CONTROLLERS & KEYBOARD TARGETS ---
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function onKeyDown(e) {
+      var key = e.key.toLowerCase();
+
+      if (e.keyCode === 32) {
+        e.preventDefault();
+        isAnimating = !isAnimating;
+        document.getElementById("status-overlay").innerText = "SYSTEM ANIMATIONS PAUSED";
+        document.getElementById("status-overlay").style.display = isAnimating ? "none" : "block";
+      }
+
+      if (key === 'r') {
+        targetCamPos.set(0, 7.5, 9.5);
+        targetLookAt.set(0, 0.5, 0);
+        window.closeInfoPanel();
+      }
+
+      if (key === 'm') {
+        isWireframe = !isWireframe;
+        scene.traverse(function(node) {
+          if (node.isMesh && node.material) {
+            node.material.wireframe = isWireframe;
+          }
+        });
+        document.getElementById("status-overlay").innerText = isWireframe ? "ENGINEERING MODE: WIREFRAME" : "";
+        document.getElementById("status-overlay").style.display = isWireframe ? "block" : "none";
+      }
+
+      if (key === '1') zoomToMachine("robot");
+      if (key === '2') zoomToMachine("gear");
+      if (key === '3') zoomToMachine("press");
+      if (key === '4') zoomToMachine("conveyor");
+    }
+
+    // --- RENDER ANIMATION LOOP ---
+    function animate() {
+      requestAnimationFrame(animate);
+
+      var elapsed = clock.getElapsedTime();
+
+      camera.position.lerp(targetCamPos, 0.075);
+      currentLookAt.lerp(targetLookAt, 0.075);
+      controls.target.copy(currentLookAt);
+      controls.update();
+
+      if (isAnimating) {
+        animateMachineAssemblies(elapsed);
+        animatePedestalLEDs(elapsed);
+        animateDustParticles();
+      }
+
+      updateLabelsPosition();
+
+      renderer.render(scene, camera);
+    }
+
+    function animateMachineAssemblies(time) {
+      machineGroups.forEach(function(group) {
+        var id = group.userData.id;
+
+        // Node A: articular robot arm
+        if (id === "robot" && group.userData.joints) {
+          var joints = group.userData.joints;
+          joints.turret.rotation.y = time * 0.35;
+          joints.upperArm.rotation.z = Math.sin(time * 1.4) * 0.22;
+          joints.forearm.rotation.z = (Math.cos(time * 1.4) * 0.25) - 0.15;
+          joints.wrist.rotation.x = time * 0.8;
+        }
+
+        // Node B: helical gear reducer cogs
+        if (id === "gear" && group.userData.gears) {
+          var gears = group.userData.gears;
+          var baseSpeed = time * 1.4;
+          gears.gear1.rotation.z = baseSpeed;
+          
+          gears.gear2.rotation.z = -baseSpeed * (24 / 16);
+          gears.needle.rotation.z = baseSpeed;
+
+          gears.drops.forEach(function(drop, idx) {
+            var offset = idx * 0.6;
+            var posY = 0.8 - ((time * 0.45 + offset) % 0.6);
+            drop.position.y = posY;
+            drop.visible = posY > 0.35;
+          });
+        }
+
+        // Node C: hydraulic press
+        if (id === "press" && group.userData.press) {
+          var parts = group.userData.press;
+          var cycle = (time * 1.5) % (Math.PI * 2);
+          var posY = 0.58 + Math.cos(cycle) * 0.26;
+          
+          if (posY < 0.35) {
+            posY = 0.33;
+          }
+
+          parts.piston.position.y = posY + 0.35;
+          parts.ram.position.y = posY;
+
+          var pressureLoad = posY < 0.35 ? 1.8 : -0.2;
+          parts.gaugeNeedle.rotation.z = pressureLoad;
+        }
+
+        // Node D: conveyor sorting feed
+        if (id === "conveyor" && group.userData.conveyor) {
+          var parts = group.userData.conveyor;
+          parts.rollerL.rotation.y = time * 2;
+          parts.rollerR.rotation.y = time * 2;
+
+          parts.packages.forEach(function(pack, idx) {
+            var offset = idx * 0.5;
+            var posX = -0.7 + ((time * 0.32 + offset) % 1.5);
+            pack.position.x = posX;
+            
+            if (posX < -0.65 || posX > 0.7) {
+              pack.scale.setScalar(0.001);
+            } else {
+              pack.scale.setScalar(1.0);
+            }
+          });
+        }
+      });
+    }
+
+    function animatePedestalLEDs(time) {
+      scene.traverse(function(node) {
+        if (node.name === "pedestal" && node.userData) {
+          var ledGreen = node.userData.ledGreen;
+          var ledRed = node.userData.ledRed;
+          var blink = Math.sin(time * 5.0) > 0;
+          ledGreen.visible = blink;
+          ledRed.visible = !blink;
+        }
+      });
+    }
+
+    function animateDustParticles() {
+      if (!particleSystem) return;
+      var positions = particleSystem.geometry.attributes.position.array;
+      for (var i = 1; i < positions.length; i += 3) {
+        positions[i] += 0.0035;
+        if (positions[i] > 2.5) {
+          positions[i] = 0;
+        }
+      }
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+    }
+
+    init();
+  </script>
+</body>
+</html>

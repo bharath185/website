@@ -25,7 +25,7 @@ export default function V2About() {
         
         {/* Header Block */}
         <div className="text-center mb-16">
-          <span className="text-[10px] font-mono font-bold text-red-650 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-md border border-red-200/40">
+          <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40">
             TECHNICAL PROFILE
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 uppercase mt-4 mb-4 font-display">
@@ -47,7 +47,7 @@ export default function V2About() {
                 onClick={() => setActiveTab(tab.id as TabName)}
                 className={`w-full sm:w-auto px-6 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 border ${
                   isActive
-                    ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20"
+                    ? "bg-[#122f87] border-[#122f87] text-white shadow-lg shadow-blue-900/10"
                     : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                 }`}
               >
@@ -71,41 +71,41 @@ export default function V2About() {
                 className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full"
               >
                 <div className="flex flex-col justify-center">
-                  <h3 className="text-xl font-bold text-blue-600 mb-4 tracking-tight uppercase font-mono">
+                  <h3 className="text-xl font-bold text-[#122f87] mb-4 tracking-tight uppercase font-mono">
                     BMT Corporate Overview
                   </h3>
-                  <p className="text-slate-650 text-xs leading-relaxed font-light mb-6">
+                  <p className="text-slate-600 text-xs leading-relaxed font-light mb-6">
                     Established in Bangalore, Bharat Machine Tools has grown into a premier supplier of precision parts. We cater to high-speed CNC machinery builders, aerospace contractors, and machine tools maintenance shops globally.
                   </p>
                   <div className="flex flex-col gap-3 text-xs text-slate-600 font-light">
                     <div className="flex items-center gap-2.5">
-                      <Crosshair className="w-4 h-4 text-red-500 shrink-0" />
+                      <Crosshair className="w-4 h-4 text-blue-600 shrink-0" />
                       <span>Specialized in customized SPM High-Speed Spindles (up to 45,000 RPM)</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <Crosshair className="w-4 h-4 text-red-500 shrink-0" />
+                      <Crosshair className="w-4 h-4 text-blue-600 shrink-0" />
                       <span>Dedicated R&D laboratory analyzing bearing stiffness & thermal load runouts</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-red-500/20 transition-colors shadow-sm">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-blue-500/20 transition-colors shadow-sm">
                     <span className="text-2xl font-bold text-slate-900 font-display block mb-1">1999</span>
                     <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono font-medium block">Year Founded</span>
                     <p className="text-[10px] text-slate-600 mt-2 font-light">Over two decades of precision industrial design.</p>
                   </div>
-                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-red-500/20 transition-colors shadow-sm">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-blue-500/20 transition-colors shadow-sm">
                     <span className="text-2xl font-bold text-slate-900 font-display block mb-1">15+ Countries</span>
                     <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono font-medium block">Export Network</span>
                     <p className="text-[10px] text-slate-600 mt-2 font-light">Delivering engineering excellence to global hubs.</p>
                   </div>
-                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-red-500/20 transition-colors shadow-sm">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-blue-500/20 transition-colors shadow-sm">
                     <span className="text-2xl font-bold text-slate-900 font-display block mb-1">50+ OEM clients</span>
                     <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono font-medium block">Active Contracts</span>
                     <p className="text-[10px] text-slate-600 mt-2 font-light">Trusted partner for machinery builders across India.</p>
                   </div>
-                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-red-500/20 transition-colors shadow-sm">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-blue-500/20 transition-colors shadow-sm">
                     <span className="text-2xl font-bold text-slate-900 font-display block mb-1">24/7 Support</span>
                     <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono font-medium block">Engineering SLA</span>
                     <p className="text-[10px] text-slate-600 mt-2 font-light">Senior technical support direct from Bangalore cells.</p>
@@ -124,23 +124,23 @@ export default function V2About() {
                 className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full"
               >
                 <div className="flex flex-col justify-center">
-                  <h3 className="text-xl font-bold text-blue-600 mb-4 tracking-tight uppercase font-mono">
+                  <h3 className="text-xl font-bold text-[#122f87] mb-4 tracking-tight uppercase font-mono">
                     Bangalore Manufacturing Cell
                   </h3>
-                  <p className="text-slate-650 text-xs leading-relaxed font-light mb-6">
+                  <p className="text-slate-600 text-xs leading-relaxed font-light mb-6">
                     Our manufacturing facility is equipped with automated grinding machines and test chambers capable of generating spindle assemblies with sub-micron geometrical runout tolerances.
                   </p>
                   <div className="flex flex-col gap-3.5 text-xs text-slate-600 font-light">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+                      <div className="w-2 h-2 rounded-full bg-[#122f87] shrink-0" />
                       <span>Precision Cylindrical Grinding Cells (STUDER automated grinders)</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+                      <div className="w-2 h-2 rounded-full bg-[#122f87] shrink-0" />
                       <span>Class 10,000 Cleanroom Assembly Cell for super-precision bearings</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+                      <div className="w-2 h-2 rounded-full bg-[#122f87] shrink-0" />
                       <span>Dynamic Balancing Equipment (Schenck balancing machine up to G0.4)</span>
                     </div>
                   </div>
@@ -152,19 +152,19 @@ export default function V2About() {
                     <div className="grid grid-cols-1 gap-2.5 text-slate-600 text-xs font-light">
                       <div className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200">
                         <span>Coordinate Measuring Machine (CMM)</span>
-                        <span className="font-mono text-red-600 font-semibold">Tolerances to 0.5µm</span>
+                        <span className="font-mono text-blue-600 font-semibold">Tolerances to 0.5µm</span>
                       </div>
                       <div className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200">
                         <span>Spindle Test Run Benches</span>
-                        <span className="font-mono text-red-600 font-semibold">Continuous 48h load check</span>
+                        <span className="font-mono text-blue-600 font-semibold">Continuous 48h load check</span>
                       </div>
                       <div className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200">
                         <span>Laser Interferometer Alignments</span>
-                        <span className="font-mono text-red-600 font-semibold">Deviation testing</span>
+                        <span className="font-mono text-blue-600 font-semibold">Deviation testing</span>
                       </div>
                     </div>
                   </div>
-                  <span className="text-[9px] text-slate-405 font-mono mt-4 text-right block uppercase">
+                  <span className="text-[9px] text-slate-400 font-mono mt-4 text-right block uppercase">
                     All machines are calibrated under ISO standards.
                   </span>
                 </div>
@@ -181,31 +181,31 @@ export default function V2About() {
                 className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full"
               >
                 <div className="flex flex-col justify-center">
-                  <h3 className="text-xl font-bold text-blue-600 mb-4 tracking-tight uppercase font-mono">
+                  <h3 className="text-xl font-bold text-[#122f87] mb-4 tracking-tight uppercase font-mono">
                     ISO Quality Management
                   </h3>
-                  <p className="text-slate-650 text-xs leading-relaxed font-light mb-6">
+                  <p className="text-slate-600 text-xs leading-relaxed font-light mb-6">
                     Quality is our signature. Every spindle, bearing, and accessory undergoes rigorous physical inspections and dynamic vibration testing at full target RPM before dispatch.
                   </p>
                   <div className="flex flex-col gap-3 text-xs text-slate-600 font-light">
                     <div className="flex items-center gap-2.5">
-                      <ShieldCheck className="w-4 h-4 text-red-500 shrink-0" />
+                      <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
                       <span>Certified ISO 9001:2015 Precision Engineering standards</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <ShieldCheck className="w-4 h-4 text-red-500 shrink-0" />
+                      <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
                       <span>Dynamic Balancing to ISO 1940 standard (Class G0.4 or G1.0)</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <ShieldCheck className="w-4 h-4 text-red-500 shrink-0" />
+                      <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
                       <span>Traceable inspection certificates shipped with every item</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-3xl p-6 flex flex-col justify-center items-center shadow-sm">
-                  <div className="p-4 bg-red-50 border border-red-200/50 rounded-2xl flex flex-col items-center text-center max-w-[260px]">
-                    <ShieldCheck className="w-8 h-8 text-red-500 mb-3 animate-pulse" />
+                  <div className="p-4 bg-blue-50 border border-blue-200/50 rounded-2xl flex flex-col items-center text-center max-w-[260px]">
+                    <ShieldCheck className="w-8 h-8 text-blue-600 mb-3 animate-pulse" />
                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-1 font-mono">Zero Defect Promise</h4>
                     <p className="text-[9px] text-slate-600 leading-normal font-light">
                       BMT adheres strictly to dynamic defense grade QA checklists to prevent runout failures in high load operations.
