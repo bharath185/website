@@ -83,7 +83,7 @@ export default function V2ServicesShowcase() {
                 href="/services/servicing-and-reconditioning"
                 className="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-md shadow-blue-900/10 font-sans"
               >
-                <span>View Before &amp; After Case Studies</span>
+                <span>View Service Scope &amp; Details</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

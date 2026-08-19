@@ -146,7 +146,7 @@ export default function ServicesPage() {
                     href={service.href}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm font-sans"
                   >
-                    <span>View Technical Scope &amp; Case Studies</span>
+                    <span>View Technical Scope &amp; Details</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
