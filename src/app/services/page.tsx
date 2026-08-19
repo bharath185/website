@@ -11,7 +11,9 @@ import {
   Gauge,
   Clock,
   MapPin,
-  Sparkles
+  Sparkles,
+  Cpu,
+  Settings
 } from 'lucide-react'
 
 export const metadata = {
@@ -26,9 +28,9 @@ export default function ServicesPage() {
       subtitle: 'Complete Mechanical, Electrical & Hydraulic Restoration',
       description:
         'Comprehensive overhaul of manual and CNC machine tools—including Turning Centers, VMCs, HMCs, cylindrical grinders, and gear hobbers. Restored to original OEM geometric runout and flatness tolerances.',
-      image: 'https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/fe72caf2.jpeg',
-      imageAlt: 'Reconditioned CTB 150 CNC Turning Center by Bharat Machine Tools',
-      badge: 'Turnkey Rebuild',
+      image: '/images/images/image-4.png',
+      imageAlt: 'Bharat Machine Tools Manufactured Special Purpose Machine & CNC Rebuilding Cell',
+      badge: 'BMT Machine Facility',
       href: '/services/servicing-and-reconditioning',
       highlights: [
         'Guideway hand-scraping & Turcite-B application',
@@ -42,8 +44,8 @@ export default function ServicesPage() {
       subtitle: 'Plasma Spray, HVOF Cladding & Anti-Wear Metallurgy',
       description:
         'Advanced thermal spray and metallurgical coatings designed to restore undersized bearing journals, reduce friction, and multiply component operating life in abrasive environments.',
-      image: 'https://fpimages.withfloats.com/actual/64a80389ab2fb40001bec441.jpg',
-      imageAlt: 'Industrial Surface Coating and Metallurgy at Bharat Machine Tools',
+      image: '/images/images/image-1.png',
+      imageAlt: 'Specialized Thermal Process & Machine Tool Enclosure at Bharat Machine Tools',
       badge: 'Surface Metallurgy',
       href: '/services/thermal-process-and-coatings',
       highlights: [
@@ -57,19 +59,22 @@ export default function ServicesPage() {
 
   const workshopCapabilities = [
     {
-      image: 'https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/6f41f130.jpeg',
-      title: 'Guideway Hand-Scraping',
-      detail: 'Geometric alignment to 0.002 mm/m flatness for precision lathe & milling saddles.'
+      image: '/images/images/image-5.png',
+      title: 'Spindle Test Bench & Balancing',
+      badge: 'Official BMT Test Cell',
+      detail: 'Precision spindle run-in and balancing rig built by Bharat Machine Tools for continuous load testing.'
     },
     {
-      image: 'https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/eba738e5.jpeg',
-      title: 'Spindle Shaft Balancing',
-      detail: 'Dynamic balancing up to 45,000 RPM adhering to ISO 1940 Grade G0.4 standards.'
+      image: '/images/images/image-2.png',
+      title: '5-Axis Gantry & Large Bed Alignment',
+      badge: 'Large Format CNC',
+      detail: 'Geometric alignment, optical laser verification, and slideway leveling for heavy CNC machining centers.'
     },
     {
-      image: 'https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/0e8d1c9b.jpeg',
-      title: 'CNC Controller Retrofitting',
-      detail: 'Integration of modern Siemens, Fanuc & Delta CNC systems with customized HMI panels.'
+      image: '/images/images/image-3.png',
+      title: 'CNC Controller & Drive Integration',
+      badge: 'Turnkey Automation',
+      detail: 'Customized HMI panels, servo drive retrofitting, and automated tool changer (ATC) synchronization.'
     }
   ]
 
@@ -101,7 +106,7 @@ export default function ServicesPage() {
               className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 hover:shadow-md transition-shadow duration-300"
             >
               {/* Image Column */}
-              <div className={`lg:col-span-5 relative bg-slate-950 min-h-[300px] lg:min-h-full ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+              <div className={`lg:col-span-5 relative bg-slate-950 min-h-[320px] lg:min-h-full ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
                 <img
                   src={service.image}
                   alt={service.imageAlt}
@@ -156,7 +161,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Real Workshop Capability Showcase */}
+      {/* Real Workshop Capability Showcase (Using authentic BMT images) */}
       <section className="bg-white border-y border-slate-200 py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -164,10 +169,10 @@ export default function ServicesPage() {
               IN-HOUSE PRECISION STANDARDS
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono mt-3 mb-2">
-              Our Reconditioning Capabilities
+              Our Workshop &amp; Machinery Cells
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-light">
-              Executed inside our dedicated cleanrooms and testing bays in Abbigere Industrial Area, Bangalore.
+              Actual equipment and test facilities inside Bharat Machine Tools, Abbigere Industrial Area, Bangalore.
             </p>
           </div>
 
@@ -177,13 +182,18 @@ export default function ServicesPage() {
                 key={idx}
                 className="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="h-48 bg-slate-900 overflow-hidden relative">
+                <div className="h-56 bg-slate-900 overflow-hidden relative">
                   <img
                     src={cap.image}
                     alt={cap.title}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-0.5 bg-slate-900/90 text-white font-mono text-[10px] font-bold rounded uppercase tracking-wider">
+                      {cap.badge}
+                    </span>
+                  </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
                   <h3 className="text-sm font-bold text-slate-900 font-mono">{cap.title}</h3>

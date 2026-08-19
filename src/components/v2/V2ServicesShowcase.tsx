@@ -38,14 +38,14 @@ export default function V2ServicesShowcase() {
           {/* Service 1: Machine Servicing & Reconditioning */}
           <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-lg transition-all duration-300 group">
             <div>
-              <div className="h-52 bg-slate-950 relative overflow-hidden">
+              <div className="h-56 bg-slate-950 relative overflow-hidden">
                 <img
-                  src="https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/fe72caf2.jpeg"
-                  alt="Machine Servicing & Reconditioning"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+                  src="/images/images/image-4.png"
+                  alt="Bharat Machine Tools Manufactured Machine & Reconditioning"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-6 right-6">
                   <span className="px-2.5 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded uppercase tracking-wider font-mono">
                     Turnkey Engineering
@@ -92,14 +92,14 @@ export default function V2ServicesShowcase() {
           {/* Service 2: Thermal Process & Surface Coatings */}
           <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-lg transition-all duration-300 group">
             <div>
-              <div className="h-52 bg-slate-950 relative overflow-hidden">
+              <div className="h-56 bg-slate-950 relative overflow-hidden">
                 <img
-                  src="https://fpimages.withfloats.com/actual/64a80389ab2fb40001bec441.jpg"
-                  alt="Thermal Process & Surface Coatings"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+                  src="/images/images/image-1.png"
+                  alt="Thermal Process & Surface Coatings at BMT"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-6 right-6">
                   <span className="px-2.5 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded uppercase tracking-wider font-mono">
                     Surface Metallurgy

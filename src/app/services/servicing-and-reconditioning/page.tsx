@@ -10,24 +10,24 @@ export const metadata = {
 export default function ServicingReconditioningPage() {
   const machineTypes = [
     {
-      title: 'CNC Turning Centers & Lathes',
+      title: 'Special Purpose Machines & CNC Lathes',
       description: 'Slideway re-scraping, spindle bearing cartridge overhauls, turret alignment, and hydraulic chuck clamping rebuilds.',
-      image: 'https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/fe72caf2.jpeg'
+      image: '/images/images/image-4.png'
     },
     {
-      title: 'VMC & HMC Machining Centers',
+      title: '5-Axis Gantry & VMC Machining Centers',
       description: 'Axis ball screw replacement, linear guide alignment, automatic tool changer (ATC) timing calibration, and spindle taper regrinding.',
-      image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop'
+      image: '/images/images/image-2.png'
     },
     {
-      title: 'Cylindrical & Centerless Grinding Machines',
-      description: 'Hydrostatic and hydrodynamic spindle rebuilding, workhead alignment, regulating wheel drive restoration, and sub-micron runout testing.',
-      image: 'https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/eba738e5.jpeg'
+      title: 'Precision Spindle & Bearing Test Bench',
+      description: 'Hydrostatic and high-speed cartridge spindle rebuilding, dynamic balancing up to 45,000 RPM, and sub-micron runout testing.',
+      image: '/images/images/image-5.png'
     },
     {
-      title: 'Gear Hobbing & Heavy Machinery',
-      description: 'Duplex worm gear backlash elimination, indexing table restoration, heavy-duty lead screw alignment, and precision lubrication retrofits.',
-      image: 'https://boost-content-cdn.s3.ap-south-1.amazonaws.com/CustomPages/Images/6f41f130.jpeg'
+      title: 'CNC Controller & Drive Automation',
+      description: 'Customized HMI operator panels, servo drive retrofitting, and automated tool changer synchronization.',
+      image: '/images/images/image-3.png'
     }
   ]
 
