@@ -222,14 +222,8 @@
       directionalLight2.position.set(-5, 4, -5);
       scene.add(directionalLight2);
 
-      // Detect mobile layout or touch device to load the optimized 7.4MB model by default
-      const isMobileDevice = window.innerWidth < 1024 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-      if (isMobileDevice) {
-        modelFileSelect.value = "/Image%20to%203D8.glb";
-      }
-
       // Load initial Model
-      loadModel(modelFileSelect.value);
+      loadModel("/Image%20to%203D.glb");
 
       // Event Listeners
       window.addEventListener('resize', onWindowResize);

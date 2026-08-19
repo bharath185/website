@@ -124,7 +124,7 @@ export default function V2NewProductShowcase() {
     logToBackend("info", "Starting GLTF load request for new products showcase")
 
     loader.load(
-      "/Image%20to%203D8.glb",
+      "/Image%20to%203D.glb",
       (gltf: any) => {
         setIsLoading(false)
         logToBackend("info", "Showcase GLB loaded successfully")
