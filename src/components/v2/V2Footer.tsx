@@ -73,8 +73,11 @@ export default function V2Footer() {
               <div className="flex items-center gap-2.5">
                 <img src="/logo.png" alt="Bharat Machine Tools" className="h-12 w-auto object-contain" />
               </div>
+              <p className="text-[11px] text-blue-900 font-bold font-mono tracking-wide">
+                &ldquo;We Can Make What You Can Imagine&rdquo;
+              </p>
               <p className="text-[11px] text-slate-600 leading-relaxed font-light">
-                Providing precision-engineered industrial spindles, hydrostatic bearings, SPDs, and custom assemblies to leading manufacturing houses across India. Established in Bangalore, Karnataka.
+                Leading manufacturer, supplier, and exporter of CNC Machines, Machine Tools, Spindles, Hydrostatic Bearings, and Custom Assemblies. Established in Bangalore, Karnataka.
               </p>
               {/* Social icons in footer */}
               {activeSocialLinks.length > 0 && (
@@ -95,7 +98,11 @@ export default function V2Footer() {
               <div className="flex flex-col gap-3 font-light text-slate-600 text-xs">
                 <Link href="/" className="hover:text-blue-600 transition-colors">Home Landing</Link>
                 <Link href="/products" className="hover:text-blue-600 transition-colors">Product Catalogue</Link>
+                <Link href="/services" className="hover:text-blue-600 transition-colors">Specialized Services</Link>
+                <Link href="/services/servicing-and-reconditioning" className="hover:text-blue-600 transition-colors">Machine Reconditioning</Link>
+                <Link href="/services/thermal-process-and-coatings" className="hover:text-blue-600 transition-colors">Thermal Coatings</Link>
                 <Link href="/news" className="hover:text-blue-600 transition-colors">News &amp; Technical Journal</Link>
+                <Link href="/faq" className="hover:text-blue-600 transition-colors">Frequently Asked Questions</Link>
                 <Link href="/careers" className="hover:text-blue-600 transition-colors">Careers</Link>
                 <Link href="/contact" className="hover:text-blue-600 transition-colors">Support Center</Link>
                 <Link href="/orders" className="hover:text-blue-600 transition-colors">Track Shipment</Link>
@@ -110,11 +117,13 @@ export default function V2Footer() {
                 <Link href="/products" className="hover:text-blue-600 transition-colors">Machine Spindles</Link>
                 <Link href="/products" className="hover:text-blue-600 transition-colors">Hydrostatic Bearings</Link>
                 <Link href="/products" className="hover:text-blue-600 transition-colors">Precision Ball Screws</Link>
+                <Link href="/products" className="hover:text-blue-600 transition-colors">Planetary Gearboxes</Link>
+                <Link href="/products" className="hover:text-blue-600 transition-colors">Locknuts &amp; Mandrels</Link>
                 <Link href="/products" className="hover:text-blue-600 transition-colors">Drive Accessories</Link>
               </div>
             </div>
             {/* Contact Details Column */}
-            <div className="flex flex-col gap-4 text-xs font-light text-slate-600">
+            <div className="flex flex-col gap-3.5 text-xs font-light text-slate-600">
               <h4 className="text-xs font-bold uppercase tracking-widest text-slate-900 mb-2 font-mono">
                 Contact Hub
               </h4>
@@ -129,6 +138,9 @@ export default function V2Footer() {
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-blue-600 shrink-0" />
                 <span>bmt.sangeeta@gmail.com</span>
+              </div>
+              <div className="pt-2 border-t border-slate-200/60 text-[10px] font-mono text-slate-500">
+                GSTIN: <span className="font-bold text-slate-700">29AAUFB7927K1ZK</span>
               </div>
             </div>
           </div>
