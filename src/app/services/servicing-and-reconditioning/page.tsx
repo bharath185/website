@@ -67,7 +67,7 @@ export default function ServicingReconditioningPage() {
 
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-inner">
             <iframe
-              src="https://www.youtube.com/embed/4qTSX3RlR6Y"
+              src="https://www.youtube-nocookie.com/embed/4qTSX3RlR6Y?autoplay=1&mute=1&loop=1&playlist=4qTSX3RlR6Y&controls=1&modestbranding=1&rel=0&playsinline=1"
               title="Machine Reconditioning Demonstration by Bharat Machine Tools"
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
