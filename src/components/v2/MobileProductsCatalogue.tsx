@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, ShoppingCart, Check, LayoutGrid, Wrench, Settings, RotateCw, CircleDot, Info, Plus, Image as ImageIcon } from "lucide-react"
+import { Search, ShoppingCart, Check, LayoutGrid, Wrench, Settings, RotateCw, CircleDot, Info, Plus } from "lucide-react"
 import { useEnquiry } from "@/context/EnquiryContext"
 import { Product } from "@/types"
 
@@ -28,130 +28,6 @@ interface MobileCatalogueProps {
   productsList: Product[]
   categories: string[]
   loading: boolean
-}
-
-function MobileProductCard({
-  product,
-  inCart,
-  onAddToCart,
-}: {
-  product: Product
-  inCart: boolean
-  onAddToCart: (p: Product) => void
-}) {
-  const images = (product.images && Array.isArray(product.images) && product.images.length > 0)
-    ? product.images
-    : (product.image ? [product.image] : [])
-
-  const [activeImgIndex, setActiveImgIndex] = useState(0)
-  const currentImg = images[activeImgIndex] || product.image
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      className="bg-white border border-slate-200/60 rounded-[1.8rem] p-3 flex flex-col justify-between shadow-[0_2px_10px_rgba(0,0,0,0.01)] relative overflow-hidden"
-    >
-      {/* Category Tag & Badges */}
-      <div className="absolute top-2 left-2 z-10 flex flex-col gap-1 items-start">
-        <span className="text-[6px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200/30 shadow-sm">
-          {product.category}
-        </span>
-        {product.tag === 'NEW_ARRIVAL' && (
-          <span className="text-[6px] font-mono font-black text-white uppercase tracking-widest bg-emerald-600 px-1.5 py-0.5 rounded shadow-sm">
-            New
-          </span>
-        )}
-        {product.tag === 'FEATURED' && (
-          <span className="text-[6px] font-mono font-black text-white uppercase tracking-widest bg-[#122f87] px-1.5 py-0.5 rounded shadow-sm">
-            Featured
-          </span>
-        )}
-      </div>
-
-      {/* Info Link */}
-      <Link
-        href={`/products/${product.slug}`}
-        className="absolute top-2 right-2 z-10 p-1 bg-slate-50 border border-slate-100 rounded-full text-slate-400 hover:text-slate-900 transition-colors shadow-sm"
-        title="View details"
-      >
-        <Info className="w-3.5 h-3.5" />
-      </Link>
-
-      {/* Centered Image Frame */}
-      <div className="w-full aspect-square bg-slate-50/50 rounded-2xl flex flex-col items-center justify-center p-2 mb-2 relative">
-        <img 
-          src={currentImg} 
-          alt={product.name} 
-          className="max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.04)] transition-all duration-200" 
-        />
-
-        {/* Multi-Image Dots Bar on Mobile */}
-        {images.length > 1 && (
-          <div className="absolute bottom-1.5 flex items-center gap-1 bg-white/80 px-1.5 py-0.5 rounded-full border border-slate-200/60 shadow-xs">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setActiveImgIndex(i)
-                }}
-                className={`h-1 rounded-full transition-all ${
-                  activeImgIndex === i ? "w-2.5 bg-blue-600" : "w-1 bg-slate-300"
-                }`}
-                aria-label={`View photo ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Text Details */}
-      <div className="space-y-0.5 flex flex-col">
-        {product.reviews && product.reviews.length > 0 && (
-          <span className="inline-flex items-center gap-0.5 text-[7px] font-mono font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-250 w-fit mb-1">
-            ★ {(product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length).toFixed(1)} ({product.reviews.length})
-          </span>
-        )}
-        <h3 className="font-extrabold text-[11px] text-slate-900 leading-tight truncate uppercase tracking-tight">
-          {product.name}
-        </h3>
-        <p className="text-[9px] text-slate-400 font-light line-clamp-2 leading-tight">
-          {product.shortDescription}
-        </p>
-      </div>
-
-      {/* Add / Action Row */}
-      <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
-        <Link
-          href={`/products/${product.slug}`}
-          className="text-[8px] font-mono font-bold text-slate-600 hover:text-blue-600 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200/40"
-        >
-          {images.length > 1 ? `${images.length} Photos` : 'Details'}
-        </Link>
-
-        {inCart ? (
-          <button
-            className="w-7 h-7 bg-blue-50 border border-blue-150 text-blue-600 rounded-full flex items-center justify-center"
-            aria-label="Added to inquiry"
-          >
-            <Check className="w-3.5 h-3.5" />
-          </button>
-        ) : (
-          <button
-            onClick={() => onAddToCart(product)}
-            className="w-7 h-7 bg-slate-900 hover:bg-[#122f87] text-white rounded-full flex items-center justify-center transition-transform active:scale-90 cursor-pointer shadow-sm"
-            aria-label="Add to cart"
-          >
-            <Plus className="w-3.5 h-3.5" />
-          </button>
-        )}
-      </div>
-    </motion.div>
-  )
 }
 
 export default function MobileProductsCatalogue({ productsList, categories, loading }: MobileCatalogueProps) {
@@ -229,14 +105,92 @@ export default function MobileProductsCatalogue({ productsList, categories, load
         /* Mobile Shopping 2-Column Grid */
         <div className="grid grid-cols-2 gap-3">
           <AnimatePresence>
-            {filtered.map((p) => (
-              <MobileProductCard
-                key={p.id}
-                product={p}
-                inCart={isItemInCart(p.id)}
-                onAddToCart={addItem}
-              />
-            ))}
+            {filtered.map((p) => {
+              const inCart = isItemInCart(p.id)
+              return (
+                <motion.div
+                  key={p.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="bg-white border border-slate-200/60 rounded-[1.8rem] p-3 flex flex-col justify-between shadow-[0_2px_10px_rgba(0,0,0,0.01)] relative overflow-hidden"
+                >
+                  {/* Category Tag */}
+                  <span className="absolute top-2 left-2 z-10 text-[6px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200/30">
+                    {p.category}
+                  </span>
+
+                  {p.tag === 'NEW_ARRIVAL' && (
+                    <span className="absolute top-[26px] left-2 z-10 text-[6px] font-mono font-black text-white uppercase tracking-widest bg-emerald-600 px-1.5 py-0.5 rounded shadow-sm">
+                      New Arrival
+                    </span>
+                  )}
+                  {p.tag === 'FEATURED' && (
+                    <span className="absolute top-[26px] left-2 z-10 text-[6px] font-mono font-black text-white uppercase tracking-widest bg-[#122f87] px-1.5 py-0.5 rounded shadow-sm">
+                      Featured
+                    </span>
+                  )}
+
+                  {/* Info Link */}
+                  <Link
+                    href={`/products/${p.slug}`}
+                    className="absolute top-2 right-2 z-10 p-1 bg-slate-50 border border-slate-100 rounded-full text-slate-400 hover:text-slate-900 transition-colors"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                  </Link>
+
+                  {/* Centered Image Frame */}
+                  <div className="w-full aspect-square bg-slate-50/50 rounded-2xl flex items-center justify-center p-2 mb-2 pointer-events-none relative">
+                    <img 
+                      src={p.image} 
+                      alt={p.name} 
+                      className="max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.04)]" 
+                    />
+                  </div>
+
+                  {/* Text Details */}
+                  <div className="space-y-0.5 flex flex-col">
+                    {p.reviews && p.reviews.length > 0 && (
+                      <span className="inline-flex items-center gap-0.5 text-[7px] font-mono font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-250 w-fit mb-1">
+                        ★ {(p.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / p.reviews.length).toFixed(1)} ({p.reviews.length})
+                      </span>
+                    )}
+                    <h3 className="font-extrabold text-[11px] text-slate-900 leading-tight truncate uppercase tracking-tight">
+                      {p.name}
+                    </h3>
+                    <p className="text-[9px] text-slate-400 font-light line-clamp-2 leading-tight">
+                      {p.shortDescription}
+                    </p>
+                  </div>
+
+                  {/* Add / Action Row */}
+                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
+                    <span className="text-[8px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200/40">
+                      RFQ
+                    </span>
+
+                    {inCart ? (
+                      <button
+                        className="w-7 h-7 bg-blue-50 border border-blue-150 text-blue-600 rounded-full flex items-center justify-center"
+                        aria-label="Added to inquiry"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => addItem(p)}
+                        className="w-7 h-7 bg-slate-900 hover:bg-[#122f87] text-white rounded-full flex items-center justify-center transition-transform active:scale-90 cursor-pointer shadow-sm"
+                        aria-label="Add to cart"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              )
+            })}
           </AnimatePresence>
         </div>
       )}

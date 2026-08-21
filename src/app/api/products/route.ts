@@ -20,6 +20,10 @@ export async function GET() {
       console.error('Failed to query products from DB:', dbErr)
     }
 
+    if (products.length === 0) {
+      return NextResponse.json({ products: defaultProducts })
+    }
+
     const parsedProducts = products.map((p) => {
       const parsedSpec = typeof p.specifications === 'string' ? JSON.parse(p.specifications) : (p.specifications || [])
       const parsedFeat = typeof p.features === 'string' ? JSON.parse(p.features) : (p.features || [])
@@ -48,7 +52,7 @@ export async function GET() {
     return NextResponse.json({ products: parsedProducts })
   } catch (error) {
     console.error('Error fetching products:', error)
-    return NextResponse.json({ products: [] })
+    return NextResponse.json({ products: defaultProducts })
   }
 }
 

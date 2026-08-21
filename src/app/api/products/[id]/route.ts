@@ -26,6 +26,10 @@ export async function GET(
     }
 
     if (!product) {
+      product = defaultProducts.find((p) => p.id === id || p.slug === id)
+    }
+
+    if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
