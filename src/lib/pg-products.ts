@@ -10,7 +10,7 @@ const DB_PORT = 5432
 
 let cachedPool: Pool | null = null
 
-async function getPgClient(): Promise<Client> {
+export async function getPgClient(): Promise<Client> {
   // Resolve IPv4 directly with Google/Cloudflare DNS to bypass any local/serverless DNS glitches
   let targetIp = HOSTNAME
   try {
