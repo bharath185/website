@@ -29,9 +29,23 @@ export async function GET(
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
+    let parsedImages: string[] = []
+    if (product.images) {
+      try {
+        parsedImages = typeof product.images === 'string' ? JSON.parse(product.images) : product.images
+      } catch {
+        parsedImages = []
+      }
+    }
+    if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
+      parsedImages = product.image ? [product.image] : []
+    }
+
     return NextResponse.json({
       product: {
         ...product,
+        image: parsedImages[0] || product.image || '',
+        images: parsedImages,
         specifications: typeof product.specifications === 'string' ? JSON.parse(product.specifications) : (product.specifications || []),
         features: typeof product.features === 'string' ? JSON.parse(product.features) : (product.features || [])
       }
@@ -54,7 +68,7 @@ export async function PUT(
 
     const { id } = await params
     const body = await req.json()
-    const { name, category, price, shortDescription, description, image, specifications, features, tag } = body
+    const { name, category, price, shortDescription, description, image, images, specifications, features, tag } = body
 
     const updateData: Record<string, any> = {}
     if (name) updateData.name = name
@@ -62,8 +76,17 @@ export async function PUT(
     if (price !== undefined) updateData.price = parseFloat(price.toString())
     if (shortDescription) updateData.shortDescription = shortDescription
     if (description) updateData.description = description
-    if (image) updateData.image = image
     if (tag !== undefined) updateData.tag = tag || null
+
+    if (images !== undefined && Array.isArray(images)) {
+      const filteredImages = images.filter(Boolean)
+      updateData.images = JSON.stringify(filteredImages)
+      updateData.image = filteredImages[0] || image || ''
+    } else if (image) {
+      updateData.image = image
+      updateData.images = JSON.stringify([image])
+    }
+
     if (specifications !== undefined) {
       updateData.specifications = Array.isArray(specifications) ? JSON.stringify(specifications) : specifications
     }
@@ -100,10 +123,24 @@ export async function PUT(
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
+    let parsedImages: string[] = []
+    if (updatedProduct.images) {
+      try {
+        parsedImages = typeof updatedProduct.images === 'string' ? JSON.parse(updatedProduct.images) : updatedProduct.images
+      } catch {
+        parsedImages = []
+      }
+    }
+    if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
+      parsedImages = updatedProduct.image ? [updatedProduct.image] : []
+    }
+
     return NextResponse.json({
       success: true,
       product: {
         ...updatedProduct,
+        image: parsedImages[0] || updatedProduct.image || '',
+        images: parsedImages,
         specifications: typeof updatedProduct.specifications === 'string' ? JSON.parse(updatedProduct.specifications) : (updatedProduct.specifications || []),
         features: typeof updatedProduct.features === 'string' ? JSON.parse(updatedProduct.features) : (updatedProduct.features || [])
       }

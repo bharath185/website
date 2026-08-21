@@ -3,19 +3,34 @@ import { getProductBySlug } from "@/data/products"
 import ProductDetailClientV2 from "@/components/v2/ProductDetailClientV2"
 import { notFound } from "next/navigation"
 import { db } from "@/lib/db"
+import { Product } from "@/types"
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-async function fetchProduct(slug: string) {
+async function fetchProduct(slug: string): Promise<Product | undefined> {
   try {
     const dbProduct = await db.product.findUnique({
       where: { slug }
     })
     if (dbProduct) {
+      let parsedImages: string[] = []
+      if (dbProduct.images) {
+        try {
+          parsedImages = typeof dbProduct.images === 'string' ? JSON.parse(dbProduct.images) : dbProduct.images
+        } catch {
+          parsedImages = []
+        }
+      }
+      if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
+        parsedImages = dbProduct.image ? [dbProduct.image] : []
+      }
+
       return {
         ...dbProduct,
+        image: parsedImages[0] || dbProduct.image || '',
+        images: parsedImages,
         specifications: typeof dbProduct.specifications === 'string' ? JSON.parse(dbProduct.specifications) : (dbProduct.specifications || []),
         features: typeof dbProduct.features === 'string' ? JSON.parse(dbProduct.features) : (dbProduct.features || [])
       }

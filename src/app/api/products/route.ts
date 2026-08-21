@@ -23,8 +23,22 @@ export async function GET() {
     const parsedProducts = products.map((p) => {
       const parsedSpec = typeof p.specifications === 'string' ? JSON.parse(p.specifications) : (p.specifications || [])
       const parsedFeat = typeof p.features === 'string' ? JSON.parse(p.features) : (p.features || [])
+      let parsedImages: string[] = []
+      if (p.images) {
+        try {
+          parsedImages = typeof p.images === 'string' ? JSON.parse(p.images) : p.images
+        } catch {
+          parsedImages = []
+        }
+      }
+      if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
+        parsedImages = p.image ? [p.image] : []
+      }
+
       return {
         ...p,
+        image: parsedImages[0] || p.image || '',
+        images: parsedImages,
         specifications: parsedSpec,
         features: parsedFeat,
         reviews: p.reviews || []
@@ -46,11 +60,21 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { name, category, price, shortDescription, description, image, specifications, features } = body
+    const { name, category, price, shortDescription, description, image, images, specifications, features, tag } = body
 
-    if (!name || !category || price === undefined || !shortDescription || !description || !image) {
+    // Normalize images array
+    let imagesList: string[] = []
+    if (Array.isArray(images) && images.length > 0) {
+      imagesList = images.filter(Boolean)
+    } else if (image) {
+      imagesList = [image]
+    }
+
+    const primaryImage = imagesList[0] || image
+
+    if (!name || !category || price === undefined || !shortDescription || !description || !primaryImage) {
       return NextResponse.json(
-        { error: 'Name, category, price, short description, description, and image URL are required' },
+        { error: 'Name, category, price, short description, description, and at least one image are required' },
         { status: 400 }
       )
     }
@@ -76,9 +100,11 @@ export async function POST(req: Request) {
           price: parseFloat(price.toString()),
           shortDescription,
           description,
-          image,
+          image: primaryImage,
+          images: JSON.stringify(imagesList),
           specifications: Array.isArray(specifications) ? JSON.stringify(specifications) : specifications || null,
-          features: Array.isArray(features) ? JSON.stringify(features) : features || null
+          features: Array.isArray(features) ? JSON.stringify(features) : features || null,
+          tag: tag || null
         }
       })
     } catch {
@@ -91,9 +117,11 @@ export async function POST(req: Request) {
         price: parseFloat(price.toString()),
         shortDescription,
         description,
-        image,
+        image: primaryImage,
+        images: JSON.stringify(imagesList),
         specifications: Array.isArray(specifications) ? JSON.stringify(specifications) : specifications || [],
-        features: Array.isArray(features) ? JSON.stringify(features) : features || []
+        features: Array.isArray(features) ? JSON.stringify(features) : features || [],
+        tag: tag || null
       }
     }
 
@@ -101,6 +129,8 @@ export async function POST(req: Request) {
       success: true,
       product: {
         ...product,
+        image: primaryImage,
+        images: imagesList,
         specifications: typeof product.specifications === 'string' ? JSON.parse(product.specifications) : (product.specifications || []),
         features: typeof product.features === 'string' ? JSON.parse(product.features) : (product.features || [])
       }

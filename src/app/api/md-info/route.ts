@@ -4,9 +4,14 @@ import { db } from '@/lib/db'
 
 export async function GET() {
   try {
-    let mdInfo = await db.mDInfo.findUnique({
-      where: { id: 'md-info' }
-    })
+    let mdInfo: any = null
+    try {
+      mdInfo = await db.mDInfo.findUnique({
+        where: { id: 'md-info' }
+      })
+    } catch (dbErr) {
+      console.warn('DB connection error in /api/md-info, returning default settings')
+    }
 
     if (!mdInfo) {
       mdInfo = {

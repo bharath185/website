@@ -15,9 +15,9 @@ import {
   CheckCircle2,
   ArrowLeft,
   Upload,
-  Mail,
-  Newspaper,
-  ShoppingCart
+  Image as ImageIcon,
+  Star,
+  Link as LinkIcon
 } from 'lucide-react'
 import { Product } from '@/types'
 import { products as fallbackProducts } from '@/data/products'
@@ -44,7 +44,8 @@ export default function AdminProductsPage() {
   const [formPrice, setFormPrice] = useState('0')
   const [formShortDesc, setFormShortDesc] = useState('')
   const [formDesc, setFormDesc] = useState('')
-  const [formImage, setFormImage] = useState('')
+  const [formImages, setFormImages] = useState<string[]>([])
+  const [customImageUrl, setCustomImageUrl] = useState('')
   const [formFeatures, setFormFeatures] = useState('')
   const [formTag, setFormTag] = useState('')
 
@@ -86,8 +87,8 @@ export default function AdminProductsPage() {
           let width = img.width
           let height = img.height
 
-          const MAX_WIDTH = 1000
-          const MAX_HEIGHT = 1000
+          const MAX_WIDTH = 1200
+          const MAX_HEIGHT = 1200
 
           if (width > height) {
             if (width > MAX_WIDTH) {
@@ -112,13 +113,6 @@ export default function AdminProductsPage() {
             const isWebp = file.type === 'image/webp' || file.name.toLowerCase().endsWith('.webp')
             const outputType = isPng ? 'image/png' : (isWebp ? 'image/webp' : 'image/jpeg')
             
-            console.log('Image upload compression audit:', {
-              fileName: file.name,
-              originalType: file.type,
-              selectedOutputType: outputType,
-              dimensions: `${width}x${height}`
-            })
-
             canvas.toBlob(
               (blob) => {
                 if (blob) {
@@ -132,7 +126,7 @@ export default function AdminProductsPage() {
                 }
               },
               outputType,
-              outputType === 'image/jpeg' ? 0.75 : undefined
+              outputType === 'image/jpeg' ? 0.8 : undefined
             )
           } else {
             resolve(file)
@@ -144,37 +138,71 @@ export default function AdminProductsPage() {
     })
   }
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const handleMultipleImagesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
 
     setUploadingImage(true)
     setError('')
     setSuccessMsg('')
 
     try {
-      // Compress image on the client side to bypass size limits and database write sizes
-      const compressedFile = await compressImage(file)
-      
-      const formData = new FormData()
-      formData.append('file', compressedFile)
+      const fileList = Array.from(files)
+      const uploadedUrls: string[] = []
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
+      for (const file of fileList) {
+        try {
+          const compressedFile = await compressImage(file)
+          const formData = new FormData()
+          formData.append('file', compressedFile)
 
-      const data = await res.json()
-      if (res.ok && data.url) {
-        setFormImage(data.url)
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          })
+
+          const data = await res.json()
+          if (res.ok && data.url) {
+            uploadedUrls.push(data.url)
+          }
+        } catch (uploadErr) {
+          console.error('Error uploading file:', file.name, uploadErr)
+        }
+      }
+
+      if (uploadedUrls.length > 0) {
+        setFormImages((prev) => [...prev, ...uploadedUrls])
       } else {
-        setError(data.error || 'Failed to upload image')
+        setError('Failed to upload selected image files.')
       }
     } catch {
-      setError('Network error while uploading image')
+      setError('Network error while uploading images')
     } finally {
       setUploadingImage(false)
+      // Reset input value so same files can be re-selected if needed
+      e.target.value = ''
     }
+  }
+
+  const handleAddCustomUrl = () => {
+    const trimmed = customImageUrl.trim()
+    if (!trimmed) return
+    if (!formImages.includes(trimmed)) {
+      setFormImages((prev) => [...prev, trimmed])
+    }
+    setCustomImageUrl('')
+  }
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setFormImages((prev) => prev.filter((_, idx) => idx !== indexToRemove))
+  }
+
+  const handleSetPrimaryImage = (indexToPrimary: number) => {
+    setFormImages((prev) => {
+      const item = prev[indexToPrimary]
+      const remaining = prev.filter((_, idx) => idx !== indexToPrimary)
+      return [item, ...remaining]
+    })
   }
 
   const fetchProducts = async () => {
@@ -199,7 +227,7 @@ export default function AdminProductsPage() {
   }
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts()
   }, [])
 
   if (loading) {
@@ -207,10 +235,8 @@ export default function AdminProductsPage() {
       <div className="flex items-center justify-center py-20 text-blue-900">
         <RefreshCw className="w-8 h-8 animate-spin" />
       </div>
-    );
+    )
   }
-
-  
 
   const handleOpenAdd = () => {
     setFormName('')
@@ -218,7 +244,8 @@ export default function AdminProductsPage() {
     setFormPrice('0')
     setFormShortDesc('')
     setFormDesc('')
-    setFormImage('https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg')
+    setFormImages(['https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg'])
+    setCustomImageUrl('')
     setFormFeatures('Precision engineered, Superior durability, High efficiency')
     setFormTag('')
     setError('')
@@ -235,7 +262,15 @@ export default function AdminProductsPage() {
     setFormPrice((p.price || 0).toString())
     setFormShortDesc(p.shortDescription)
     setFormDesc(p.description)
-    setFormImage(p.image)
+    
+    let initialImages: string[] = []
+    if (p.images && Array.isArray(p.images) && p.images.length > 0) {
+      initialImages = [...p.images]
+    } else if (p.image) {
+      initialImages = [p.image]
+    }
+    setFormImages(initialImages)
+    setCustomImageUrl('')
     setFormFeatures(p.features ? p.features.join(', ') : '')
     setFormTag(p.tag || '')
     setError('')
@@ -246,12 +281,19 @@ export default function AdminProductsPage() {
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (formImages.length === 0) {
+      setError('Please upload or provide at least one product image.')
+      return
+    }
+
     setSubmitting(true)
     setError('')
     setSuccessMsg('')
 
     try {
       const featuresArray = formFeatures.split(',').map((f) => f.trim()).filter(Boolean)
+      const primaryImage = formImages[0]
+
       const newProdPayload = {
         id: `prod-${Date.now()}`,
         name: formName,
@@ -260,7 +302,8 @@ export default function AdminProductsPage() {
         price: parseFloat(formPrice),
         shortDescription: formShortDesc || formName,
         description: formDesc || formName,
-        image: formImage || 'https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg',
+        image: primaryImage,
+        images: formImages,
         features: featuresArray,
         tag: formTag || null,
         specifications: ["High Precision", "Bangalore Made"]
@@ -275,7 +318,8 @@ export default function AdminProductsPage() {
           price: parseFloat(formPrice),
           shortDescription: formShortDesc,
           description: formDesc,
-          image: formImage,
+          image: primaryImage,
+          images: formImages,
           features: featuresArray,
           tag: formTag || null
         })
@@ -302,6 +346,10 @@ export default function AdminProductsPage() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!editProduct) return
+    if (formImages.length === 0) {
+      setError('Please upload or provide at least one product image.')
+      return
+    }
 
     setSubmitting(true)
     setError('')
@@ -309,6 +357,8 @@ export default function AdminProductsPage() {
 
     try {
       const featuresArray = formFeatures.split(',').map((f) => f.trim()).filter(Boolean)
+      const primaryImage = formImages[0]
+
       const updatedItem: Product = {
         ...editProduct,
         name: formName,
@@ -316,7 +366,8 @@ export default function AdminProductsPage() {
         price: parseFloat(formPrice),
         shortDescription: formShortDesc,
         description: formDesc,
-        image: formImage,
+        image: primaryImage,
+        images: formImages,
         features: featuresArray,
         tag: formTag || null
       }
@@ -330,7 +381,8 @@ export default function AdminProductsPage() {
           price: parseFloat(formPrice),
           shortDescription: formShortDesc,
           description: formDesc,
-          image: formImage,
+          image: primaryImage,
+          images: formImages,
           features: featuresArray,
           tag: formTag || null
         })
@@ -372,7 +424,124 @@ export default function AdminProductsPage() {
     return matchesCat && matchesQ
   })
 
-    return (
+  // Shared Multi-Image Gallery Manager Component
+  const renderImageGalleryManager = () => (
+    <div className="space-y-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <label className="block font-bold text-slate-800 uppercase tracking-wider text-[11px]">
+            Product Image Gallery ({formImages.length} {formImages.length === 1 ? 'image' : 'images'})
+          </label>
+          <span className="text-[10px] text-slate-500 font-light">
+            Upload multiple images. The first image will be used as the primary catalogue cover.
+          </span>
+        </div>
+        <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm">
+          {uploadingImage ? (
+            <>
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              <span>Uploading...</span>
+            </>
+          ) : (
+            <>
+              <Upload className="w-3.5 h-3.5" />
+              <span>+ Upload Photos</span>
+            </>
+          )}
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            className="hidden"
+            disabled={uploadingImage}
+            onChange={handleMultipleImagesUpload}
+          />
+        </label>
+      </div>
+
+      {/* Uploaded Thumbnails Grid */}
+      {formImages.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+          {formImages.map((imgUrl, idx) => (
+            <div
+              key={idx}
+              className={`relative group rounded-xl overflow-hidden border bg-white shadow-sm flex flex-col justify-between ${
+                idx === 0 ? 'border-blue-600 ring-2 ring-blue-500/20' : 'border-slate-200'
+              }`}
+            >
+              <div className="aspect-square relative overflow-hidden bg-slate-100 flex items-center justify-center p-1">
+                <img
+                  src={imgUrl}
+                  alt={`Product view ${idx + 1}`}
+                  className="w-full h-full object-contain"
+                />
+                {idx === 0 && (
+                  <span className="absolute top-1.5 left-1.5 bg-[#122f87] text-white text-[8px] font-mono font-bold px-1.5 py-0.5 rounded shadow-sm">
+                    PRIMARY COVER
+                  </span>
+                )}
+              </div>
+
+              {/* Action Toolbar on Image */}
+              <div className="p-1.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-1">
+                {idx !== 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => handleSetPrimaryImage(idx)}
+                    className="text-[9px] font-bold text-blue-700 hover:text-blue-900 px-1.5 py-0.5 rounded hover:bg-blue-50 transition-colors"
+                  >
+                    Make Primary
+                  </button>
+                ) : (
+                  <span className="text-[9px] font-bold text-emerald-700 px-1.5 py-0.5">
+                    Cover Image
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(idx)}
+                  className="p-1 text-slate-400 hover:text-red-600 transition-colors rounded hover:bg-red-50"
+                  title="Remove image"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-6 border border-dashed border-slate-300 rounded-xl bg-white">
+          <ImageIcon className="w-8 h-8 text-slate-300 mx-auto mb-1" />
+          <p className="text-xs text-slate-500 font-medium">No images uploaded yet</p>
+          <p className="text-[10px] text-slate-400">Click &quot;+ Upload Photos&quot; above to select multiple product pictures.</p>
+        </div>
+      )}
+
+      {/* Or Paste Direct Image URL */}
+      <div className="pt-2 flex items-center gap-2 border-t border-slate-200/60">
+        <div className="relative flex-1">
+          <LinkIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          <input
+            type="url"
+            value={customImageUrl}
+            onChange={(e) => setCustomImageUrl(e.target.value)}
+            placeholder="Or paste direct image URL (e.g. https://.../spindle.jpg)"
+            className="w-full bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={handleAddCustomUrl}
+          disabled={!customImageUrl.trim()}
+          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Add URL
+        </button>
+      </div>
+    </div>
+  )
+
+  return (
     <div className="space-y-6">
       {/* Page Header Actions */}
       <div className="flex items-center justify-end gap-3 border-b border-slate-200 pb-5">
@@ -388,7 +557,7 @@ export default function AdminProductsPage() {
           className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-600/20"
         >
           <Plus className="w-4 h-4" />
-          Add
+          Add Product
         </button>
       </div>
 
@@ -426,56 +595,77 @@ export default function AdminProductsPage() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="relative w-full h-44 bg-slate-100 border-b border-slate-100">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md border border-slate-200 text-blue-700 font-extrabold text-[10px] px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
-                    {product.category}
-                  </span>
-                </div>
+          {filteredProducts.map((product) => {
+            const imageCount = (product.images && product.images.length > 0) ? product.images.length : 1
 
-                <div className="p-5">
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <h3 className="text-base font-bold text-slate-900 truncate">{product.name}</h3>
+            return (
+              <div
+                key={product.id}
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="relative w-full h-44 bg-slate-100 border-b border-slate-100 flex items-center justify-center p-2">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-contain"
+                    />
+                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md border border-slate-200 text-blue-700 font-extrabold text-[10px] px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
+                      {product.category}
+                    </span>
+                    {imageCount > 1 && (
+                      <span className="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-sm">
+                        <ImageIcon className="w-3 h-3 text-blue-300" />
+                        {imageCount} Photos
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-slate-500 line-clamp-2 mt-1">{product.shortDescription || product.description}</p>
+
+                  <div className="p-5">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h3 className="text-base font-bold text-slate-900 truncate">{product.name}</h3>
+                    </div>
+                    <p className="text-xs text-slate-500 line-clamp-2 mt-1">{product.shortDescription || product.description}</p>
+                    
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-xs font-mono font-bold text-blue-700">
+                        ₹{(product.price || 0).toLocaleString('en-IN')}
+                      </span>
+                      {product.tag && (
+                        <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                          {product.tag}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5 pt-0 border-t border-slate-100 flex items-center justify-end gap-2 mt-4">
+                  <button
+                    onClick={() => handleOpenEdit(product)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Edit product"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(product.id, product.name)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Delete product"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-
-              <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
-                <button
-                  onClick={() => handleOpenEdit(product)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold rounded-lg transition-colors"
-                >
-                  <Edit3 className="w-3.5 h-3.5" />
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id, product.name)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold rounded-lg transition-colors"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
       {/* Add Product Modal */}
       {isAddOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-xl bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+          <div className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
             <button
               onClick={() => setIsAddOpen(false)}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700"
@@ -483,8 +673,8 @@ export default function AdminProductsPage() {
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-xl font-bold text-slate-900 mb-1">Add New Machine Tool Product</h3>
-            <p className="text-xs text-slate-500 mb-6">Enter product details to publish to the site catalog instantly.</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-1">Add New Product</h3>
+            <p className="text-xs text-slate-500 mb-6">Create and publish a precision machine component to the catalogue.</p>
 
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium">
@@ -506,7 +696,7 @@ export default function AdminProductsPage() {
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  placeholder="e.g. CNC Spindle Unit"
+                  placeholder="e.g. High Frequency Grinding Spindle"
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
@@ -540,62 +730,21 @@ export default function AdminProductsPage() {
                     </div>
                   )}
                 </div>
+
                 <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Image *</label>
-                  <div className="relative border border-dashed border-slate-300 hover:border-blue-500 rounded-lg p-2 transition-colors bg-slate-50 flex flex-col items-center justify-center min-h-[90px] h-[98px]">
-                    {formImage ? (
-                      <div className="relative w-full flex items-center justify-between gap-2 px-1">
-                        <img 
-                          src={formImage} 
-                          alt="Product Preview" 
-                          className="h-14 w-14 object-contain rounded border border-slate-200 bg-white" 
-                        />
-                        <div className="flex flex-col gap-1 items-end">
-                          <label className="cursor-pointer text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all">
-                            {uploadingImage ? 'Uploading...' : 'Change'}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              disabled={uploadingImage}
-                              onChange={handleImageUpload}
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => setFormImage('')}
-                            className="text-[10px] font-bold text-red-600 hover:text-red-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <label className="cursor-pointer flex flex-col items-center justify-center w-full h-full py-1 text-center select-none">
-                        {uploadingImage ? (
-                          <>
-                            <RefreshCw className="w-5 h-5 text-blue-600 animate-spin mb-1" />
-                            <span className="text-[10px] text-slate-500 font-medium">Uploading...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="w-5 h-5 text-slate-400 mb-1" />
-                            <span className="text-[11px] text-slate-700 font-bold">Upload Image File</span>
-                            <span className="text-[9px] text-slate-400">Click to select image</span>
-                          </>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          disabled={uploadingImage}
-                          onChange={handleImageUpload}
-                        />
-                      </label>
-                    )}
-                  </div>
+                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Base Price (INR)</label>
+                  <input
+                    type="number"
+                    value={formPrice}
+                    onChange={(e) => setFormPrice(e.target.value)}
+                    placeholder="10000"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
+                  />
                 </div>
               </div>
+
+              {/* Multi-Image Gallery Manager */}
+              {renderImageGalleryManager()}
 
               <div>
                 <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Showcase Tag</label>
@@ -648,7 +797,7 @@ export default function AdminProductsPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer"
               >
                 {submitting ? 'Publishing Product...' : 'Publish Product to Catalog'}
               </button>
@@ -660,7 +809,7 @@ export default function AdminProductsPage() {
       {/* Edit Product Modal */}
       {editProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-xl bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+          <div className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
             <button
               onClick={() => setEditProduct(null)}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700"
@@ -724,62 +873,20 @@ export default function AdminProductsPage() {
                     </div>
                   )}
                 </div>
+
                 <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Image *</label>
-                  <div className="relative border border-dashed border-slate-300 hover:border-blue-500 rounded-lg p-2 transition-colors bg-slate-50 flex flex-col items-center justify-center min-h-[90px] h-[98px]">
-                    {formImage ? (
-                      <div className="relative w-full flex items-center justify-between gap-2 px-1">
-                        <img 
-                          src={formImage} 
-                          alt="Product Preview" 
-                          className="h-14 w-14 object-contain rounded border border-slate-200 bg-white" 
-                        />
-                        <div className="flex flex-col gap-1 items-end">
-                          <label className="cursor-pointer text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all">
-                            {uploadingImage ? 'Uploading...' : 'Change'}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              disabled={uploadingImage}
-                              onChange={handleImageUpload}
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => setFormImage('')}
-                            className="text-[10px] font-bold text-red-600 hover:text-red-700 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-all"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <label className="cursor-pointer flex flex-col items-center justify-center w-full h-full py-1 text-center select-none">
-                        {uploadingImage ? (
-                          <>
-                            <RefreshCw className="w-5 h-5 text-blue-600 animate-spin mb-1" />
-                            <span className="text-[10px] text-slate-500 font-medium">Uploading...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="w-5 h-5 text-slate-400 mb-1" />
-                            <span className="text-[11px] text-slate-700 font-bold">Upload Image File</span>
-                            <span className="text-[9px] text-slate-400">Click to select image</span>
-                          </>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          disabled={uploadingImage}
-                          onChange={handleImageUpload}
-                        />
-                      </label>
-                    )}
-                  </div>
+                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Base Price (INR)</label>
+                  <input
+                    type="number"
+                    value={formPrice}
+                    onChange={(e) => setFormPrice(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
+                  />
                 </div>
               </div>
+
+              {/* Multi-Image Gallery Manager */}
+              {renderImageGalleryManager()}
 
               <div>
                 <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Product Showcase Tag</label>
@@ -829,9 +936,9 @@ export default function AdminProductsPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer"
               >
-                {submitting ? 'Saving Changes...' : 'Save & Publish Changes'}
+                {submitting ? 'Updating Product...' : 'Save & Update Product'}
               </button>
             </form>
           </div>

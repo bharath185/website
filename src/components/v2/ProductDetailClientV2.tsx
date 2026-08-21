@@ -3,7 +3,25 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, ShoppingCart, Check, Info, FileText, Settings, ShieldCheck, Mail, Send, Phone, Star, MessageSquare } from "lucide-react"
+import {
+  ArrowLeft,
+  ShoppingCart,
+  Check,
+  Info,
+  FileText,
+  Settings,
+  ShieldCheck,
+  Mail,
+  Send,
+  Phone,
+  Star,
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  X,
+  Image as ImageIcon
+} from "lucide-react"
 import { useEnquiry } from "@/context/EnquiryContext"
 import { useAuth } from "@/context/AuthContext"
 
@@ -17,6 +35,26 @@ export default function ProductDetailClientV2({ product }: ProductDetailClientV2
   const { items, addItem } = useEnquiry()
   const isItemInCart = items.some((item) => item.product.id === product.id)
   
+  // Multi-image list setup
+  const productImages: string[] = (product.images && Array.isArray(product.images) && product.images.length > 0)
+    ? product.images
+    : (product.image ? [product.image] : ['https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg'])
+
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+
+  const currentImage = productImages[activeImageIndex] || productImages[0]
+
+  const nextImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setActiveImageIndex((prev) => (prev + 1) % productImages.length)
+  }
+
+  const prevImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setActiveImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length)
+  }
+
   // Custom quotation form state
   const [qName, setQName] = useState("")
   const [qEmail, setQEmail] = useState("")
@@ -85,6 +123,13 @@ export default function ProductDetailClientV2({ product }: ProductDetailClientV2
 
   // Dynamic specs generator depending on category
   const getTechnicalSpecs = () => {
+    if (product.specifications && Array.isArray(product.specifications) && product.specifications.length > 0) {
+      return product.specifications.map((spec, i) => ({
+        label: `Specification 0${i + 1}`,
+        value: typeof spec === 'string' ? spec : JSON.stringify(spec)
+      }))
+    }
+
     const cat = product.category.toLowerCase()
     if (cat.includes("spindle")) {
       return [
@@ -122,20 +167,23 @@ export default function ProductDetailClientV2({ product }: ProductDetailClientV2
   }
 
   const getKeyFeatures = () => {
+    if (product.features && product.features.length > 0) {
+      return product.features
+    }
     const cat = product.category.toLowerCase()
     if (cat.includes("spindle")) {
       return [
-        "Aerospace grade balanced core rotor components",
-        "Dual steel shield bearing protection against grinding coolants",
-        "Extremely low thermal expansion runout deviation",
-        "Direct belt pulley drive compatibility features",
+        "Dynamically balanced to ISO 1940 Grade G0.4 standards",
+        "Air-purge labyrinth sealing against cutting coolant ingress",
+        "Sub-micron axial and radial runout consistency",
+        "Supplied with full factory run-in and vibration spectrum report",
       ]
     } else if (cat.includes("bearing")) {
       return [
-        "Ceramic silicon nitride balls for elevated speeds (optional)",
-        "Premium polyamide outer retainer cages minimizing heat",
-        "Pre-matched pairs in back-to-back configurations",
-        "Direct replacement fits for major MNC machinery brands",
+        "ISO P4/P2 super-precision matched duplex/quadruplex pairs",
+        "Extreme rigidity under heavy axial thrust loads",
+        "Specialized ceramic silicon nitride ball options available",
+        "Extended fatigue life and minimal thermal expansion",
       ]
     } else {
       return [
@@ -218,23 +266,20 @@ export default function ProductDetailClientV2({ product }: ProductDetailClientV2
     : "0.0"
 
   const renderStars = (rating: number) => {
-    return (
-      <div className="flex gap-0.5">
-        {[1, 2, 3, 4, 5].map((s) => (
-          <Star
-            key={s}
-            className={`w-3 h-3 ${
-              s <= rating ? "fill-amber-400 text-amber-400" : "text-slate-200"
-            }`}
-          />
-        ))}
-      </div>
-    )
+    return [1, 2, 3, 4, 5].map((star) => (
+      <Star
+        key={star}
+        className={`w-3.5 h-3.5 ${
+          star <= rating ? "fill-amber-400 text-amber-400" : "text-slate-300"
+        }`}
+      />
+    ))
   }
 
   return (
-    <div className="min-h-screen bg-white text-slate-800 pt-28 pb-20 relative overflow-hidden">
-      {/* Background gradients */}
+    <div className="min-h-screen bg-slate-50 text-slate-800 pt-20 sm:pt-28 pb-20 relative overflow-hidden font-sans">
+      
+      {/* Background glow styling */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -251,32 +296,102 @@ export default function ProductDetailClientV2({ product }: ProductDetailClientV2
 
         {/* Dynamic Detail grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-          {/* Left Column: Image Showcase & Key Features */}
+          
+          {/* Left Column: Multi-Image Showcase & Key Features */}
           <div className="lg:col-span-5 flex flex-col gap-6">
-            <div 
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              className="aspect-[4/3] w-full bg-white rounded-[2rem] overflow-hidden border border-slate-200/80 shadow-sm relative flex items-center justify-center p-8 cursor-zoom-in group"
-            >
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.012)_1px,transparent_1px)] bg-[size:20px_20px] opacity-100 pointer-events-none" />
-              <div className="absolute w-48 h-48 bg-blue-500/5 rounded-full blur-[60px]" />
-              
-              <span className="absolute top-4 right-4 bg-slate-900/5 backdrop-blur-[2px] text-slate-500 font-mono text-[8px] font-bold tracking-widest px-2.5 py-1 rounded-md border border-slate-200/40 select-none pointer-events-none z-20 transition-opacity duration-300 group-hover:opacity-0">
-                HOVER TO ZOOM
-              </span>
-              
-              <img
-                src={product.image}
-                alt={product.name}
-                style={zoomStyle}
-                className="max-w-full max-h-full object-contain relative z-10 drop-shadow-[0_8px_20px_rgba(0,0,0,0.04)]"
-              />
+            
+            {/* Main Image Container */}
+            <div className="flex flex-col gap-3">
+              <div 
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => setIsLightboxOpen(true)}
+                className="aspect-[4/3] w-full bg-white rounded-[2rem] overflow-hidden border border-slate-200/80 shadow-sm relative flex items-center justify-center p-8 cursor-zoom-in group select-none"
+              >
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.012)_1px,transparent_1px)] bg-[size:20px_20px] opacity-100 pointer-events-none" />
+                <div className="absolute w-48 h-48 bg-blue-500/5 rounded-full blur-[60px]" />
+                
+                {/* Badges & Counter on Image */}
+                <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5">
+                  <span className="bg-slate-900/80 backdrop-blur-md text-white font-mono text-[9px] font-bold tracking-wider px-2.5 py-1 rounded-md shadow-sm flex items-center gap-1">
+                    <ImageIcon className="w-3 h-3 text-blue-300" />
+                    {activeImageIndex + 1} / {productImages.length}
+                  </span>
+                </div>
+
+                <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+                  <span className="bg-slate-900/5 backdrop-blur-[2px] text-slate-500 font-mono text-[8px] font-bold tracking-widest px-2.5 py-1 rounded-md border border-slate-200/40 select-none pointer-events-none transition-opacity duration-300 group-hover:opacity-0 hidden sm:inline-block">
+                    HOVER TO ZOOM
+                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setIsLightboxOpen(true)
+                    }}
+                    className="p-1.5 bg-white/90 hover:bg-white text-slate-700 rounded-lg shadow-sm border border-slate-200/60 transition-all hover:scale-105"
+                    title="View fullscreen"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                
+                {/* Active Image */}
+                <img
+                  src={currentImage}
+                  alt={`${product.name} angle ${activeImageIndex + 1}`}
+                  style={zoomStyle}
+                  className="max-w-full max-h-full object-contain relative z-10 drop-shadow-[0_8px_20px_rgba(0,0,0,0.04)] transition-transform"
+                />
+
+                {/* Left/Right Arrow Navigation Overlays */}
+                {productImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-md border border-slate-200/80 opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                      title="Previous photo"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-md border border-slate-200/80 opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                      title="Next photo"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Thumbnails Navigation Strip */}
+              {productImages.length > 1 && (
+                <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1">
+                  {productImages.map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImageIndex(i)}
+                      className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl overflow-hidden bg-white border p-1.5 shrink-0 transition-all duration-200 ${
+                        activeImageIndex === i
+                          ? "border-blue-600 ring-2 ring-blue-500/20 shadow-md scale-105"
+                          : "border-slate-200/80 opacity-70 hover:opacity-100 hover:border-slate-400"
+                      }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`Thumbnail ${i + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Key Features Block */}
             <div className="bg-slate-50 border border-slate-200/60 rounded-[2rem] p-6 sm:p-8 shadow-sm">
               <h3 className="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Check className="w-4 h-4 text-blue-600" /> Key Features & Benefits
+                <Check className="w-4 h-4 text-blue-600" /> Key Features &amp; Benefits
               </h3>
               <div className="space-y-3">
                 {getKeyFeatures().map((feat, i) => (
@@ -318,179 +433,267 @@ export default function ProductDetailClientV2({ product }: ProductDetailClientV2
               {/* Top rating score summary */}
               {reviews.length > 0 && (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-[9px] font-bold uppercase tracking-wider font-mono">
-                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                  {avgRating}★ ({reviews.length} {reviews.length === 1 ? 'Review' : 'Reviews'})
+                  <span className="font-black text-amber-900">★ {avgRating}</span>
+                  <span>({reviews.length} {reviews.length === 1 ? 'review' : 'reviews'})</span>
                 </div>
               )}
             </div>
 
-            {/* Quick Actions */}
-            <div className="flex flex-wrap gap-4 mb-8">
-              <button
-                onClick={() => addItem(product)}
-                className={`px-8 py-4 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-[0.98] ${
-                  isItemInCart
-                    ? "bg-blue-50 border border-blue-200 text-blue-600"
-                    : "bg-slate-900 hover:bg-blue-600 text-white shadow-md shadow-slate-900/10"
-                }`}
-              >
-                {isItemInCart ? (
-                  <>
-                    <Check className="w-3.5 h-3.5" />
-                    Added to Enquiry Cart
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="w-3.5 h-3.5" />
-                    Add to Enquiry Cart
-                  </>
-                )}
-              </button>
+            <p className="text-slate-600 text-xs sm:text-sm font-light leading-relaxed mb-8">
+              {product.description}
+            </p>
 
-              <a
-                href={`https://wa.me/919530208882?text=Hello%20BMT%20Sales%20Team,%20I%20am%20interested%20in%2520${encodeURIComponent(product.name)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10 hover:scale-[1.03] active:scale-[0.98]"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                WhatsApp Sales
-              </a>
-            </div>
-
-            {/* Full Product Description Block */}
-            <div className="border-t border-slate-100 pt-8 mt-4 text-xs font-light text-slate-600 leading-relaxed max-w-2xl space-y-4">
-              <h3 className="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-2">Product Description</h3>
-              <p className="whitespace-pre-line leading-loose text-slate-600">{product.description}</p>
-            </div>
-
-            {/* Technical Specifications Grid Block */}
-            <div className="border-t border-slate-100 pt-8 mt-8 text-xs font-light text-slate-600 leading-relaxed max-w-2xl">
-              <h3 className="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-4">Technical Specifications</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {getTechnicalSpecs().map((spec) => (
-                  <div
-                    key={spec.label}
-                    className="flex flex-col py-3 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50/50 hover:border-slate-350 transition-all duration-200 shadow-sm"
+            {/* Technical Specifications Table */}
+            <div className="bg-white border border-slate-200/80 rounded-[2rem] p-6 sm:p-8 mb-8 shadow-sm">
+              <h3 className="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-6 flex items-center gap-2">
+                <Settings className="w-4 h-4 text-blue-600" /> Technical Data &amp; Tolerances
+              </h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {getTechnicalSpecs().map((spec, index) => (
+                  <div 
+                    key={index}
+                    className="p-4 rounded-xl border border-slate-200/60 bg-slate-50/50 flex flex-col justify-between"
                   >
-                    <span className="text-slate-500 font-bold text-[9px] uppercase tracking-wider mb-1">{spec.label}</span>
-                    <span className="text-slate-800 font-mono font-bold text-xs tracking-tight">{spec.value}</span>
+                    <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-1">{spec.label}</span>
+                    <span className="text-xs font-mono font-bold text-slate-800">{spec.value}</span>
                   </div>
                 ))}
               </div>
-              
-              <p className="text-[10px] text-slate-400 font-mono border-t border-slate-100 pt-4 mt-8 leading-relaxed">
-                * BMT offers custom taper, runout checks, and dynamic mounting services for this unit in Bangalore. Contact engineering support for dimensions layout.
-              </p>
+            </div>
+
+            {/* Interactive Quotation & Cart Action Strip */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+              {isItemInCart ? (
+                <button
+                  className="flex-1 py-4 bg-blue-50 border border-blue-100 text-blue-600 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-default"
+                >
+                  <Check className="w-4 h-4" /> Added to Enquiry Cart
+                </button>
+              ) : (
+                <button
+                  onClick={() => addItem(product)}
+                  className="flex-1 py-4 bg-slate-900 hover:bg-[#122f87] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+                >
+                  <ShoppingCart className="w-4 h-4 text-slate-300" /> Add to Enquiry Cart
+                </button>
+              )}
+
+              <a
+                href={`https://wa.me/919530208882?text=Hello%2C%20I%20am%20interested%20in%20the%20${encodeURIComponent(product.name)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-4 px-6 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-sm"
+              >
+                <span>WhatsApp Quote</span>
+              </a>
             </div>
 
           </div>
+
         </div>
 
-        {/* Dynamic Reviews and Ratings Pad Section */}
-        {reviews.length > 0 && (
-          <div className="border-t border-slate-150 pt-12 mt-12 max-w-6xl mx-auto space-y-6">
-            
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              
-              {/* Left Column: Graphical Rating Pad Card */}
-              <div className="lg:col-span-5 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-5">
-                  <Star className="w-4.5 h-4.5 text-slate-700" />
-                  <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wide">Ratings Breakdown</h3>
-                </div>
+        {/* Customer Testimonials & Reviews Section */}
+        <div className="bg-white border border-slate-200/80 rounded-[2.5rem] p-6 sm:p-12 mb-16 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 pb-8 mb-8">
+            <div>
+              <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40 inline-block mb-3">
+                Verified Feedback
+              </span>
+              <h2 className="text-2xl font-bold font-display uppercase tracking-tight text-slate-900">
+                Customer Reviews &amp; Ratings
+              </h2>
+            </div>
 
-                <div className="flex flex-col gap-5">
-                  {/* Score block */}
-                  <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
-                    <span className="text-5xl font-black text-slate-900 tracking-tight leading-none font-display">
-                      {avgRating}
-                    </span>
-                    <div>
-                      <div className="flex gap-0.5">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star
-                            key={s}
-                            className={`w-3.5 h-3.5 ${
-                              s <= Math.round(parseFloat(avgRating)) ? "fill-amber-400 text-amber-400" : "text-slate-250"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-[10px] text-slate-500 font-mono mt-1 block">
-                        {reviews.length} verified {reviews.length === 1 ? 'review' : 'reviews'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Progress bars list */}
-                  <div className="space-y-1.5">
-                    {[5, 4, 3, 2, 1].map((stars) => {
-                      const count = reviews.filter((r) => r.rating === stars).length
-                      const percentage = reviews.length > 0 ? Math.round((count / reviews.length) * 100) : 0
-                      
-                      return (
-                        <div key={stars} className="flex items-center gap-3 text-[11px] text-slate-700">
-                          <span className="w-2 text-right font-bold font-mono">{stars}</span>
-                          <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
-                          <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-[#122f87] rounded-full transition-all duration-500" 
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                          <span className="w-8 text-right font-mono font-bold text-slate-400 text-[9px]">
-                            {percentage}%
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <span className="text-3xl font-black font-mono text-slate-900">{avgRating}</span>
+                <span className="text-xs text-slate-400 block font-mono">out of 5.0</span>
               </div>
+              <div className="flex gap-1">
+                {renderStars(Math.round(Number(avgRating)))}
+              </div>
+            </div>
+          </div>
 
-              {/* Right Column: Scrollable Testimonials list */}
-              <div className="lg:col-span-7 space-y-4">
-                <h4 className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest block pl-1">Testimonials Feedback</h4>
-                
-                <div className="max-h-[290px] overflow-y-auto pr-2 space-y-3 scrollbar-thin">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            
+            {/* Review Form */}
+            <div className="lg:col-span-5 bg-slate-50 border border-slate-200/70 rounded-2xl p-6">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 font-mono mb-4 flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-blue-600" /> Write a Review
+              </h3>
+
+              {revSuccess && (
+                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-xl font-bold">
+                  {revSuccess}
+                </div>
+              )}
+              {revError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl font-medium">
+                  {revError}
+                </div>
+              )}
+
+              <form onSubmit={handleReviewSubmit} className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Your Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={revName}
+                    onChange={(e) => setRevName(e.target.value)}
+                    placeholder="e.g. Anand Kumar"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    value={revEmail}
+                    onChange={(e) => setRevEmail(e.target.value)}
+                    placeholder="e.g. anand@company.com"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Rating *</label>
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setRevRating(star)}
+                        onMouseEnter={() => setRevHoverRating(star)}
+                        onMouseLeave={() => setRevHoverRating(0)}
+                        className="p-1 cursor-pointer transition-transform hover:scale-110"
+                      >
+                        <Star
+                          className={`w-5 h-5 ${
+                            star <= (revHoverRating || revRating)
+                              ? "fill-amber-400 text-amber-400"
+                              : "text-slate-300"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Your Review *</label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={revComment}
+                    onChange={(e) => setRevComment(e.target.value)}
+                    placeholder="Share your experience regarding accuracy, performance, or delivery..."
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={revSubmitting}
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
+                >
+                  {revSubmitting ? "Submitting..." : "Submit Review for Moderation"}
+                </button>
+              </form>
+            </div>
+
+            {/* Testimonials Feed */}
+            <div className="lg:col-span-7 space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 font-mono mb-4">
+                Recent Reviews ({reviews.length})
+              </h3>
+
+              {reviews.length > 0 ? (
+                <div className="space-y-3 max-h-[420px] overflow-y-auto pr-2 scrollbar-thin">
                   {reviews.map((rev) => (
-                    <div key={rev.id} className="bg-slate-50/50 border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-2 hover:border-slate-350 transition-colors">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <span className="font-extrabold text-slate-900 text-[11px] block">{rev.name}</span>
-                          <span className="text-[8.5px] text-slate-400 font-mono block">
-                            {new Date(rev.createdAt).toLocaleDateString("en-IN", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric"
-                            })}
-                          </span>
-                        </div>
+                    <div
+                      key={rev.id}
+                      className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900 text-xs">{rev.name}</span>
                         <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map((s) => (
-                            <Star
-                              key={s}
-                              className={`w-3 h-3 ${
-                                s <= rev.rating ? "fill-amber-400 text-amber-400" : "text-slate-250"
-                              }`}
-                            />
-                          ))}
+                          {renderStars(rev.rating)}
                         </div>
                       </div>
-                      <p className="text-slate-650 text-[10.5px] font-light leading-relaxed whitespace-pre-wrap">
+                      <p className="text-xs text-slate-600 font-light leading-relaxed">
                         {rev.comment}
                       </p>
                     </div>
                   ))}
                 </div>
-              </div>
-
+              ) : (
+                <div className="text-center py-10 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+                  <p className="text-xs text-slate-500 font-medium">No reviews published yet.</p>
+                  <p className="text-[10px] text-slate-400 mt-1">Be the first to review this precision component!</p>
+                </div>
+              )}
             </div>
 
           </div>
-        )}
+        </div>
+
       </div>
+
+      {/* Lightbox Fullscreen Modal */}
+      {isLightboxOpen && (
+        <div
+          onClick={() => setIsLightboxOpen(false)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 select-none animate-fade-in"
+        >
+          <button
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-6 right-6 p-3 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors z-50"
+            title="Close Lightbox"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-5xl max-h-[85vh] flex flex-col items-center justify-center"
+          >
+            <img
+              src={currentImage}
+              alt={product.name}
+              className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl"
+            />
+
+            <div className="mt-4 flex items-center justify-between w-full text-white px-4">
+              <span className="text-xs font-mono font-bold tracking-wider uppercase">
+                {product.name} &bull; Image {activeImageIndex + 1} of {productImages.length}
+              </span>
+
+              {productImages.length > 1 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={prevImage}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

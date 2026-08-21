@@ -10,9 +10,14 @@ import V2Updates from "@/components/v2/V2Updates"
 import { db } from "@/lib/db"
 
 export default async function Home() {
-  const mdInfo = await db.mDInfo.findUnique({
-    where: { id: "md-info" }
-  })
+  let mdInfo = null
+  try {
+    mdInfo = await db.mDInfo.findUnique({
+      where: { id: "md-info" }
+    })
+  } catch (err) {
+    console.warn("DB query for MDInfo failed during build, using fallback defaults:", err)
+  }
 
   return (
     <>
