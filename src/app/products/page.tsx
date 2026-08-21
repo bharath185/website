@@ -10,6 +10,8 @@ import { Product } from "@/types"
 import MobileProductsCatalogue from "@/components/v2/MobileProductsCatalogue"
 import { useIsMobile } from "@/hooks/useIsMobile"
 
+import { getClientStoredProducts, getClientDeletedIds, saveClientStoredProducts } from "@/lib/products-client"
+
 const getCategoryIcon = (category: string) => {
   switch (category.toLowerCase()) {
     case "all":
@@ -28,7 +30,7 @@ const getCategoryIcon = (category: string) => {
 }
 
 export default function ProductsPage() {
-  const [productsList, setProductsList] = useState<Product[]>(fallbackProducts)
+  const [productsList, setProductsList] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState<string>("All")
   const [searchQuery, setSearchQuery] = useState("")
@@ -36,13 +38,37 @@ export default function ProductsPage() {
   const isMobile = useIsMobile()
 
   useEffect(() => {
+    // 1. Immediately display persistent client storage
+    const local = getClientStoredProducts()
+    if (local && local.length > 0) {
+      setProductsList(local)
+      setLoading(false)
+    }
+
     async function fetchProducts() {
       try {
         const res = await fetch("/api/products")
         if (res.ok) {
           const data = await res.json()
-          if (data.products && data.products.length > 0) {
-            setProductsList(data.products)
+          if (data.products && Array.isArray(data.products)) {
+            const deletedIds = getClientDeletedIds()
+            const validServerProducts: Product[] = data.products.filter(
+              (p: Product) => !deletedIds.has(p.id) && !deletedIds.has(p.slug)
+            )
+
+            const mergedMap = new Map<string, Product>()
+            validServerProducts.forEach((p) => mergedMap.set(p.id, p))
+            local.forEach((p) => {
+              if (!deletedIds.has(p.id) && !deletedIds.has(p.slug)) {
+                mergedMap.set(p.id, p)
+              }
+            })
+
+            const finalMerged = Array.from(mergedMap.values())
+            if (finalMerged.length > 0) {
+              setProductsList(finalMerged)
+              saveClientStoredProducts(finalMerged)
+            }
           }
         }
       } catch (err) {

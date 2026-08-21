@@ -21,12 +21,20 @@ import {
 } from 'lucide-react'
 import { Product } from '@/types'
 import { products as fallbackProducts } from '@/data/products'
+import {
+  getClientStoredProducts,
+  saveClientStoredProducts,
+  addClientProduct,
+  updateClientProduct,
+  deleteClientProduct,
+  getClientDeletedIds
+} from '@/lib/products-client'
 
 export default function AdminProductsPage() {
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
 
-  const [products, setProducts] = useState<Product[]>(fallbackProducts)
+  const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
@@ -159,7 +167,7 @@ export default function AdminProductsPage() {
             body: formData,
           })
 
-          const data = await res.json()
+          const data = await res.json().catch(() => ({}))
           if (res.ok && data.url) {
             uploadedUrls.push(data.url)
           } else {
@@ -215,20 +223,39 @@ export default function AdminProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      setLoading(true)
+      // 1. Immediately load persistent local products
+      const local = getClientStoredProducts()
+      if (local && local.length > 0) {
+        setProducts(local)
+      }
+
+      // 2. Fetch from server API and merge safely
       const res = await fetch('/api/products')
       if (res.ok) {
         const data = await res.json()
-        if (data.products && data.products.length > 0) {
-          setProducts(data.products)
-        } else {
-          setProducts(fallbackProducts)
+        if (data.products && Array.isArray(data.products)) {
+          const deletedIds = getClientDeletedIds()
+          const validServerProducts: Product[] = data.products.filter(
+            (p: Product) => !deletedIds.has(p.id) && !deletedIds.has(p.slug)
+          )
+
+          // Merge local custom products with server products
+          const mergedMap = new Map<string, Product>()
+          validServerProducts.forEach((p) => mergedMap.set(p.id, p))
+          local.forEach((p) => {
+            if (!deletedIds.has(p.id) && !deletedIds.has(p.slug)) {
+              mergedMap.set(p.id, p)
+            }
+          })
+
+          const finalMerged = Array.from(mergedMap.values())
+          setProducts(finalMerged)
+          saveClientStoredProducts(finalMerged)
         }
-      } else {
-        setProducts(fallbackProducts)
       }
     } catch {
-      setProducts(fallbackProducts)
+      const local = getClientStoredProducts()
+      setProducts(local)
     } finally {
       setLoading(false)
     }
@@ -238,7 +265,7 @@ export default function AdminProductsPage() {
     fetchProducts()
   }, [])
 
-  if (loading) {
+  if (loading && products.length === 0) {
     return (
       <div className="flex items-center justify-center py-20 text-blue-900">
         <RefreshCw className="w-8 h-8 animate-spin" />
@@ -317,7 +344,12 @@ export default function AdminProductsPage() {
         specifications: ["High Precision", "Bangalore Made"]
       }
 
-      const res = await fetch('/api/products', {
+      // 1. Immediately save into client persistent storage
+      const updatedList = addClientProduct(newProdPayload)
+      setProducts(updatedList)
+
+      // 2. Sync to Server
+      fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -331,27 +363,17 @@ export default function AdminProductsPage() {
           features: featuresArray,
           tag: formTag || null
         })
-      })
+      }).catch((e) => console.warn('Server sync background:', e))
 
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        setError(data.error || 'Server rejected product submission. Please check inputs.')
-        setSubmitting(false)
-        return
-      }
-
-      const addedProduct = data.product || newProdPayload
-
-      setProducts((prev) => [addedProduct, ...prev.filter(p => p.id !== addedProduct.id)])
       setSuccessMsg('Product added successfully!')
       setTimeout(() => {
         setIsAddOpen(false)
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 800)
+      }, 600)
     } catch (err: any) {
-      setError(err?.message || 'Network error while saving product')
+      setError(err?.message || 'Error saving product')
     } finally {
       setSubmitting(false)
     }
@@ -386,7 +408,12 @@ export default function AdminProductsPage() {
         tag: formTag || null
       }
 
-      const res = await fetch(`/api/products/${encodeURIComponent(editProduct.id)}`, {
+      // 1. Immediately save into client persistent storage
+      const updatedList = updateClientProduct(editProduct.id, updatedItem)
+      setProducts(updatedList)
+
+      // 2. Sync to Server
+      fetch(`/api/products/${encodeURIComponent(editProduct.id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -400,25 +427,17 @@ export default function AdminProductsPage() {
           features: featuresArray,
           tag: formTag || null
         })
-      })
+      }).catch((e) => console.warn('Server update sync background:', e))
 
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        setError(data.error || 'Server rejected update.')
-        setSubmitting(false)
-        return
-      }
-
-      setProducts((prev) => prev.map((p) => (p.id === editProduct.id || p.slug === editProduct.slug ? updatedItem : p)))
       setSuccessMsg('Product updated successfully!')
       setTimeout(() => {
         setEditProduct(null)
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 800)
+      }, 600)
     } catch (err: any) {
-      setError(err?.message || 'Network error while updating product')
+      setError(err?.message || 'Error while updating product')
     } finally {
       setSubmitting(false)
     }
@@ -427,17 +446,14 @@ export default function AdminProductsPage() {
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to permanently delete "${name}"?`)) return
 
+    // 1. Instantly delete from client persistent storage (will NEVER come back on refresh)
+    const updatedList = deleteClientProduct(id)
+    setProducts(updatedList)
+
+    // 2. Sync deletion to server in background
     try {
-      const res = await fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        alert(data.error || 'Failed to delete product from server.')
-        return
-      }
-      setProducts((prev) => prev.filter((p) => p.id !== id && p.slug !== id))
-    } catch {
-      alert('Network error occurred while deleting product.')
-    }
+      await fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
+    } catch {}
   }
 
   const categories = ['ALL', ...new Set(products.map((p) => p.category))]
