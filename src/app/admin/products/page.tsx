@@ -81,8 +81,8 @@ export default function AdminProductsPage() {
     }
   }
 
-  // Highly efficient client-side image compressor (converts any huge image to <= 150KB crisp JPEG)
-  const compressImageToDataUrl = (src: string): Promise<string> => {
+  // Image compressor that preserves 100% PNG & WebP transparency with ZERO white background
+  const compressImageToDataUrl = (src: string, originalType = 'image/png'): Promise<string> => {
     return new Promise((resolve) => {
       const img = new Image()
       img.crossOrigin = 'anonymous'
@@ -91,7 +91,7 @@ export default function AdminProductsPage() {
         let width = img.width
         let height = img.height
 
-        const MAX_DIM = 1000
+        const MAX_DIM = 1200
         if (width > height) {
           if (width > MAX_DIM) {
             height = Math.round((height * MAX_DIM) / width)
@@ -109,10 +109,13 @@ export default function AdminProductsPage() {
 
         const ctx = canvas.getContext('2d')
         if (ctx) {
-          ctx.fillStyle = '#FFFFFF'
-          ctx.fillRect(0, 0, width, height)
+          // Keep canvas 100% transparent - NEVER fill with white
+          ctx.clearRect(0, 0, width, height)
           ctx.drawImage(img, 0, 0, width, height)
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75)
+
+          const isPngOrWebp = originalType.includes('png') || originalType.includes('webp') || originalType.includes('svg')
+          const mimeType = isPngOrWebp ? 'image/png' : 'image/jpeg'
+          const compressedDataUrl = canvas.toDataURL(mimeType, isPngOrWebp ? 1.0 : 0.85)
           resolve(compressedDataUrl)
         } else {
           resolve(src)
@@ -124,18 +127,25 @@ export default function AdminProductsPage() {
   }
 
   const compressFile = (file: File): Promise<File> => {
+    // If file is already under 3MB, upload directly to keep 100% original quality and transparency
+    if (file.size <= 3 * 1024 * 1024) {
+      return Promise.resolve(file)
+    }
+
     return new Promise((resolve) => {
       const reader = new FileReader()
       reader.onload = async (e) => {
         const rawDataUrl = e.target?.result as string
-        const compressedDataUrl = await compressImageToDataUrl(rawDataUrl)
+        const isPngOrWebp = file.type.includes('png') || file.type.includes('webp') || file.type.includes('svg') || file.name.toLowerCase().endsWith('.png')
+        const outputMime = isPngOrWebp ? 'image/png' : 'image/jpeg'
+        const compressedDataUrl = await compressImageToDataUrl(rawDataUrl, outputMime)
 
-        // Convert dataUrl back to a lightweight File for uploading
         fetch(compressedDataUrl)
           .then((res) => res.blob())
           .then((blob) => {
-            const newName = file.name.replace(/\.[^.]+$/, '.jpg')
-            const optimizedFile = new File([blob], newName, { type: 'image/jpeg' })
+            const ext = isPngOrWebp ? '.png' : '.jpg'
+            const newName = file.name.replace(/\.[^.]+$/, ext)
+            const optimizedFile = new File([blob], newName, { type: outputMime })
             resolve(optimizedFile)
           })
           .catch(() => resolve(file))
@@ -201,7 +211,8 @@ export default function AdminProductsPage() {
     let finalUrl = trimmed
     // If it's a huge base64 data string, compress it before adding to state
     if (trimmed.startsWith('data:image/')) {
-      finalUrl = await compressImageToDataUrl(trimmed)
+      const isPng = trimmed.startsWith('data:image/png') || trimmed.startsWith('data:image/webp')
+      finalUrl = await compressImageToDataUrl(trimmed, isPng ? 'image/png' : 'image/jpeg')
     }
 
     if (!formImages.includes(finalUrl)) {
