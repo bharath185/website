@@ -236,26 +236,43 @@ export async function pgUpdateProduct(idOrSlug: string, updates: Partial<Product
       imagesList = [updates.image]
     }
 
-    const primaryImage = imagesList[0] || updates.image || existing.image
-    const name = updates.name || existing.name
-    const category = updates.category || existing.category
-    const price = updates.price !== undefined ? parseFloat(updates.price.toString()) : existing.price
-    const shortDescription = updates.shortDescription || existing.shortDescription
-    const description = updates.description || existing.description
+    const primaryImage = imagesList[0] || updates.image || existing.image || ''
+    const name = updates.name !== undefined ? updates.name : existing.name
+    const category = updates.category !== undefined ? updates.category : existing.category
+    const priceVal = updates.price !== undefined ? parseFloat(updates.price.toString()) : (existing.price ?? 0)
+    const price = !isNaN(priceVal) ? priceVal : 0
+    const shortDescription = updates.shortDescription !== undefined ? updates.shortDescription : existing.shortDescription
+    const description = updates.description !== undefined ? updates.description : existing.description
     const tag = updates.tag !== undefined ? updates.tag : existing.tag
-    const specifications = JSON.stringify(updates.specifications || existing.specifications || [])
-    const features = JSON.stringify(updates.features || existing.features || [])
+    
+    let specs = updates.specifications !== undefined ? updates.specifications : existing.specifications
+    if (!Array.isArray(specs)) specs = []
+    const specifications = JSON.stringify(specs)
+
+    let feats = updates.features !== undefined ? updates.features : existing.features
+    if (!Array.isArray(feats)) feats = []
+    const features = JSON.stringify(feats)
+
     const imagesJson = JSON.stringify(imagesList)
+
+    let slug = existing.slug
+    if (updates.slug) {
+      slug = updates.slug
+    } else if (updates.name && updates.name !== existing.name) {
+      const generated = updates.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+      if (generated) slug = generated
+    }
 
     const query = `
       UPDATE "Product"
-      SET name = $1, category = $2, price = $3, "shortDescription" = $4, description = $5,
-          image = $6, images = $7, specifications = $8, features = $9, tag = $10, "updatedAt" = NOW()
-      WHERE id = $11 OR slug = $11
+      SET name = $1, slug = $2, category = $3, price = $4, "shortDescription" = $5, description = $6,
+          image = $7, images = $8, specifications = $9, features = $10, tag = $11, "updatedAt" = NOW()
+      WHERE id = $12
       RETURNING *;
     `
     const res = await client.query(query, [
       name,
+      slug,
       category,
       price,
       shortDescription,
@@ -270,11 +287,51 @@ export async function pgUpdateProduct(idOrSlug: string, updates: Partial<Product
 
     if (res.rows.length === 0) return null
 
+    const p = res.rows[0]
+    let parsedImages: string[] = []
+    if (p.images) {
+      try {
+        parsedImages = typeof p.images === 'string' ? JSON.parse(p.images) : p.images
+      } catch {
+        parsedImages = []
+      }
+    }
+    if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
+      parsedImages = p.image ? [p.image] : []
+    }
+
+    let parsedSpecs: string[] = []
+    if (p.specifications) {
+      try {
+        parsedSpecs = typeof p.specifications === 'string' ? JSON.parse(p.specifications) : p.specifications
+      } catch {
+        parsedSpecs = []
+      }
+    }
+
+    let parsedFeatures: string[] = []
+    if (p.features) {
+      try {
+        parsedFeatures = typeof p.features === 'string' ? JSON.parse(p.features) : p.features
+      } catch {
+        parsedFeatures = []
+      }
+    }
+
     return {
-      ...existing,
-      ...updates,
-      image: primaryImage,
-      images: imagesList
+      id: p.id,
+      name: p.name,
+      slug: p.slug,
+      category: p.category,
+      price: parseFloat(p.price) || 0,
+      shortDescription: p.shortDescription || p.name,
+      description: p.description || p.name,
+      image: parsedImages[0] || p.image || '',
+      images: parsedImages,
+      tag: p.tag || undefined,
+      specifications: parsedSpecs,
+      features: parsedFeatures,
+      reviews: []
     }
   } finally {
     await client.end().catch(() => {})

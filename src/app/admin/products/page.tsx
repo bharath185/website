@@ -27,7 +27,8 @@ import {
   addClientProduct,
   updateClientProduct,
   deleteClientProduct,
-  getClientDeletedIds
+  getClientDeletedIds,
+  recordClientDeletedId
 } from '@/lib/products-client'
 
 export default function AdminProductsPage() {
@@ -347,9 +348,8 @@ export default function AdminProductsPage() {
         specifications: ["High Precision", "Bangalore Made"]
       }
 
-      // 2. Only after DB save is verified, update client state & persistent storage
-      const updatedList = addClientProduct(createdProduct)
-      setProducts(updatedList)
+      // 2. Update local state
+      setProducts((prev) => [createdProduct, ...prev.filter((p) => p.id !== createdProduct.id)])
 
       // 3. Show verified database success notification
       setSuccessMsg('Product saved successfully to database!')
@@ -358,7 +358,8 @@ export default function AdminProductsPage() {
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 1000)
+        fetchProducts()
+      }, 800)
     } catch (err: any) {
       setError(err?.message || 'Error saving product to database')
     } finally {
@@ -412,9 +413,10 @@ export default function AdminProductsPage() {
         ...payload
       }
 
-      // 2. Only after DB save is verified, update client state & persistent storage
-      const updatedList = updateClientProduct(editProduct.id, updatedItem)
-      setProducts(updatedList)
+      // 2. Update local state directly with the updated product
+      setProducts((prev) =>
+        prev.map((p) => (p.id === editProduct.id || p.slug === editProduct.slug ? updatedItem : p))
+      )
 
       // 3. Show verified database success notification
       setSuccessMsg('Product updated successfully in database!')
@@ -423,7 +425,8 @@ export default function AdminProductsPage() {
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 1000)
+        fetchProducts()
+      }, 800)
     } catch (err: any) {
       setError(err?.message || 'Error while updating product in database')
     } finally {
@@ -442,9 +445,10 @@ export default function AdminProductsPage() {
         return
       }
 
-      // Only after DB delete succeeds, update client state and persistent store
-      const updatedList = deleteClientProduct(id)
-      setProducts(updatedList)
+      // Only after DB delete succeeds, update client state
+      setProducts((prev) => prev.filter((p) => p.id !== id && p.slug !== id))
+      recordClientDeletedId(id)
+      fetchProducts()
     } catch (err: any) {
       alert(err?.message || 'Network error while deleting product.')
     }

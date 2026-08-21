@@ -8,7 +8,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const product = await getProductByIdOrSlug(id)
+    const decodedId = decodeURIComponent(id)
+    const product = await getProductByIdOrSlug(decodedId)
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
@@ -32,13 +33,17 @@ export async function PUT(
     }
 
     const { id } = await params
+    const decodedId = decodeURIComponent(id)
     const body = await req.json()
     const { name, category, price, shortDescription, description, image, images, specifications, features, tag } = body
 
     const updateData: Record<string, any> = {}
     if (name !== undefined) updateData.name = name
     if (category !== undefined) updateData.category = category
-    if (price !== undefined) updateData.price = parseFloat(price.toString())
+    if (price !== undefined && price !== null && price !== '') {
+      const parsedPrice = parseFloat(price.toString())
+      updateData.price = !isNaN(parsedPrice) ? parsedPrice : 0
+    }
     if (shortDescription !== undefined) updateData.shortDescription = shortDescription
     if (description !== undefined) updateData.description = description
     if (tag !== undefined) updateData.tag = tag || null
@@ -56,7 +61,7 @@ export async function PUT(
       updateData.features = Array.isArray(features) ? features : (typeof features === 'string' ? JSON.parse(features) : features)
     }
 
-    const updated = await updateProduct(id, updateData)
+    const updated = await updateProduct(decodedId, updateData)
 
     if (!updated) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
@@ -83,7 +88,8 @@ export async function DELETE(
     }
 
     const { id } = await params
-    const deleted = await deleteProduct(id)
+    const decodedId = decodeURIComponent(id)
+    const deleted = await deleteProduct(decodedId)
 
     if (!deleted) {
       return NextResponse.json({ error: 'Product not found or already deleted' }, { status: 404 })
