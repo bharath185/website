@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
 import { getSessionUser } from '@/lib/auth'
-import { products as defaultProducts } from '@/data/products'
+import { getProductByIdOrSlug, updateProduct, deleteProduct } from '@/lib/products-store'
 
 export async function GET(
   req: Request,
@@ -9,51 +8,13 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    let product: any = null
-
-    try {
-      product = await db.product.findUnique({
-        where: { id }
-      })
-
-      if (!product) {
-        product = await db.product.findUnique({
-          where: { slug: id }
-        })
-      }
-    } catch {
-      // Serverless fallback
-    }
-
-    if (!product) {
-      product = defaultProducts.find((p) => p.id === id || p.slug === id)
-    }
+    const product = await getProductByIdOrSlug(id)
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    let parsedImages: string[] = []
-    if (product.images) {
-      try {
-        parsedImages = typeof product.images === 'string' ? JSON.parse(product.images) : product.images
-      } catch {
-        parsedImages = []
-      }
-    }
-    if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
-      parsedImages = product.image ? [product.image] : []
-    }
-
-    return NextResponse.json({
-      product: {
-        ...product,
-        image: parsedImages[0] || product.image || '',
-        images: parsedImages,
-        specifications: typeof product.specifications === 'string' ? JSON.parse(product.specifications) : (product.specifications || []),
-        features: typeof product.features === 'string' ? JSON.parse(product.features) : (product.features || [])
-      }
-    })
+    return NextResponse.json({ product })
   } catch (error) {
     console.error('Error fetching product:', error)
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
@@ -75,79 +36,35 @@ export async function PUT(
     const { name, category, price, shortDescription, description, image, images, specifications, features, tag } = body
 
     const updateData: Record<string, any> = {}
-    if (name) updateData.name = name
-    if (category) updateData.category = category
+    if (name !== undefined) updateData.name = name
+    if (category !== undefined) updateData.category = category
     if (price !== undefined) updateData.price = parseFloat(price.toString())
-    if (shortDescription) updateData.shortDescription = shortDescription
-    if (description) updateData.description = description
+    if (shortDescription !== undefined) updateData.shortDescription = shortDescription
+    if (description !== undefined) updateData.description = description
     if (tag !== undefined) updateData.tag = tag || null
-
+    if (image !== undefined) updateData.image = image
     if (images !== undefined && Array.isArray(images)) {
-      const filteredImages = images.filter(Boolean)
-      updateData.images = JSON.stringify(filteredImages)
-      updateData.image = filteredImages[0] || image || ''
-    } else if (image) {
-      updateData.image = image
-      updateData.images = JSON.stringify([image])
+      updateData.images = images.filter(Boolean)
+      if (updateData.images.length > 0) {
+        updateData.image = updateData.images[0]
+      }
     }
-
     if (specifications !== undefined) {
-      updateData.specifications = Array.isArray(specifications) ? JSON.stringify(specifications) : specifications
+      updateData.specifications = Array.isArray(specifications) ? specifications : (typeof specifications === 'string' ? JSON.parse(specifications) : specifications)
     }
     if (features !== undefined) {
-      updateData.features = Array.isArray(features) ? JSON.stringify(features) : features
+      updateData.features = Array.isArray(features) ? features : (typeof features === 'string' ? JSON.parse(features) : features)
     }
 
-    let existingProduct: any = null
-    try {
-      // 1. Try to find the product in DB by ID
-      existingProduct = await db.product.findUnique({
-        where: { id }
-      })
-      
-      // 2. Try by slug if not found by ID
-      if (!existingProduct) {
-        existingProduct = await db.product.findUnique({
-          where: { slug: id }
-        })
-      }
-    } catch (e) {
-      console.warn("DB connection warning during fetch in PUT:", e)
-    }
+    const updated = await updateProduct(id, updateData)
 
-    let updatedProduct: any = null
-
-    if (existingProduct) {
-      // Product exists in DB, update it using its actual DB primary key (existingProduct.id)
-      updatedProduct = await db.product.update({
-        where: { id: existingProduct.id },
-        data: updateData
-      })
-    } else {
+    if (!updated) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
-    }
-
-    let parsedImages: string[] = []
-    if (updatedProduct.images) {
-      try {
-        parsedImages = typeof updatedProduct.images === 'string' ? JSON.parse(updatedProduct.images) : updatedProduct.images
-      } catch {
-        parsedImages = []
-      }
-    }
-    if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
-      parsedImages = updatedProduct.image ? [updatedProduct.image] : []
     }
 
     return NextResponse.json({
       success: true,
-      product: {
-        ...updatedProduct,
-        image: parsedImages[0] || updatedProduct.image || '',
-        images: parsedImages,
-        specifications: typeof updatedProduct.specifications === 'string' ? JSON.parse(updatedProduct.specifications) : (updatedProduct.specifications || []),
-        features: typeof updatedProduct.features === 'string' ? JSON.parse(updatedProduct.features) : (updatedProduct.features || [])
-      }
+      product: updated
     })
   } catch (error) {
     console.error('Error updating product:', error)
@@ -166,16 +83,13 @@ export async function DELETE(
     }
 
     const { id } = await params
+    const deleted = await deleteProduct(id)
 
-    try {
-      await db.product.delete({
-        where: { id }
-      })
-      return NextResponse.json({ success: true, message: 'Product deleted successfully' })
-    } catch (e) {
-      console.error('Prisma error deleting product:', e)
-      return NextResponse.json({ error: 'Failed to delete product from database' }, { status: 500 })
+    if (!deleted) {
+      return NextResponse.json({ error: 'Product not found or already deleted' }, { status: 404 })
     }
+
+    return NextResponse.json({ success: true, message: 'Product permanently deleted successfully' })
   } catch (error) {
     console.error('Error deleting product:', error)
     return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 })

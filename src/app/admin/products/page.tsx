@@ -404,13 +404,18 @@ export default function AdminProductsPage() {
   }
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) return
+    if (!confirm(`Are you sure you want to permanently delete "${name}"?`)) return
 
     try {
-      setProducts((prev) => prev.filter((p) => p.id !== id))
-      await fetch(`/api/products/${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        alert(data.error || 'Failed to delete product from server.')
+        return
+      }
+      setProducts((prev) => prev.filter((p) => p.id !== id && p.slug !== id))
     } catch {
-      console.warn('Delete request failed on server, removed locally')
+      alert('Network error occurred while deleting product.')
     }
   }
 
