@@ -224,39 +224,17 @@ export default function AdminProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      // 1. Immediately load persistent local products
-      const local = getClientStoredProducts()
-      if (local && local.length > 0) {
-        setProducts(local)
-      }
-
-      // 2. Fetch from server API and merge safely
+      setLoading(true)
       const res = await fetch('/api/products')
       if (res.ok) {
         const data = await res.json()
         if (data.products && Array.isArray(data.products)) {
-          const deletedIds = getClientDeletedIds()
-          const validServerProducts: Product[] = data.products.filter(
-            (p: Product) => !deletedIds.has(p.id) && !deletedIds.has(p.slug)
-          )
-
-          // Merge local custom products with server products
-          const mergedMap = new Map<string, Product>()
-          validServerProducts.forEach((p) => mergedMap.set(p.id, p))
-          local.forEach((p) => {
-            if (!deletedIds.has(p.id) && !deletedIds.has(p.slug)) {
-              mergedMap.set(p.id, p)
-            }
-          })
-
-          const finalMerged = Array.from(mergedMap.values())
-          setProducts(finalMerged)
-          saveClientStoredProducts(finalMerged)
+          setProducts(data.products)
+          saveClientStoredProducts(data.products)
         }
       }
-    } catch {
-      const local = getClientStoredProducts()
-      setProducts(local)
+    } catch (err) {
+      console.error('Error fetching live products:', err)
     } finally {
       setLoading(false)
     }
