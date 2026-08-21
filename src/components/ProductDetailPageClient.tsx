@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useEnquiry } from "@/context/EnquiryContext";
 import { CheckCircle, ArrowLeft, Plus, Check, CreditCard, RefreshCw, Info, Send } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import CheckoutModal from "@/components/CheckoutModal";
 import { Product } from "@/types";
 
 // Technical callouts for product photos
@@ -92,7 +93,7 @@ export default function ProductDetailPageClient({ slug, initialProduct }: Produc
           }
         }
       } catch {
-        setRelated(fallbackProducts.filter(p => p.slug !== slug).slice(0, 3));
+        setRelated([]);
       }
     }
 

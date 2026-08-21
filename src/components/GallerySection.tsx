@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import ScrollReveal from "@/components/ScrollReveal"
-import { galleryImages } from "@/data/products"
+import { galleryImages } from "@/data/gallery"
 import { Video, ShieldCheck, Cog } from "lucide-react"
 
 export default function GallerySection() {
