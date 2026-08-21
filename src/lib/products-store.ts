@@ -4,26 +4,61 @@ import { db } from '@/lib/db'
 import { products as defaultProducts } from '@/data/products'
 import { Product } from '@/types'
 
-// Path for serverless & local persistent cache
 const CACHE_FILE = path.join(process.cwd(), 'src', 'data', 'products-live.json')
 const TMP_CACHE_FILE = '/tmp/products-live.json'
+const DELETED_FILE = path.join(process.cwd(), 'src', 'data', 'deleted-products.json')
+const TMP_DELETED_FILE = '/tmp/deleted-products.json'
 
-function getCachePath(): string {
-  // In serverless production on Vercel, /tmp is writable
-  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
-    if (fs.existsSync(TMP_CACHE_FILE)) {
-      return TMP_CACHE_FILE
+// In-memory runtime cache for serverless container lifecycle
+let inMemoryProducts: Product[] | null = null
+let inMemoryDeletedIds: Set<string> = new Set()
+let isDbSeeded = false
+
+function getDeletedIds(): Set<string> {
+  const ids = new Set<string>(inMemoryDeletedIds)
+
+  try {
+    if (fs.existsSync(TMP_DELETED_FILE)) {
+      const data = JSON.parse(fs.readFileSync(TMP_DELETED_FILE, 'utf-8'))
+      if (Array.isArray(data)) data.forEach((id: string) => ids.add(id))
     }
-  }
-  return fs.existsSync(CACHE_FILE) ? CACHE_FILE : TMP_CACHE_FILE
+  } catch {}
+
+  try {
+    if (fs.existsSync(DELETED_FILE)) {
+      const data = JSON.parse(fs.readFileSync(DELETED_FILE, 'utf-8'))
+      if (Array.isArray(data)) data.forEach((id: string) => ids.add(id))
+    }
+  } catch {}
+
+  return ids
+}
+
+function recordDeletedId(idOrSlug: string) {
+  inMemoryDeletedIds.add(idOrSlug)
+  const idsArray = Array.from(getDeletedIds().add(idOrSlug))
+
+  try {
+    fs.writeFileSync(TMP_DELETED_FILE, JSON.stringify(idsArray), 'utf-8')
+  } catch {}
+  try {
+    fs.writeFileSync(DELETED_FILE, JSON.stringify(idsArray), 'utf-8')
+  } catch {}
 }
 
 function readStoredProducts(): Product[] | null {
+  if (inMemoryProducts && inMemoryProducts.length > 0) {
+    return inMemoryProducts
+  }
+
   try {
     if (fs.existsSync(TMP_CACHE_FILE)) {
       const data = fs.readFileSync(TMP_CACHE_FILE, 'utf-8')
       const parsed = JSON.parse(data)
-      if (Array.isArray(parsed)) return parsed
+      if (Array.isArray(parsed)) {
+        inMemoryProducts = parsed
+        return parsed
+      }
     }
   } catch {}
 
@@ -31,7 +66,10 @@ function readStoredProducts(): Product[] | null {
     if (fs.existsSync(CACHE_FILE)) {
       const data = fs.readFileSync(CACHE_FILE, 'utf-8')
       const parsed = JSON.parse(data)
-      if (Array.isArray(parsed)) return parsed
+      if (Array.isArray(parsed)) {
+        inMemoryProducts = parsed
+        return parsed
+      }
     }
   } catch {}
 
@@ -39,7 +77,9 @@ function readStoredProducts(): Product[] | null {
 }
 
 function writeStoredProducts(products: Product[]) {
+  inMemoryProducts = products
   const jsonStr = JSON.stringify(products, null, 2)
+
   try {
     fs.writeFileSync(CACHE_FILE, jsonStr, 'utf-8')
   } catch {}
@@ -49,9 +89,53 @@ function writeStoredProducts(products: Product[]) {
   } catch {}
 }
 
+/**
+ * Seed initial products into DB if DB is completely empty.
+ */
+async function seedDefaultProductsIfDbEmpty() {
+  if (isDbSeeded) return
+  try {
+    const count = await db.product.count()
+    if (count === 0) {
+      console.log('Seeding initial products into database...')
+      const deletedIds = getDeletedIds()
+      for (const p of defaultProducts) {
+        if (deletedIds.has(p.id) || deletedIds.has(p.slug)) continue
+        try {
+          await db.product.create({
+            data: {
+              id: p.id,
+              name: p.name,
+              slug: p.slug,
+              category: p.category,
+              price: p.price || 0,
+              shortDescription: p.shortDescription || p.name,
+              description: p.description || p.name,
+              image: p.image || '',
+              images: JSON.stringify(p.images && p.images.length > 0 ? p.images : [p.image]),
+              specifications: JSON.stringify(p.specifications || []),
+              features: JSON.stringify(p.features || []),
+              tag: p.tag || null
+            }
+          })
+        } catch (e) {
+          // ignore single item creation error
+        }
+      }
+    }
+    isDbSeeded = true
+  } catch {
+    // DB offline/unreachable
+  }
+}
+
 export async function getAllProducts(): Promise<Product[]> {
+  const deletedIds = getDeletedIds()
+
   // 1. Try reading from Database
   try {
+    await seedDefaultProductsIfDbEmpty()
+
     const dbProducts = await db.product.findMany({
       include: {
         reviews: {
@@ -62,8 +146,11 @@ export async function getAllProducts(): Promise<Product[]> {
       orderBy: { createdAt: 'desc' }
     })
 
-    if (dbProducts && dbProducts.length > 0) {
-      const parsed: Product[] = dbProducts.map((p) => {
+    if (dbProducts !== null && dbProducts !== undefined) {
+      // Filter out any deleted IDs
+      const activeDbProducts = dbProducts.filter((p) => !deletedIds.has(p.id) && !deletedIds.has(p.slug))
+
+      const parsed: Product[] = activeDbProducts.map((p) => {
         let parsedImages: string[] = []
         if (p.images) {
           try {
@@ -93,30 +180,36 @@ export async function getAllProducts(): Promise<Product[]> {
         }
       })
 
-      // Sync to cache
+      // Sync to local/tmp cache
       writeStoredProducts(parsed)
       return parsed
     }
   } catch (dbErr) {
-    // Database connection not available or error
+    // Database connection not available, fall back to file storage
   }
 
-  // 2. Try reading from Live File Storage
+  // 2. Try reading from live file storage
   const cached = readStoredProducts()
   if (cached !== null) {
-    return cached
+    return cached.filter((p) => !deletedIds.has(p.id) && !deletedIds.has(p.slug))
   }
 
-  // 3. Initialize from defaultProducts if not initialized yet
-  const initial = defaultProducts.map((p) => ({
-    ...p,
-    images: (p.images && p.images.length > 0) ? p.images : (p.image ? [p.image] : [])
-  }))
+  // 3. Fallback to defaultProducts (filtering out any deleted items)
+  const initial = defaultProducts
+    .filter((p) => !deletedIds.has(p.id) && !deletedIds.has(p.slug))
+    .map((p) => ({
+      ...p,
+      images: (p.images && p.images.length > 0) ? p.images : (p.image ? [p.image] : [])
+    }))
+
   writeStoredProducts(initial)
   return initial
 }
 
 export async function getProductByIdOrSlug(idOrSlug: string): Promise<Product | null> {
+  const deletedIds = getDeletedIds()
+  if (deletedIds.has(idOrSlug)) return null
+
   const all = await getAllProducts()
   const found = all.find((p) => p.id === idOrSlug || p.slug === idOrSlug)
   return found || null
@@ -178,8 +271,8 @@ export async function addProduct(productData: Partial<Product>): Promise<Product
     // DB not available, file store will persist
   }
 
-  // 2. Update File Store
-  const updated = [newProduct, ...all]
+  // 2. Update File Store & memory
+  const updated = [newProduct, ...all.filter(p => p.id !== id && p.slug !== slug)]
   writeStoredProducts(updated)
 
   return newProduct
@@ -258,9 +351,15 @@ export async function updateProduct(idOrSlug: string, updates: Partial<Product>)
 }
 
 export async function deleteProduct(idOrSlug: string): Promise<boolean> {
+  // Always record tombstone so it can NEVER be re-loaded
+  recordDeletedId(idOrSlug)
+
   const all = await getAllProducts()
-  const exists = all.some((p) => p.id === idOrSlug || p.slug === idOrSlug)
-  if (!exists) return false
+  const target = all.find((p) => p.id === idOrSlug || p.slug === idOrSlug)
+  if (target) {
+    recordDeletedId(target.id)
+    recordDeletedId(target.slug)
+  }
 
   // 1. Try DB delete
   try {
@@ -276,7 +375,7 @@ export async function deleteProduct(idOrSlug: string): Promise<boolean> {
     }
   } catch (e) {}
 
-  // 2. Remove permanently from File Store
+  // 2. Remove permanently from File Store & Memory
   const filtered = all.filter((p) => p.id !== idOrSlug && p.slug !== idOrSlug)
   writeStoredProducts(filtered)
 
