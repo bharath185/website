@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/context/AuthContext"
 import { Briefcase, MapPin, Clock, Calendar, CheckCircle2, AlertCircle, FileText, UploadCloud, ChevronRight, X } from "lucide-react"
 
 interface Job {
@@ -15,9 +17,18 @@ interface Job {
 }
 
 export default function CareersPage() {
+  const { user, loading: authLoading } = useAuth()
+  const router = useRouter()
+
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/")
+    }
+  }, [user, authLoading, router])
   
   // Application form states
   const [name, setName] = useState("")
@@ -143,6 +154,16 @@ export default function CareersPage() {
   const filteredJobs = activeDept === "All" 
     ? jobs 
     : jobs.filter((job) => job.department === activeDept)
+
+  if (user) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] pt-32 pb-20 flex flex-col items-center justify-center text-slate-500 gap-3">
+        <p className="text-xs font-mono font-bold uppercase tracking-widest text-[#122f87] animate-pulse">
+          Redirecting...
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 pt-24 pb-20 font-sans">

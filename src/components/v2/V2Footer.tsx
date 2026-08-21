@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { MapPin, Phone, Mail, ArrowUp, MessageSquare } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
 
 // Inline SVG social icons (brand icons not available in lucide-react)
 const FacebookIcon = ({ className }: { className?: string }) => (
@@ -23,6 +24,7 @@ const WhatsappIcon = ({ className }: { className?: string }) => (
 )
 
 export default function V2Footer() {
+  const { user } = useAuth()
   const [social, setSocial] = useState({
     facebook: '',
     instagram: '',
@@ -103,7 +105,9 @@ export default function V2Footer() {
                 <Link href="/services/thermal-process-and-coatings" className="hover:text-blue-600 transition-colors">Thermal Coatings</Link>
                 <Link href="/news" className="hover:text-blue-600 transition-colors">News &amp; Technical Journal</Link>
                 <Link href="/faq" className="hover:text-blue-600 transition-colors">Frequently Asked Questions</Link>
-                <Link href="/careers" className="hover:text-blue-600 transition-colors">Careers</Link>
+                {!user && (
+                  <Link href="/careers" className="hover:text-blue-600 transition-colors">Careers</Link>
+                )}
                 <Link href="/contact" className="hover:text-blue-600 transition-colors">Support Center</Link>
                 <Link href="/orders" className="hover:text-blue-600 transition-colors">Track Shipment</Link>
               </div>
