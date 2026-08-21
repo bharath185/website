@@ -71,9 +71,9 @@ export default function V2Hero() {
     return () => clearInterval(interval)
   }, [activeIndex, totalProducts])
 
-  const activeProduct = productsList[activeIndex]
+  const activeProduct = (productsList.length > 0 && productsList[activeIndex]) ? productsList[activeIndex] : (productsList[0] || null)
 
-  if (loading) {
+  if (loading || !activeProduct || productsList.length === 0) {
     return (
       <section className="min-h-screen bg-slate-50 relative overflow-hidden flex flex-col justify-center items-center text-blue-600 gap-3">
         <RefreshCw className="w-8 h-8 animate-spin" />
@@ -214,8 +214,8 @@ export default function V2Hero() {
                     <motion.img
                       animate={{ y: [0, -4, 0] }}
                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      src={activeProduct.image}
-                      alt={activeProduct.name}
+                      src={activeProduct?.image || '/logo.png'}
+                      alt={activeProduct?.name || 'Machine Tool'}
                       className="w-28 h-28 sm:w-40 sm:h-40 lg:w-56 lg:h-56 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)] mb-2 lg:mb-4"
                     />
                     
@@ -223,17 +223,17 @@ export default function V2Hero() {
                     <div className="hidden lg:flex flex-col items-center justify-center text-center">
                       {/* Category Badge */}
                       <span className="text-[5.5px] sm:text-[7.5px] lg:text-[9px] font-mono text-blue-600 font-extrabold uppercase tracking-wider bg-blue-500/10 px-2.5 py-0.5 rounded border border-blue-500/20 mb-2">
-                        {activeProduct.category}
+                        {activeProduct?.category || 'Component'}
                       </span>
                       
                       {/* Product Name (Heading) */}
                       <h3 className="text-slate-900 font-extrabold text-[10px] sm:text-xs lg:text-sm uppercase tracking-tight max-w-[160px] sm:max-w-[240px] lg:max-w-[310px] line-clamp-1 mb-2">
-                        {activeProduct.name}
+                        {activeProduct?.name || 'Precision Tool'}
                       </h3>
 
                       {/* Product Description */}
                       <p className="text-slate-600 text-[8px] sm:text-[9.5px] lg:text-[11px] font-normal leading-relaxed max-w-[150px] sm:max-w-[220px] lg:max-w-[280px] line-clamp-3">
-                        {activeProduct.shortDescription || activeProduct.description}
+                        {activeProduct?.shortDescription || activeProduct?.description || ''}
                       </p>
                     </div>
                   </motion.div>
@@ -254,13 +254,13 @@ export default function V2Hero() {
                   className="flex flex-col items-center"
                 >
                   <span className="text-[9px] font-mono text-blue-600 font-bold uppercase tracking-wider bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20">
-                    {activeProduct.category}
+                    {activeProduct?.category || 'Component'}
                   </span>
                   <h4 className="text-sm font-bold text-slate-900 uppercase tracking-tight mt-3 mb-2">
-                    {activeProduct.name}
+                    {activeProduct?.name || 'Precision Tool'}
                   </h4>
                   <p className="text-xs text-slate-600 font-light leading-relaxed">
-                    {activeProduct.shortDescription || activeProduct.description}
+                    {activeProduct?.shortDescription || activeProduct?.description || ''}
                   </p>
                 </motion.div>
               </AnimatePresence>

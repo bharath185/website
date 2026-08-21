@@ -7,16 +7,22 @@ import V2ServicesShowcase from "@/components/v2/V2ServicesShowcase"
 import V2Industries from "@/components/v2/V2Industries"
 import V2NewProductShowcase from "@/components/v2/V2NewProductShowcase"
 import V2Updates from "@/components/v2/V2Updates"
-import { db } from "@/lib/db"
+import { getPgClient } from "@/lib/pg-products"
 
 export default async function Home() {
   let mdInfo = null
   try {
-    mdInfo = await db.mDInfo.findUnique({
-      where: { id: "md-info" }
-    })
+    const client = await getPgClient()
+    try {
+      const res = await client.query('SELECT * FROM "MDInfo" WHERE id = $1 LIMIT 1;', ['md-info'])
+      if (res.rows.length > 0) {
+        mdInfo = res.rows[0]
+      }
+    } finally {
+      await client.end().catch(() => {})
+    }
   } catch (err) {
-    console.warn("DB query for MDInfo failed during build, using fallback defaults:", err)
+    // Graceful fallback
   }
 
   return (
