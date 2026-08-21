@@ -319,19 +319,16 @@ export default function AdminOrdersPage() {
 
     return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      {/* Top Action Bar */}
+      <div className="flex items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Admin Order Status Manager</h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Update customer order statuses, add courier tracking numbers, and add notes anytime.
-          </p>
+          <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Customer Orders</h2>
         </div>
         <button
           onClick={fetchOrders}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm cursor-pointer"
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className="w-3.5 h-3.5" />
           Refresh Orders
         </button>
       </div>

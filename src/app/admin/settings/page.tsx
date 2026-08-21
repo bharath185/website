@@ -366,12 +366,9 @@ export default function AdminSettingsPage() {
 
     return (
     <div className="space-y-6" style={{ colorScheme: 'light' }}>
-      {/* Page Header */}
-      <div className="border-b border-slate-200 pb-5">
-        <h1 className="text-2xl font-black text-slate-900">Application Settings</h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Configure mail server specifications and MD profile content directly.
-        </p>
+      {/* Top Action Bar */}
+      <div className="border-b border-slate-200/80 pb-4">
+        <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Configuration Settings</h2>
       </div>
 
       <div className="max-w-7xl">
