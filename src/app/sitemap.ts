@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { products } from '@/data/products'
+import { getAllProducts } from '@/lib/products-store'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.bmtbharat.com'
@@ -17,7 +17,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === '' ? 1.0 : 0.8,
   }))
 
-  // Product routes
+  // Product routes from live DB
+  const products = await getAllProducts()
   const productRoutes = products.map((product) => ({
     url: `${baseUrl}/products/${product.slug}`,
     lastModified: new Date(),

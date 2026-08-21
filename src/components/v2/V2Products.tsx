@@ -1,21 +1,47 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, ShoppingCart, Check } from "lucide-react"
 import { useEnquiry } from "@/context/EnquiryContext"
-import { products } from "@/data/products"
 import { Product } from "@/types"
 
 export default function V2Products() {
-  const [activeCategory, setActiveCategory] = useState<string>("Spindle")
+  const [productsList, setProductsList] = useState<Product[]>([])
+  const [activeCategory, setActiveCategory] = useState<string>("Machinery")
   const { items, addItem } = useEnquiry()
 
-  const categories = ["Spindle", "Bearings", "Ball Screws", "Accessories"]
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const res = await fetch('/api/products')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+            setProductsList(data.products)
+            if (data.products[0]?.category) {
+              setActiveCategory(data.products[0].category)
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching V2Products:', err)
+      }
+    }
+    loadProducts()
+  }, [])
+
+  const categories = Array.from(new Set([
+    "Machinery",
+    "Spindles",
+    "Bearings",
+    "Accessories",
+    ...productsList.map((p) => p.category)
+  ]))
 
   // Filter products by selected category
-  const filtered = products.filter(
+  const filtered = productsList.filter(
     (p) => p.category.toLowerCase() === activeCategory.toLowerCase()
   )
 
@@ -41,7 +67,7 @@ export default function V2Products() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`w-full text-left md:text-right pr-6 pl-4 md:pl-0 py-4 text-xs font-extrabold tracking-widest transition-all uppercase shrink-0 relative ${
+                  className={`w-full text-left md:text-right pr-6 pl-4 md:pl-0 py-4 text-xs font-extrabold tracking-widest transition-all uppercase shrink-0 relative cursor-pointer ${
                     isActive
                       ? "text-red-500"
                       : "text-slate-500 hover:text-slate-350"
@@ -61,70 +87,82 @@ export default function V2Products() {
 
           {/* Right Column: Products Display Grid matching the reference layout */}
           <div className="md:col-span-9">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <AnimatePresence mode="wait">
-                {filtered.map((p) => (
-                  <motion.div
-                    key={p.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -15 }}
-                    transition={{ duration: 0.35 }}
-                    className="group bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] border border-slate-300/40 rounded-3xl p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 min-h-[260px]"
-                  >
-                    <div>
-                      {/* Product Name (title) */}
-                      <h3 className="text-slate-900 font-extrabold text-base uppercase tracking-tight mb-2 max-w-[55%]">
-                        {p.name}
-                      </h3>
-                      
-                      {/* Product Subtitle / Short Description */}
-                      <p className="text-slate-600 text-[11px] font-normal leading-relaxed max-w-[55%] line-clamp-3 mb-6">
-                        {p.shortDescription}
-                      </p>
-                    </div>
+            {filtered.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <AnimatePresence mode="wait">
+                  {filtered.map((p) => (
+                    <motion.div
+                      key={p.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -15 }}
+                      transition={{ duration: 0.35 }}
+                      className="group bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] border border-slate-300/40 rounded-3xl p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 min-h-[260px]"
+                    >
+                      <div>
+                        {/* Product Name (title) */}
+                        <h3 className="text-slate-900 font-extrabold text-base uppercase tracking-tight mb-2 max-w-[55%]">
+                          {p.name}
+                        </h3>
+                        
+                        {/* Product Subtitle / Short Description */}
+                        <p className="text-slate-600 text-[11px] font-normal leading-relaxed max-w-[55%] line-clamp-3 mb-6">
+                          {p.shortDescription || p.description}
+                        </p>
+                      </div>
 
-                    {/* Floating Product Image (Bottom-Right cutout style) */}
-                    <div className="absolute bottom-4 right-4 w-36 h-36 flex items-center justify-center pointer-events-none">
-                      <img 
-                        src={p.image} 
-                        alt={p.name} 
-                        className="max-w-full max-h-full object-contain drop-shadow-sm group-hover:scale-115 transition-transform duration-500 ease-out" 
-                      />
-                    </div>
+                      {/* Floating Product Image (Bottom-Right cutout style) */}
+                      <div className="absolute bottom-4 right-4 w-36 h-36 flex items-center justify-center pointer-events-none">
+                        <img 
+                          src={p.image} 
+                          alt={p.name} 
+                          className="max-w-full max-h-full object-contain drop-shadow-sm group-hover:scale-115 transition-transform duration-500 ease-out" 
+                        />
+                      </div>
 
-                    {/* Action Items Block (Bottom-Left) */}
-                    <div className="flex items-center gap-4 relative z-10">
-                      {/* Read More Link (Underlined) */}
-                      <Link
-                        href={`/products/${p.slug}`}
-                        className="text-xs font-bold text-slate-800 hover:text-red-500 underline decoration-2 underline-offset-4 transition-colors shrink-0"
-                      >
-                        Read More
-                      </Link>
-
-                      {/* Add to Cart button */}
-                      {isItemInCart(p.id) ? (
-                        <button
-                          className="px-4 py-2.5 bg-red-500/10 border border-red-500/30 text-red-600 rounded-xl text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1.5"
+                      {/* Action Items Block (Bottom-Left) */}
+                      <div className="flex items-center gap-4 relative z-10">
+                        {/* Read More Link (Underlined) */}
+                        <Link
+                          href={`/products/${p.slug}`}
+                          className="text-xs font-bold text-slate-800 hover:text-red-500 underline decoration-2 underline-offset-4 transition-colors shrink-0"
                         >
-                          <Check className="w-3.5 h-3.5" />
-                          Added
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => addItem(p)}
-                          className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm"
-                        >
-                          <ShoppingCart className="w-3.5 h-3.5 text-slate-300" />
-                          Add to Cart
-                        </button>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                          Read More
+                        </Link>
+
+                        {/* Add to Cart button */}
+                        {isItemInCart(p.id) ? (
+                          <button
+                            className="px-4 py-2.5 bg-red-500/10 border border-red-500/30 text-red-600 rounded-xl text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Check className="w-3.5 h-3.5" />
+                            Added
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => addItem(p)}
+                            className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+                          >
+                            <ShoppingCart className="w-3.5 h-3.5 text-slate-300" />
+                            Add to Cart
+                          </button>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="py-16 text-center border border-dashed border-slate-200 rounded-3xl bg-slate-50">
+                <p className="text-sm font-semibold text-slate-500">No products in this category yet</p>
+                <Link
+                  href="/products"
+                  className="inline-block mt-3 text-xs font-bold text-blue-600 hover:underline"
+                >
+                  View all products &rarr;
+                </Link>
+              </div>
+            )}
           </div>
 
         </div>

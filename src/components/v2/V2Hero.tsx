@@ -3,11 +3,10 @@
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { RefreshCw, ChevronLeft, ChevronRight } from "lucide-react"
-import { products as fallbackProducts } from "@/data/products"
 import { Product } from "@/types"
 
 export default function V2Hero() {
-  const [productsList, setProductsList] = useState<Product[]>(fallbackProducts)
+  const [productsList, setProductsList] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
   const [rotationOffset, setRotationOffset] = useState(270)

@@ -3,11 +3,10 @@
 import { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types";
-import { products as fallbackProducts } from "@/data/products";
 import { RefreshCw } from "lucide-react";
 
 export default function ProductsPageClient() {
-  const [products, setProducts] = useState<Product[]>(fallbackProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>("All");
 

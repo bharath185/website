@@ -6,10 +6,9 @@ import { ArrowRight, RefreshCw } from "lucide-react"
 import ScrollReveal from "@/components/ScrollReveal"
 import ProductCard from "@/components/ProductCard"
 import { Product } from "@/types"
-import { products as fallbackProducts } from "@/data/products"
 
 export default function ProductsSection() {
-  const [products, setProducts] = useState<Product[]>(fallbackProducts.slice(0, 6))
+  const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

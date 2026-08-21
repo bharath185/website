@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { useEnquiry } from "@/context/EnquiryContext";
 import { CheckCircle, ArrowLeft, Plus, Check, CreditCard, RefreshCw, Info, Send } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import CheckoutModal from "@/components/CheckoutModal";
 import { Product } from "@/types";
-import { products as fallbackProducts } from "@/data/products";
 
 // Technical callouts for product photos
 interface Hotspot {

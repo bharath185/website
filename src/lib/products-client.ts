@@ -1,5 +1,4 @@
 import { Product } from '@/types'
-import { products as defaultProducts } from '@/data/products'
 
 export const BMT_PRODUCTS_KEY = 'bmt_custom_products_v3'
 export const BMT_DELETED_KEY = 'bmt_deleted_product_ids_v3'
@@ -40,13 +39,7 @@ export function getClientStoredProducts(): Product[] {
     } catch {}
   }
 
-  // Fallback to default products minus any deleted items
-  return defaultProducts
-    .filter((p) => !deletedIds.has(p.id) && !deletedIds.has(p.slug))
-    .map((p) => ({
-      ...p,
-      images: p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : [])
-    }))
+  return []
 }
 
 export function saveClientStoredProducts(products: Product[]) {

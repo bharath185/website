@@ -21,7 +21,6 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { Product } from '@/types'
-import { products as fallbackProducts } from '@/data/products'
 import {
   getClientStoredProducts,
   saveClientStoredProducts,
