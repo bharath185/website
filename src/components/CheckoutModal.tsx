@@ -50,7 +50,8 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             price: i.product.price || 10000
           })),
           shippingAddress,
-          contactPhone
+          contactPhone,
+          email: user?.email
         })
       })
 

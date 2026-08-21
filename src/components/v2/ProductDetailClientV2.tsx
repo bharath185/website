@@ -254,7 +254,7 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
           email: qEmail,
           phone: qPhone,
           notes: `[Direct Quote Request] ${qMessage}`,
-          items: [{ productId: product.id, quantity: 1 }],
+          items: [{ productId: product.id, productName: product.name, quantity: 1, price: product.price || 0 }],
         }),
       })
 

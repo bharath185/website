@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const { items, shippingAddress, contactPhone } = await req.json()
+    const { items, shippingAddress, contactPhone, email } = await req.json()
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 })
@@ -26,6 +26,8 @@ export async function POST(req: Request) {
     if (!shippingAddress || !contactPhone) {
       return NextResponse.json({ error: 'Shipping address and contact phone are required' }, { status: 400 })
     }
+
+    let targetUserId = user?.id
 
     const orderItemsData = items.map((item: any) => {
       const qty = item.quantity || 1
@@ -44,6 +46,20 @@ export async function POST(req: Request) {
     try {
       const client = await getPgClient()
       try {
+        if ((!targetUserId || targetUserId.startsWith('guest-')) && (email || contactPhone)) {
+          const uRes = await client.query(
+            'SELECT id FROM "User" WHERE email = $1 OR phone = $2 LIMIT 1;',
+            [email ? email.trim().toLowerCase() : '', contactPhone ? contactPhone.trim() : '']
+          )
+          if (uRes.rows.length > 0) {
+            targetUserId = uRes.rows[0].id
+          }
+        }
+
+        if (!targetUserId) {
+          targetUserId = `guest-${Date.now()}`
+        }
+
         await client.query('BEGIN;')
 
         const orderQuery = `
@@ -56,7 +72,7 @@ export async function POST(req: Request) {
         `
         const orderRes = await client.query(orderQuery, [
           dbOrderId,
-          user.id,
+          targetUserId,
           0,
           'PENDING',
           'PENDING',
