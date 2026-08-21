@@ -17,7 +17,8 @@ import {
   Upload,
   Image as ImageIcon,
   Star,
-  Link as LinkIcon
+  Link as LinkIcon,
+  AlertCircle
 } from 'lucide-react'
 import { Product } from '@/types'
 import { products as fallbackProducts } from '@/data/products'
@@ -329,7 +330,32 @@ export default function AdminProductsPage() {
       const featuresArray = formFeatures.split(',').map((f) => f.trim()).filter(Boolean)
       const primaryImage = formImages[0]
 
-      const newProdPayload: Product = {
+      const payload = {
+        name: formName,
+        category: formCategory,
+        price: parseFloat(formPrice) || 0,
+        shortDescription: formShortDesc || formName,
+        description: formDesc || formName,
+        image: primaryImage,
+        images: formImages,
+        features: featuresArray,
+        tag: formTag || null
+      }
+
+      // 1. Submit to Server Database
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to save product to database. Please check permissions.')
+      }
+
+      const createdProduct: Product = data.product || {
         id: `prod-${Date.now()}`,
         name: formName,
         slug: formName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
@@ -344,36 +370,20 @@ export default function AdminProductsPage() {
         specifications: ["High Precision", "Bangalore Made"]
       }
 
-      // 1. Immediately save into client persistent storage
-      const updatedList = addClientProduct(newProdPayload)
+      // 2. Only after DB save is verified, update client state & persistent storage
+      const updatedList = addClientProduct(createdProduct)
       setProducts(updatedList)
 
-      // 2. Sync to Server
-      fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formName,
-          category: formCategory,
-          price: parseFloat(formPrice) || 0,
-          shortDescription: formShortDesc || formName,
-          description: formDesc || formName,
-          image: primaryImage,
-          images: formImages,
-          features: featuresArray,
-          tag: formTag || null
-        })
-      }).catch((e) => console.warn('Server sync background:', e))
-
-      setSuccessMsg('Product added successfully!')
+      // 3. Show verified database success notification
+      setSuccessMsg('Product saved successfully to database!')
       setTimeout(() => {
         setIsAddOpen(false)
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 600)
+      }, 1000)
     } catch (err: any) {
-      setError(err?.message || 'Error saving product')
+      setError(err?.message || 'Error saving product to database')
     } finally {
       setSubmitting(false)
     }
@@ -395,8 +405,7 @@ export default function AdminProductsPage() {
       const featuresArray = formFeatures.split(',').map((f) => f.trim()).filter(Boolean)
       const primaryImage = formImages[0]
 
-      const updatedItem: Product = {
-        ...editProduct,
+      const payload = {
         name: formName,
         category: formCategory,
         price: parseFloat(formPrice) || 0,
@@ -408,36 +417,38 @@ export default function AdminProductsPage() {
         tag: formTag || null
       }
 
-      // 1. Immediately save into client persistent storage
+      // 1. Submit to Server Database
+      const res = await fetch(`/api/products/${encodeURIComponent(editProduct.id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to update product in database.')
+      }
+
+      const updatedItem: Product = data.product || {
+        ...editProduct,
+        ...payload
+      }
+
+      // 2. Only after DB save is verified, update client state & persistent storage
       const updatedList = updateClientProduct(editProduct.id, updatedItem)
       setProducts(updatedList)
 
-      // 2. Sync to Server
-      fetch(`/api/products/${encodeURIComponent(editProduct.id)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formName,
-          category: formCategory,
-          price: parseFloat(formPrice) || 0,
-          shortDescription: formShortDesc,
-          description: formDesc,
-          image: primaryImage,
-          images: formImages,
-          features: featuresArray,
-          tag: formTag || null
-        })
-      }).catch((e) => console.warn('Server update sync background:', e))
-
-      setSuccessMsg('Product updated successfully!')
+      // 3. Show verified database success notification
+      setSuccessMsg('Product updated successfully in database!')
       setTimeout(() => {
         setEditProduct(null)
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 600)
+      }, 1000)
     } catch (err: any) {
-      setError(err?.message || 'Error while updating product')
+      setError(err?.message || 'Error while updating product in database')
     } finally {
       setSubmitting(false)
     }
@@ -446,14 +457,20 @@ export default function AdminProductsPage() {
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to permanently delete "${name}"?`)) return
 
-    // 1. Instantly delete from client persistent storage (will NEVER come back on refresh)
-    const updatedList = deleteClientProduct(id)
-    setProducts(updatedList)
-
-    // 2. Sync deletion to server in background
     try {
-      await fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
-    } catch {}
+      const res = await fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        alert(data.error || 'Failed to delete product from database.')
+        return
+      }
+
+      // Only after DB delete succeeds, update client state and persistent store
+      const updatedList = deleteClientProduct(id)
+      setProducts(updatedList)
+    } catch (err: any) {
+      alert(err?.message || 'Network error while deleting product.')
+    }
   }
 
   const categories = ['ALL', ...new Set(products.map((p) => p.category))]
@@ -719,14 +736,15 @@ export default function AdminProductsPage() {
             <p className="text-xs text-slate-500 mb-6">Create and publish a precision machine component to the catalogue.</p>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium">
-                {error}
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
               </div>
             )}
             {successMsg && (
               <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-lg font-bold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" />
-                {successMsg}
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>{successMsg}</span>
               </div>
             )}
 
@@ -841,7 +859,7 @@ export default function AdminProductsPage() {
                 disabled={submitting}
                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50"
               >
-                {submitting ? 'Publishing Product...' : 'Publish Product to Catalog'}
+                {submitting ? 'Saving to Database...' : 'Publish Product to Catalog'}
               </button>
             </form>
           </div>
@@ -863,14 +881,15 @@ export default function AdminProductsPage() {
             <p className="text-xs text-slate-500 mb-6">Updating &quot;{editProduct.name}&quot;</p>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium">
-                {error}
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
               </div>
             )}
             {successMsg && (
               <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-lg font-bold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" />
-                {successMsg}
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>{successMsg}</span>
               </div>
             )}
 
@@ -980,7 +999,7 @@ export default function AdminProductsPage() {
                 disabled={submitting}
                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50"
               >
-                {submitting ? 'Updating Product...' : 'Save & Update Product'}
+                {submitting ? 'Updating Database...' : 'Save & Update Product'}
               </button>
             </form>
           </div>

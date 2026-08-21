@@ -26,13 +26,68 @@ import { useEnquiry } from "@/context/EnquiryContext"
 import { useAuth } from "@/context/AuthContext"
 
 import { Product } from "@/types"
+import { getClientStoredProducts } from "@/lib/products-client"
 
 interface ProductDetailClientV2Props {
-  product: Product
+  product?: Product
+  slug?: string
 }
 
-export default function ProductDetailClientV2({ product }: ProductDetailClientV2Props) {
+export default function ProductDetailClientV2({ product: initialProduct, slug }: ProductDetailClientV2Props) {
+  const [product, setProduct] = useState<Product | null>(initialProduct || null)
+  const [loading, setLoading] = useState(!initialProduct)
+
+  useEffect(() => {
+    if (!product && slug) {
+      // 1. Check local persistent store
+      const localProducts = getClientStoredProducts()
+      const found = localProducts.find((p) => p.slug === slug || p.id === slug)
+      if (found) {
+        setProduct(found)
+        setLoading(false)
+        return
+      }
+
+      // 2. Fetch from API
+      fetch(`/api/products/${encodeURIComponent(slug)}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && data.product) {
+            setProduct(data.product)
+          }
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false))
+    }
+  }, [product, slug])
+
   const { items, addItem } = useEnquiry()
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center py-20 text-blue-900">
+        <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+      </div>
+    )
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center py-20 px-4 text-center">
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">Product Not Found</h2>
+        <p className="text-slate-500 text-sm mb-6 max-w-md">
+          The requested product could not be located. It may have been moved or updated.
+        </p>
+        <Link
+          href="/products"
+          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-600/20"
+        >
+          Return to Catalogue
+        </Link>
+      </div>
+    )
+  }
+
   const isItemInCart = items.some((item) => item.product.id === product.id)
   
   // Multi-image list setup
