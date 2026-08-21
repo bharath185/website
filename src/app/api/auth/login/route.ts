@@ -65,11 +65,28 @@ export async function POST(req: Request) {
     let user: any = null
 
     try {
-      user = await db.user.findUnique({
-        where: { email: cleanEmail }
-      })
-    } catch {
-      // DB query failed or serverless read-only
+      const { getPgClient } = await import('@/lib/pg-products')
+      const client = await getPgClient()
+      try {
+        const uRes = await client.query('SELECT * FROM "User" WHERE email = $1 LIMIT 1;', [cleanEmail])
+        if (uRes.rows.length > 0) {
+          user = uRes.rows[0]
+        }
+      } finally {
+        await client.end().catch(() => {})
+      }
+    } catch (pgErr) {
+      console.warn('PG user lookup error:', pgErr)
+    }
+
+    if (!user) {
+      try {
+        user = await db.user.findUnique({
+          where: { email: cleanEmail }
+        })
+      } catch {
+        // DB query failed
+      }
     }
 
     // Admin Credentials Fallback for Vercel Serverless

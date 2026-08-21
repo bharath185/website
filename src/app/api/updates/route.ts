@@ -1,72 +1,52 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getPgClient } from '@/lib/pg-products'
 import { getSessionUser } from '@/lib/auth'
 
 export async function GET() {
   try {
-    let posts = await db.updatePost.findMany({
-      orderBy: { date: 'desc' }
-    })
+    let posts: any[] = []
+    try {
+      const client = await getPgClient()
+      try {
+        const res = await client.query('SELECT * FROM "UpdatePost" ORDER BY date DESC;')
+        posts = res.rows
+      } finally {
+        await client.end().catch(() => {})
+      }
+    } catch (pgErr) {
+      console.warn('Direct PG error in /api/updates:', pgErr)
+    }
 
-    // Auto seed fallback updates if empty
     if (posts.length === 0) {
-      const defaultUpdates = [
+      posts = [
         {
+          id: '1',
           title: "How Hydro Static Spindles Improve Precision in High-Accuracy Machining",
           date: "2026-07-31",
           image: "https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg",
           slug: "how-hydro-static-spindles-improve-precision-in-high-accuracy-machining"
         },
         {
+          id: '2',
           title: "Why Rotary Tables Are Essential for Multi-Axis Precision Machining",
           date: "2026-07-29",
           image: "https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg",
           slug: "why-rotary-tables-are-essential-for-multi-axis-precision-machining"
         },
         {
+          id: '3',
           title: "How a Planetary Gear Box Improves Torque and Space Efficiency",
           date: "2026-07-27",
           image: "https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg",
           slug: "how-a-planetary-gear-box-improves-torque-and-space-efficiency"
         }
       ]
-
-      for (const post of defaultUpdates) {
-        await db.updatePost.create({ data: post })
-      }
-
-      posts = await db.updatePost.findMany({
-        orderBy: { date: 'desc' }
-      })
     }
 
     return NextResponse.json({ success: true, updates: posts })
   } catch (error) {
     console.error('Error fetching updates:', error)
-    const fallbackPosts = [
-      {
-        id: '1',
-        title: "How Hydro Static Spindles Improve Precision in High-Accuracy Machining",
-        date: "2026-07-31",
-        image: "https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg",
-        slug: "how-hydro-static-spindles-improve-precision-in-high-accuracy-machining"
-      },
-      {
-        id: '2',
-        title: "Why Rotary Tables Are Essential for Multi-Axis Precision Machining",
-        date: "2026-07-29",
-        image: "https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg",
-        slug: "why-rotary-tables-are-essential-for-multi-axis-precision-machining"
-      },
-      {
-        id: '3',
-        title: "How a Planetary Gear Box Improves Torque and Space Efficiency",
-        date: "2026-07-27",
-        image: "https://productimages.withfloats.com/tile/66b1c6074f7781d15f4e72db.jpg",
-        slug: "how-a-planetary-gear-box-improves-torque-and-space-efficiency"
-      }
-    ]
-    return NextResponse.json({ success: true, updates: fallbackPosts })
+    return NextResponse.json({ success: true, updates: [] })
   }
 }
 
@@ -85,19 +65,29 @@ export async function POST(req: Request) {
     }
 
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    const id = `upd-${Date.now()}`
 
-    const post = await db.updatePost.create({
-      data: {
+    const client = await getPgClient()
+    try {
+      const query = `
+        INSERT INTO "UpdatePost" (id, title, date, image, slug, description, content, "createdAt", "updatedAt")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+        RETURNING *;
+      `
+      const res = await client.query(query, [
+        id,
         title,
         date,
         image,
         slug,
-        description: description || '',
-        content: content || ''
-      }
-    })
+        description || '',
+        content || ''
+      ])
 
-    return NextResponse.json({ success: true, update: post })
+      return NextResponse.json({ success: true, update: res.rows[0] })
+    } finally {
+      await client.end().catch(() => {})
+    }
   } catch (error) {
     console.error('Error creating update post:', error)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

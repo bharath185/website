@@ -1,16 +1,22 @@
 import { NextResponse } from 'next/server'
 import { getSessionUser } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { getPgClient } from '@/lib/pg-products'
 
 export async function GET() {
   try {
     let mdInfo: any = null
     try {
-      mdInfo = await db.mDInfo.findUnique({
-        where: { id: 'md-info' }
-      })
+      const client = await getPgClient()
+      try {
+        const res = await client.query('SELECT * FROM "MDInfo" WHERE id = $1 LIMIT 1;', ['md-info'])
+        if (res.rows.length > 0) {
+          mdInfo = res.rows[0]
+        }
+      } finally {
+        await client.end().catch(() => {})
+      }
     } catch (dbErr) {
-      console.warn('DB connection error in /api/md-info, returning default settings')
+      console.warn('Direct PG error in /api/md-info, returning default settings')
     }
 
     if (!mdInfo) {
@@ -68,35 +74,69 @@ export async function POST(req: Request) {
       badgeText
     } = body
 
-    // Validation
     if (!name || !role || !bioParagraph1 || !bioParagraph2 || !quote || !quoteAuthor) {
       return NextResponse.json({ error: 'All core fields are required' }, { status: 400 })
     }
 
-    const updated = await db.mDInfo.upsert({
-      where: { id: 'md-info' },
-      update: {
-        name,
-        role,
-        image,
-        bioParagraph1,
-        bioParagraph2,
-        quote,
-        quoteAuthor,
-        expTitle: expTitle || 'Experience',
-        expDescription: expDescription || '',
-        stdTitle: stdTitle || 'Standards',
-        stdDescription: stdDescription || '',
-        affTitle: affTitle || 'Affiliations',
-        affDescription: affDescription || '',
-        badgeTitle: badgeTitle || 'MD Credentials',
-        badgeText: badgeText || ''
-      },
-      create: {
+    let updated: any = null
+    try {
+      const client = await getPgClient()
+      try {
+        const query = `
+          INSERT INTO "MDInfo" (
+            id, name, role, image, "bioParagraph1", "bioParagraph2",
+            quote, "quoteAuthor", "expTitle", "expDescription",
+            "stdTitle", "stdDescription", "affTitle", "affDescription",
+            "badgeTitle", "badgeText", "updatedAt"
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW())
+          ON CONFLICT (id) DO UPDATE SET
+            name = EXCLUDED.name,
+            role = EXCLUDED.role,
+            image = EXCLUDED.image,
+            "bioParagraph1" = EXCLUDED."bioParagraph1",
+            "bioParagraph2" = EXCLUDED."bioParagraph2",
+            quote = EXCLUDED.quote,
+            "quoteAuthor" = EXCLUDED."quoteAuthor",
+            "expTitle" = EXCLUDED."expTitle",
+            "expDescription" = EXCLUDED."expDescription",
+            "stdTitle" = EXCLUDED."stdTitle",
+            "stdDescription" = EXCLUDED."stdDescription",
+            "affTitle" = EXCLUDED."affTitle",
+            "affDescription" = EXCLUDED."affDescription",
+            "badgeTitle" = EXCLUDED."badgeTitle",
+            "badgeText" = EXCLUDED."badgeText",
+            "updatedAt" = NOW()
+          RETURNING *;
+        `
+        const res = await client.query(query, [
+          'md-info',
+          name,
+          role,
+          image || '',
+          bioParagraph1,
+          bioParagraph2,
+          quote,
+          quoteAuthor,
+          expTitle || 'Experience',
+          expDescription || '',
+          stdTitle || 'Standards',
+          stdDescription || '',
+          affTitle || 'Affiliations',
+          affDescription || '',
+          badgeTitle || 'MD Credentials',
+          badgeText || ''
+        ])
+        updated = res.rows[0]
+      } finally {
+        await client.end().catch(() => {})
+      }
+    } catch (err) {
+      console.error('Direct PG update MD info error:', err)
+      updated = {
         id: 'md-info',
         name,
         role,
-        image,
+        image: image || '',
         bioParagraph1,
         bioParagraph2,
         quote,
@@ -108,9 +148,10 @@ export async function POST(req: Request) {
         affTitle: affTitle || 'Affiliations',
         affDescription: affDescription || '',
         badgeTitle: badgeTitle || 'MD Credentials',
-        badgeText: badgeText || ''
+        badgeText: badgeText || '',
+        updatedAt: new Date()
       }
-    })
+    }
 
     return NextResponse.json({ success: true, mdInfo: updated })
   } catch (error) {

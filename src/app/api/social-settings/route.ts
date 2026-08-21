@@ -1,16 +1,22 @@
 import { NextResponse } from 'next/server'
 import { getSessionUser } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { getPgClient } from '@/lib/pg-products'
 
 export async function GET() {
   try {
     let settings = null
     try {
-      settings = await db.socialSettings.findUnique({
-        where: { id: 'social-settings' }
-      })
+      const client = await getPgClient()
+      try {
+        const res = await client.query('SELECT * FROM "SocialSettings" WHERE id = $1 LIMIT 1;', ['social-settings'])
+        if (res.rows.length > 0) {
+          settings = res.rows[0]
+        }
+      } finally {
+        await client.end().catch(() => {})
+      }
     } catch (dbErr) {
-      console.warn("DB connection issue fetching social settings:", dbErr)
+      console.warn("Direct PG error fetching social settings:", dbErr)
     }
 
     if (!settings) {
@@ -45,28 +51,36 @@ export async function POST(req: Request) {
 
     let updated = null
     try {
-      updated = await db.socialSettings.upsert({
-        where: { id: 'social-settings' },
-        update: {
-          facebook: facebook || '',
-          instagram: instagram || '',
-          linkedin: linkedin || '',
-          youtube: youtube || '',
-          twitter: twitter || '',
-          whatsapp: whatsapp || ''
-        },
-        create: {
-          id: 'social-settings',
-          facebook: facebook || '',
-          instagram: instagram || '',
-          linkedin: linkedin || '',
-          youtube: youtube || '',
-          twitter: twitter || '',
-          whatsapp: whatsapp || ''
-        }
-      })
-    } catch {
-      // Fallback
+      const client = await getPgClient()
+      try {
+        const query = `
+          INSERT INTO "SocialSettings" (id, facebook, instagram, linkedin, youtube, twitter, whatsapp, "updatedAt")
+          VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+          ON CONFLICT (id) DO UPDATE SET
+            facebook = EXCLUDED.facebook,
+            instagram = EXCLUDED.instagram,
+            linkedin = EXCLUDED.linkedin,
+            youtube = EXCLUDED.youtube,
+            twitter = EXCLUDED.twitter,
+            whatsapp = EXCLUDED.whatsapp,
+            "updatedAt" = NOW()
+          RETURNING *;
+        `
+        const res = await client.query(query, [
+          'social-settings',
+          facebook || '',
+          instagram || '',
+          linkedin || '',
+          youtube || '',
+          twitter || '',
+          whatsapp || ''
+        ])
+        updated = res.rows[0]
+      } finally {
+        await client.end().catch(() => {})
+      }
+    } catch (err) {
+      console.error('Direct PG update social settings error:', err)
       updated = {
         id: 'social-settings',
         facebook: facebook || '',
