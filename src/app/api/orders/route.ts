@@ -57,11 +57,11 @@ export async function GET() {
                    ) as items
             FROM "Order" o
             LEFT JOIN "OrderItem" oi ON o.id = oi."orderId"
-            WHERE o."userId" = $1
+            WHERE o."userId" = $1 OR (o."shippingAddress" ILIKE $2 AND $2 != '')
             GROUP BY o.id
             ORDER BY o."createdAt" DESC;
           `
-          params = [user.id]
+          params = [user.id, user.email ? `%${user.email}%` : '']
         }
 
         const res = await client.query(query, params)
@@ -121,7 +121,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Order items are required' }, { status: 400 })
     }
 
-    let targetUserId = sessionUser?.id
+    let targetUserId: string | null = sessionUser?.id || null
 
     // If not authenticated in session, check if email corresponds to a registered account in DB
     const client = await getPgClient()
@@ -133,8 +133,8 @@ export async function POST(req: Request) {
         }
       }
 
-      if (!targetUserId) {
-        targetUserId = `guest-${Date.now()}`
+      if (!targetUserId || targetUserId.startsWith('guest-')) {
+        targetUserId = null
       }
 
       const dbOrderId = `BMT-ORD-${Date.now().toString().slice(-6)}`

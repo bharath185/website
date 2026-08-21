@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Shipping address and contact phone are required' }, { status: 400 })
     }
 
-    let targetUserId = user?.id
+    let targetUserId: string | null = user?.id || null
 
     const orderItemsData = items.map((item: any) => {
       const qty = item.quantity || 1
@@ -56,8 +56,8 @@ export async function POST(req: Request) {
           }
         }
 
-        if (!targetUserId) {
-          targetUserId = `guest-${Date.now()}`
+        if (!targetUserId || targetUserId.startsWith('guest-')) {
+          targetUserId = null
         }
 
         await client.query('BEGIN;')
