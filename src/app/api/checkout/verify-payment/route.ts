@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getPgClient } from '@/lib/pg-products'
 import { db } from '@/lib/db'
 import { verifyRazorpaySignature } from '@/lib/razorpay'
 
@@ -18,6 +19,29 @@ export async function POST(req: Request) {
 
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid payment signature' }, { status: 400 })
+    }
+
+    try {
+      const client = await getPgClient()
+      try {
+        const query = `
+          UPDATE "Order"
+          SET status = 'PAID', "paymentStatus" = 'PAID', "razorpayPaymentId" = $1, "razorpayOrderId" = $2, "updatedAt" = NOW()
+          WHERE id = $3
+          RETURNING *;
+        `
+        const res = await client.query(query, [razorpay_payment_id, razorpay_order_id, orderDbId])
+        if (res.rows.length > 0) {
+          return NextResponse.json({
+            success: true,
+            order: res.rows[0]
+          })
+        }
+      } finally {
+        await client.end().catch(() => {})
+      }
+    } catch (pgErr) {
+      console.warn('Direct PG verify payment error, trying Prisma fallback:', pgErr)
     }
 
     const updatedOrder = await db.order.update({

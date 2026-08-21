@@ -59,16 +59,6 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       if (res.ok && data.success) {
         setIsSuccess(true)
 
-        // Save order locally in localStorage so /orders displays it immediately
-        if (typeof window !== 'undefined' && data.order) {
-          try {
-            const existing = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
-            localStorage.setItem('bmt_local_orders', JSON.stringify([data.order, ...existing]))
-          } catch {
-            // Ignore localStorage quota errors
-          }
-        }
-
         setTimeout(() => {
           clearCart()
           onClose()

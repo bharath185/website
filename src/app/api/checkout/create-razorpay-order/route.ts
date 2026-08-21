@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSessionUser } from '@/lib/auth'
+import { getPgClient } from '@/lib/pg-products'
 import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
@@ -26,7 +27,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Shipping address and contact phone are required' }, { status: 400 })
     }
 
-    let totalAmount = 0
     const orderItemsData = items.map((item: any) => {
       const qty = item.quantity || 1
       return {
@@ -40,8 +40,73 @@ export async function POST(req: Request) {
 
     const dbOrderId = `BMT-ORD-${Date.now().toString().slice(-6)}`
 
-    let order: any = null
+    // 1. Direct PostgreSQL insertion
+    try {
+      const client = await getPgClient()
+      try {
+        await client.query('BEGIN;')
 
+        const orderQuery = `
+          INSERT INTO "Order" (
+            id, "userId", "totalAmount", status, "paymentStatus",
+            "razorpayOrderId", "razorpayPaymentId", "shippingAddress", "contactPhone",
+            "createdAt", "updatedAt"
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
+          RETURNING *;
+        `
+        const orderRes = await client.query(orderQuery, [
+          dbOrderId,
+          user.id,
+          0,
+          'PENDING',
+          'PENDING',
+          null,
+          null,
+          shippingAddress,
+          contactPhone
+        ])
+
+        for (const it of orderItemsData) {
+          const itemQuery = `
+            INSERT INTO "OrderItem" (
+              id, "orderId", "productId", "productName", quantity, price
+            ) VALUES ($1, $2, $3, $4, $5, $6);
+          `
+          await client.query(itemQuery, [
+            it.id,
+            dbOrderId,
+            it.productId,
+            it.productName,
+            it.quantity,
+            it.price
+          ])
+        }
+
+        await client.query('COMMIT;')
+
+        const insertedOrder = {
+          ...orderRes.rows[0],
+          items: orderItemsData
+        }
+
+        return NextResponse.json({
+          success: true,
+          order: insertedOrder,
+          dbOrderId: insertedOrder.id,
+          message: 'Quotation Request Submitted Successfully!'
+        })
+      } catch (err) {
+        await client.query('ROLLBACK;').catch(() => {})
+        console.warn('Direct PG order insert error, trying Prisma fallback:', err)
+      } finally {
+        await client.end().catch(() => {})
+      }
+    } catch (pgConnectErr) {
+      console.warn('PG connection error:', pgConnectErr)
+    }
+
+    // 2. Fallback to Prisma
+    let order: any = null
     try {
       order = await db.order.create({
         data: {
@@ -67,8 +132,8 @@ export async function POST(req: Request) {
           items: true
         }
       })
-    } catch {
-      // Serverless fallback for read-only Vercel SQLite
+    } catch (prismaErr) {
+      console.error('Prisma order create error:', prismaErr)
       order = {
         id: dbOrderId,
         userId: user.id,

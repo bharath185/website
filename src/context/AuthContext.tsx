@@ -73,6 +73,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: data.error || 'Login failed' }
       }
       setUser(data.user)
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('bmt_local_orders')
+      }
       if (data.user?.passwordResetRequired) {
         setAuthMode('change-password')
       } else {
@@ -97,6 +100,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: data.error || 'Registration failed' }
       }
       setUser(data.user)
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('bmt_local_orders')
+      }
       closeAuthModal()
       return { success: true }
     } catch (err) {
@@ -108,9 +114,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' })
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('bmt_local_orders')
+      }
       setUser(null)
     } catch (err) {
       console.error('Logout error:', err)
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('bmt_local_orders')
+      }
+      setUser(null)
     }
   }
 

@@ -79,39 +79,23 @@ export default function UserOrdersPage() {
   const [overallFeedbackSuccess, setOverallFeedbackSuccess] = useState<Record<string, boolean>>({})
 
   const fetchOrders = async () => {
+    if (!user) {
+      setOrders([])
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
-      let localOrders: Order[] = []
-
-      if (typeof window !== 'undefined') {
-        try {
-          localOrders = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
-        } catch {
-          localOrders = []
-        }
-      }
-
       const res = await fetch('/api/orders')
       if (res.ok) {
         const data = await res.json()
-        const fetchedOrders = data.orders || []
-
-        // Merge local & fetched orders without duplicates
-        const combined = [...localOrders]
-        fetchedOrders.forEach((fo: Order) => {
-          if (!combined.some((co) => co.id === fo.id)) {
-            combined.push(fo)
-          }
-        })
-        setOrders(combined)
+        setOrders(data.orders || [])
       } else {
-        setOrders(localOrders)
+        setOrders([])
       }
     } catch {
-      if (typeof window !== 'undefined') {
-        const saved = JSON.parse(localStorage.getItem('bmt_local_orders') || '[]')
-        setOrders(saved)
-      }
+      setOrders([])
     } finally {
       setLoading(false)
     }
@@ -120,6 +104,9 @@ export default function UserOrdersPage() {
   useEffect(() => {
     if (user) {
       fetchOrders()
+    } else {
+      setOrders([])
+      setLoading(false)
     }
   }, [user])
 
