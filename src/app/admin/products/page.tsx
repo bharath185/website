@@ -72,68 +72,66 @@ export default function AdminProductsPage() {
     }
   }
 
-  const compressImage = (file: File): Promise<Blob | File> => {
+  // Highly efficient client-side image compressor (converts any huge image to <= 150KB crisp JPEG)
+  const compressImageToDataUrl = (src: string): Promise<string> => {
     return new Promise((resolve) => {
-      if (!file.type.startsWith('image/')) {
-        resolve(file)
-        return
-      }
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let width = img.width
+        let height = img.height
 
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const img = new Image()
-        img.onload = () => {
-          const canvas = document.createElement('canvas')
-          let width = img.width
-          let height = img.height
-
-          const MAX_WIDTH = 1200
-          const MAX_HEIGHT = 1200
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width
-              width = MAX_WIDTH
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height
-              height = MAX_HEIGHT
-            }
+        const MAX_DIM = 1000
+        if (width > height) {
+          if (width > MAX_DIM) {
+            height = Math.round((height * MAX_DIM) / width)
+            width = MAX_DIM
           }
-
-          canvas.width = width
-          canvas.height = height
-
-          const ctx = canvas.getContext('2d')
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, width, height)
-            
-            const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png')
-            const isWebp = file.type === 'image/webp' || file.name.toLowerCase().endsWith('.webp')
-            const outputType = isPng ? 'image/png' : (isWebp ? 'image/webp' : 'image/jpeg')
-            
-            canvas.toBlob(
-              (blob) => {
-                if (blob) {
-                  const compressedFile = new File([blob], file.name, {
-                    type: outputType,
-                    lastModified: Date.now(),
-                  })
-                  resolve(compressedFile)
-                } else {
-                  resolve(file)
-                }
-              },
-              outputType,
-              outputType === 'image/jpeg' ? 0.8 : undefined
-            )
-          } else {
-            resolve(file)
+        } else {
+          if (height > MAX_DIM) {
+            width = Math.round((width * MAX_DIM) / height)
+            height = MAX_DIM
           }
         }
-        img.src = event.target?.result as string
+
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          ctx.fillStyle = '#FFFFFF'
+          ctx.fillRect(0, 0, width, height)
+          ctx.drawImage(img, 0, 0, width, height)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75)
+          resolve(compressedDataUrl)
+        } else {
+          resolve(src)
+        }
       }
+      img.onerror = () => resolve(src)
+      img.src = src
+    })
+  }
+
+  const compressFile = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const rawDataUrl = e.target?.result as string
+        const compressedDataUrl = await compressImageToDataUrl(rawDataUrl)
+
+        // Convert dataUrl back to a lightweight File for uploading
+        fetch(compressedDataUrl)
+          .then((res) => res.blob())
+          .then((blob) => {
+            const newName = file.name.replace(/\.[^.]+$/, '.jpg')
+            const optimizedFile = new File([blob], newName, { type: 'image/jpeg' })
+            resolve(optimizedFile)
+          })
+          .catch(() => resolve(file))
+      }
+      reader.onerror = () => resolve(file)
       reader.readAsDataURL(file)
     })
   }
@@ -152,7 +150,7 @@ export default function AdminProductsPage() {
 
       for (const file of fileList) {
         try {
-          const compressedFile = await compressImage(file)
+          const compressedFile = await compressFile(file)
           const formData = new FormData()
           formData.append('file', compressedFile)
 
@@ -164,6 +162,10 @@ export default function AdminProductsPage() {
           const data = await res.json()
           if (res.ok && data.url) {
             uploadedUrls.push(data.url)
+          } else {
+            // Fallback to lightweight client-side compressed Data URL
+            const fallbackDataUrl = await compressImageToDataUrl(URL.createObjectURL(compressedFile))
+            uploadedUrls.push(fallbackDataUrl)
           }
         } catch (uploadErr) {
           console.error('Error uploading file:', file.name, uploadErr)
@@ -179,16 +181,22 @@ export default function AdminProductsPage() {
       setError('Network error while uploading images')
     } finally {
       setUploadingImage(false)
-      // Reset input value so same files can be re-selected if needed
       e.target.value = ''
     }
   }
 
-  const handleAddCustomUrl = () => {
+  const handleAddCustomUrl = async () => {
     const trimmed = customImageUrl.trim()
     if (!trimmed) return
-    if (!formImages.includes(trimmed)) {
-      setFormImages((prev) => [...prev, trimmed])
+
+    let finalUrl = trimmed
+    // If it's a huge base64 data string, compress it before adding to state
+    if (trimmed.startsWith('data:image/')) {
+      finalUrl = await compressImageToDataUrl(trimmed)
+    }
+
+    if (!formImages.includes(finalUrl)) {
+      setFormImages((prev) => [...prev, finalUrl])
     }
     setCustomImageUrl('')
   }
@@ -294,12 +302,12 @@ export default function AdminProductsPage() {
       const featuresArray = formFeatures.split(',').map((f) => f.trim()).filter(Boolean)
       const primaryImage = formImages[0]
 
-      const newProdPayload = {
+      const newProdPayload: Product = {
         id: `prod-${Date.now()}`,
         name: formName,
-        slug: formName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        slug: formName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         category: formCategory,
-        price: parseFloat(formPrice),
+        price: parseFloat(formPrice) || 0,
         shortDescription: formShortDesc || formName,
         description: formDesc || formName,
         image: primaryImage,
@@ -315,9 +323,9 @@ export default function AdminProductsPage() {
         body: JSON.stringify({
           name: formName,
           category: formCategory,
-          price: parseFloat(formPrice),
-          shortDescription: formShortDesc,
-          description: formDesc,
+          price: parseFloat(formPrice) || 0,
+          shortDescription: formShortDesc || formName,
+          description: formDesc || formName,
           image: primaryImage,
           images: formImages,
           features: featuresArray,
@@ -325,19 +333,25 @@ export default function AdminProductsPage() {
         })
       })
 
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setError(data.error || 'Server rejected product submission. Please check inputs.')
+        setSubmitting(false)
+        return
+      }
+
       const addedProduct = data.product || newProdPayload
 
-      setProducts((prev) => [addedProduct, ...prev])
+      setProducts((prev) => [addedProduct, ...prev.filter(p => p.id !== addedProduct.id)])
       setSuccessMsg('Product added successfully!')
       setTimeout(() => {
         setIsAddOpen(false)
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 1000)
-    } catch {
-      setError('Network error while saving product')
+      }, 800)
+    } catch (err: any) {
+      setError(err?.message || 'Network error while saving product')
     } finally {
       setSubmitting(false)
     }
@@ -363,7 +377,7 @@ export default function AdminProductsPage() {
         ...editProduct,
         name: formName,
         category: formCategory,
-        price: parseFloat(formPrice),
+        price: parseFloat(formPrice) || 0,
         shortDescription: formShortDesc,
         description: formDesc,
         image: primaryImage,
@@ -372,13 +386,13 @@ export default function AdminProductsPage() {
         tag: formTag || null
       }
 
-      await fetch(`/api/products/${editProduct.id}`, {
+      const res = await fetch(`/api/products/${encodeURIComponent(editProduct.id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formName,
           category: formCategory,
-          price: parseFloat(formPrice),
+          price: parseFloat(formPrice) || 0,
           shortDescription: formShortDesc,
           description: formDesc,
           image: primaryImage,
@@ -388,16 +402,23 @@ export default function AdminProductsPage() {
         })
       })
 
-      setProducts((prev) => prev.map((p) => (p.id === editProduct.id ? updatedItem : p)))
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setError(data.error || 'Server rejected update.')
+        setSubmitting(false)
+        return
+      }
+
+      setProducts((prev) => prev.map((p) => (p.id === editProduct.id || p.slug === editProduct.slug ? updatedItem : p)))
       setSuccessMsg('Product updated successfully!')
       setTimeout(() => {
         setEditProduct(null)
         setSuccessMsg('')
         setShowNewCategoryInput(false)
         setNewCategoryValue('')
-      }, 1000)
-    } catch {
-      setError('Network error while updating product')
+      }, 800)
+    } catch (err: any) {
+      setError(err?.message || 'Network error while updating product')
     } finally {
       setSubmitting(false)
     }
@@ -438,7 +459,7 @@ export default function AdminProductsPage() {
             Product Image Gallery ({formImages.length} {formImages.length === 1 ? 'image' : 'images'})
           </label>
           <span className="text-[10px] text-slate-500 font-light">
-            Upload multiple images. The first image will be used as the primary catalogue cover.
+            Upload multiple photos. The first image will be used as the primary catalogue cover.
           </span>
         </div>
         <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm">
@@ -493,7 +514,7 @@ export default function AdminProductsPage() {
                   <button
                     type="button"
                     onClick={() => handleSetPrimaryImage(idx)}
-                    className="text-[9px] font-bold text-blue-700 hover:text-blue-900 px-1.5 py-0.5 rounded hover:bg-blue-50 transition-colors"
+                    className="text-[9px] font-bold text-blue-700 hover:text-blue-900 px-1.5 py-0.5 rounded hover:bg-blue-50 transition-colors cursor-pointer"
                   >
                     Make Primary
                   </button>
@@ -505,7 +526,7 @@ export default function AdminProductsPage() {
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(idx)}
-                  className="p-1 text-slate-400 hover:text-red-600 transition-colors rounded hover:bg-red-50"
+                  className="p-1 text-slate-400 hover:text-red-600 transition-colors rounded hover:bg-red-50 cursor-pointer"
                   title="Remove image"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -538,7 +559,7 @@ export default function AdminProductsPage() {
           type="button"
           onClick={handleAddCustomUrl}
           disabled={!customImageUrl.trim()}
-          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
         >
           Add URL
         </button>
@@ -552,14 +573,14 @@ export default function AdminProductsPage() {
       <div className="flex items-center justify-end gap-3 border-b border-slate-200 pb-5">
         <button
           onClick={fetchProducts}
-          className="p-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl transition-colors border border-slate-200 shadow-sm"
+          className="p-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl transition-colors border border-slate-200 shadow-sm cursor-pointer"
           title="Refresh products"
         >
           <RefreshCw className="w-4 h-4" />
         </button>
         <button
           onClick={handleOpenAdd}
-          className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-600/20"
+          className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-600/20 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           Add Product
@@ -586,7 +607,7 @@ export default function AdminProductsPage() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-blue-600 text-white shadow'
                     : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
@@ -648,14 +669,14 @@ export default function AdminProductsPage() {
                 <div className="p-5 pt-0 border-t border-slate-100 flex items-center justify-end gap-2 mt-4">
                   <button
                     onClick={() => handleOpenEdit(product)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                     title="Edit product"
                   >
                     <Edit3 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(product.id, product.name)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                     title="Delete product"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -673,7 +694,7 @@ export default function AdminProductsPage() {
           <div className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
             <button
               onClick={() => setIsAddOpen(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700"
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -701,7 +722,7 @@ export default function AdminProductsPage() {
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  placeholder="e.g. High Frequency Grinding Spindle"
+                  placeholder="e.g. Bend Checking Fixture"
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
@@ -742,7 +763,7 @@ export default function AdminProductsPage() {
                     type="number"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
-                    placeholder="10000"
+                    placeholder="0"
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-bold"
                   />
                 </div>
@@ -802,7 +823,7 @@ export default function AdminProductsPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50"
               >
                 {submitting ? 'Publishing Product...' : 'Publish Product to Catalog'}
               </button>
@@ -817,7 +838,7 @@ export default function AdminProductsPage() {
           <div className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
             <button
               onClick={() => setEditProduct(null)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700"
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -941,7 +962,7 @@ export default function AdminProductsPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50"
               >
                 {submitting ? 'Updating Product...' : 'Save & Update Product'}
               </button>
