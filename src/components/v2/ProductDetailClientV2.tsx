@@ -497,13 +497,18 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
                 <div>
                   <div className="bg-white/90 border border-slate-200/60 rounded-xl p-3.5 space-y-2 shadow-xs">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-extrabold text-slate-900 text-xs">{reviews[activeReviewIndex]?.name}</span>
                         <span className="text-[9px] font-mono text-emerald-600 font-bold uppercase bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/40">
                           ✓ Verified Buyer
                         </span>
+                        {reviews[activeReviewIndex]?.purchaseCount > 1 && (
+                          <span className="text-[9px] font-mono text-amber-700 font-black uppercase bg-amber-100/90 px-1.5 py-0.5 rounded border border-amber-200 shadow-xs">
+                            {reviews[activeReviewIndex]?.purchaseCount}x Purchases
+                          </span>
+                        )}
                       </div>
-                      <div className="flex gap-0.5">
+                      <div className="flex gap-0.5 shrink-0">
                         {renderStars(reviews[activeReviewIndex]?.rating || 5)}
                       </div>
                     </div>
@@ -530,8 +535,18 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
                     <div className="mt-3 pt-3 border-t border-amber-100/80 space-y-2 max-h-60 overflow-y-auto pr-1">
                       {reviews.map((rev, idx) => (
                         <div key={idx} className="p-3 bg-white rounded-xl border border-slate-200/70 space-y-1 text-xs">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-slate-900">{rev.name}</span>
+                          <div className="flex items-center justify-between flex-wrap gap-1">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-slate-900">{rev.name}</span>
+                              <span className="text-[8px] font-mono text-emerald-600 font-bold uppercase bg-emerald-50 px-1 py-0.2 rounded">
+                                ✓ Verified Buyer
+                              </span>
+                              {rev.purchaseCount > 1 && (
+                                <span className="text-[8px] font-mono text-amber-700 font-bold uppercase bg-amber-100 px-1 py-0.2 rounded">
+                                  {rev.purchaseCount}x Purchases
+                                </span>
+                              )}
+                            </div>
                             <div className="flex gap-0.5">{renderStars(rev.rating)}</div>
                           </div>
                           <p className="text-slate-600 text-[11px] font-light">"{rev.comment}"</p>
@@ -636,7 +651,14 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="font-bold text-slate-900 text-xs block">{rev.name}</span>
-                      <span className="text-[9px] font-mono text-emerald-600 font-bold uppercase">Verified Buyer</span>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[9px] font-mono text-emerald-600 font-bold uppercase">Verified Buyer</span>
+                        {rev.purchaseCount > 1 && (
+                          <span className="text-[8px] font-mono text-amber-700 font-black uppercase bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200 shadow-xs">
+                            {rev.purchaseCount}x Purchases
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex gap-0.5">
                       {renderStars(rev.rating)}
