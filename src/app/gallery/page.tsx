@@ -47,6 +47,36 @@ export default function GalleryPage() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [lightboxIndex, images.length])
 
+  // Asymmetrical Bento Collage Layout Spans (matching reference style)
+  const getBentoSpanClass = (index: number) => {
+    const pattern = index % 7
+    switch (pattern) {
+      case 0:
+        // Top Left Wide Hero Card (Spans 2 cols)
+        return "col-span-1 sm:col-span-2 lg:col-span-2 aspect-[16/10]"
+      case 1:
+        // Top Right Standard Card 1
+        return "col-span-1 aspect-[16/10]"
+      case 2:
+        // Top Right Standard Card 2
+        return "col-span-1 aspect-[16/10]"
+      case 3:
+        // Middle Left Inset Card
+        return "col-span-1 sm:col-span-1 lg:col-span-1 aspect-[16/10]"
+      case 4:
+        // Middle Right Big Wide Feature Card (Spans 3 cols on 4-col grid)
+        return "col-span-1 sm:col-span-2 lg:col-span-3 aspect-[16/9]"
+      case 5:
+        // Bottom Left Wide Card (Spans 2 cols)
+        return "col-span-1 sm:col-span-2 lg:col-span-2 aspect-[16/10]"
+      case 6:
+        // Bottom Right Wide Card (Spans 2 cols)
+        return "col-span-1 sm:col-span-2 lg:col-span-2 aspect-[16/10]"
+      default:
+        return "col-span-1 aspect-[16/10]"
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pt-28 pb-20 font-sans" style={{ colorScheme: 'light' }}>
       
@@ -72,23 +102,28 @@ export default function GalleryPage() {
             </p>
           </div>
         ) : (
-          /* Pure Clean Image Grid: Only Images, No Descriptions or Headings */
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 sm:gap-6">
+          /* Asymmetrical Bento Gallery Grid matching reference collage layout */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {images.map((item, idx) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.25, delay: idx * 0.03 }}
+                transition={{ duration: 0.3, delay: idx * 0.04 }}
                 onClick={() => setLightboxIndex(idx)}
-                className="group relative aspect-square bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-400 transition-all duration-300 flex items-center justify-center p-3 sm:p-4 cursor-pointer"
+                className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs hover:shadow-2xl transition-all duration-500 cursor-pointer bg-slate-900 ${getBentoSpanClass(
+                  idx
+                )}`}
               >
                 <img
                   src={item.url}
-                  alt={`Gallery Image ${idx + 1}`}
+                  alt={`Gallery ${idx + 1}`}
                   loading="lazy"
-                  className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
                 />
+                
+                {/* Subtle dark gradient overlay on hover */}
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors pointer-events-none" />
               </motion.div>
             ))}
           </div>
