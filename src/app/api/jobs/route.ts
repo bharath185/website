@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getSessionUser } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { getPgClient } from '@/lib/pg-products'
+
+export const dynamic = 'force-dynamic'
 
 // GET /api/jobs
 // Public: Returns all active jobs (or all jobs if requested by authenticated Admin)
@@ -12,15 +14,25 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
     const showAll = searchParams.get('all') === 'true'
 
-    const jobs = await db.job.findMany({
-      where: (isAdmin && showAll) ? {} : { isActive: true },
-      orderBy: { createdAt: 'desc' }
-    })
+    const client = await getPgClient()
+    try {
+      let query = 'SELECT * FROM "Job"'
+      const params: any[] = []
 
-    return NextResponse.json(jobs)
-  } catch (error) {
+      if (!isAdmin || !showAll) {
+        query += ' WHERE "isActive" = true'
+      }
+
+      query += ' ORDER BY "createdAt" DESC;'
+
+      const res = await client.query(query, params)
+      return NextResponse.json(res.rows)
+    } finally {
+      await client.end().catch(() => {})
+    }
+  } catch (error: any) {
     console.error('Error fetching jobs:', error)
-    return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || 'Failed to fetch jobs' }, { status: 500 })
   }
 }
 
@@ -40,21 +52,37 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const job = await db.job.create({
-      data: {
-        title,
-        department,
-        location,
-        type,
-        description,
-        requirements,
-        isActive: true
-      }
-    })
+    const client = await getPgClient()
+    try {
+      // Ensure Job table exists
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS "Job" (
+          "id" TEXT PRIMARY KEY,
+          "title" TEXT NOT NULL,
+          "department" TEXT NOT NULL,
+          "location" TEXT NOT NULL,
+          "type" TEXT NOT NULL,
+          "description" TEXT NOT NULL,
+          "requirements" TEXT NOT NULL,
+          "isActive" BOOLEAN DEFAULT true,
+          "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+        );
+      `)
 
-    return NextResponse.json(job, { status: 201 })
-  } catch (error) {
+      const id = `job-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`
+      const res = await client.query(`
+        INSERT INTO "Job" ("id", "title", "department", "location", "type", "description", "requirements", "isActive", "createdAt", "updatedAt")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+        RETURNING *;
+      `, [id, title.trim(), department.trim(), location.trim(), type.trim(), description.trim(), requirements.trim(), true])
+
+      return NextResponse.json(res.rows[0], { status: 201 })
+    } finally {
+      await client.end().catch(() => {})
+    }
+  } catch (error: any) {
     console.error('Error creating job:', error)
-    return NextResponse.json({ error: 'Failed to create job posting' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || 'Failed to create job posting' }, { status: 500 })
   }
 }

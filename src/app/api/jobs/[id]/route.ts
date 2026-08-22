@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getSessionUser } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { getPgClient } from '@/lib/pg-products'
+
+export const dynamic = 'force-dynamic'
 
 // PUT /api/jobs/[id]
 // Admin Only: Updates a job posting's details
@@ -18,31 +20,37 @@ export async function PUT(
     const body = await req.json()
     const { title, department, location, type, description, requirements, isActive } = body
 
-    // Verify job exists
-    const existingJob = await db.job.findUnique({
-      where: { id }
-    })
-    if (!existingJob) {
-      return NextResponse.json({ error: 'Job posting not found' }, { status: 444 })
-    }
-
-    const updatedJob = await db.job.update({
-      where: { id },
-      data: {
-        title: title !== undefined ? title : existingJob.title,
-        department: department !== undefined ? department : existingJob.department,
-        location: location !== undefined ? location : existingJob.location,
-        type: type !== undefined ? type : existingJob.type,
-        description: description !== undefined ? description : existingJob.description,
-        requirements: requirements !== undefined ? requirements : existingJob.requirements,
-        isActive: isActive !== undefined ? isActive : existingJob.isActive
+    const client = await getPgClient()
+    try {
+      // Check existing job
+      const checkRes = await client.query('SELECT * FROM "Job" WHERE "id" = $1 LIMIT 1;', [id])
+      if (checkRes.rows.length === 0) {
+        return NextResponse.json({ error: 'Job posting not found' }, { status: 404 })
       }
-    })
+      const existing = checkRes.rows[0]
 
-    return NextResponse.json(updatedJob)
-  } catch (error) {
+      const updatedTitle = title !== undefined ? title : existing.title
+      const updatedDept = department !== undefined ? department : existing.department
+      const updatedLoc = location !== undefined ? location : existing.location
+      const updatedType = type !== undefined ? type : existing.type
+      const updatedDesc = description !== undefined ? description : existing.description
+      const updatedReq = requirements !== undefined ? requirements : existing.requirements
+      const updatedActive = isActive !== undefined ? isActive : existing.isActive
+
+      const updateRes = await client.query(`
+        UPDATE "Job"
+        SET "title" = $1, "department" = $2, "location" = $3, "type" = $4, "description" = $5, "requirements" = $6, "isActive" = $7, "updatedAt" = NOW()
+        WHERE "id" = $8
+        RETURNING *;
+      `, [updatedTitle, updatedDept, updatedLoc, updatedType, updatedDesc, updatedReq, updatedActive, id])
+
+      return NextResponse.json(updateRes.rows[0])
+    } finally {
+      await client.end().catch(() => {})
+    }
+  } catch (error: any) {
     console.error('Error updating job:', error)
-    return NextResponse.json({ error: 'Failed to update job posting' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || 'Failed to update job posting' }, { status: 500 })
   }
 }
 
@@ -60,21 +68,15 @@ export async function DELETE(
 
     const { id } = await params
 
-    // Verify job exists
-    const existingJob = await db.job.findUnique({
-      where: { id }
-    })
-    if (!existingJob) {
-      return NextResponse.json({ error: 'Job posting not found' }, { status: 444 })
+    const client = await getPgClient()
+    try {
+      await client.query('DELETE FROM "Job" WHERE "id" = $1;', [id])
+      return NextResponse.json({ success: true, message: 'Job posting deleted' })
+    } finally {
+      await client.end().catch(() => {})
     }
-
-    await db.job.delete({
-      where: { id }
-    })
-
-    return NextResponse.json({ success: true, message: 'Job posting deleted' })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting job:', error)
-    return NextResponse.json({ error: 'Failed to delete job posting' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || 'Failed to delete job posting' }, { status: 500 })
   }
 }
