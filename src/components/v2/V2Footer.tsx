@@ -111,7 +111,9 @@ export default function V2Footer() {
                 {!user && (
                   <Link href="/careers" className="hover:text-blue-600 transition-colors">Careers</Link>
                 )}
-                <Link href="/contact" className="hover:text-blue-600 transition-colors">Support Center</Link>
+                {!user && (
+                  <Link href="/contact" className="hover:text-blue-600 transition-colors">Support Center</Link>
+                )}
                 <Link href="/orders" className="hover:text-blue-600 transition-colors">Track Shipment</Link>
               </div>
             </div>

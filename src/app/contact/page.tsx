@@ -1,14 +1,36 @@
-import type { Metadata } from "next"
-import ContactForm from "@/components/ContactForm"
-import { Phone, Mail, MapPin, Sparkles } from "lucide-react"
+"use client"
 
-export const metadata: Metadata = {
-  title: "Contact Us | Bharat Machine Tools",
-  description:
-    "Get in touch with Bharat Machine Tools. Visit our facility in Bengaluru or send us a message for enquiries, quotes, and service requests."
-}
+import React, { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/context/AuthContext"
+import ContactForm from "@/components/ContactForm"
+import { Sparkles, RefreshCw } from "lucide-react"
 
 export default function ContactPage() {
+  const { user, loading: authLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      if (user.role === "ADMIN") {
+        router.replace("/admin/orders")
+      } else {
+        router.replace("/orders")
+      }
+    }
+  }, [user, authLoading, router])
+
+  if (user) {
+    return (
+      <div className="min-h-screen bg-[#fafbfc] pt-32 pb-20 flex flex-col items-center justify-center text-slate-500 gap-3">
+        <RefreshCw className="w-6 h-6 animate-spin text-[#122f87]" />
+        <p className="text-xs font-mono font-bold uppercase tracking-widest text-[#122f87]">
+          Redirecting to your dashboard...
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-28 sm:pt-32 pb-20 relative overflow-hidden font-sans">
       {/* Background Tooling Grid */}

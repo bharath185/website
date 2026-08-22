@@ -29,7 +29,7 @@ export default function V2Header() {
     { href: "/services", label: "Services" },
     { href: "/news", label: "News & Journal" },
     ...(!user ? [{ href: "/careers", label: "Careers" }] : []),
-    { href: "/contact", label: "Support & Contact" },
+    ...(!user ? [{ href: "/contact", label: "Support & Contact" }] : []),
     ...(user && user.role !== "ADMIN" ? [{ href: "/orders", label: "Track Orders" }] : []),
   ]
 
