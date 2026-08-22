@@ -48,35 +48,29 @@ export default function ThermalProcessCoatingsPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden font-sans">
       
-      {/* Header Banner */}
-      <div className="relative bg-[#071333] text-white py-16 px-4 sm:px-6 lg:px-8 overflow-hidden border-b border-blue-950">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?q=80&w=1600&auto=format&fit=crop"
-            alt="Thermal Spraying Header"
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#071333]/90 via-[#071333]/85 to-[#071333]" />
-        </div>
+      {/* Blueprint Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.008)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.008)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
-        <div className="max-w-6xl mx-auto relative z-10">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-1.5 text-xs text-blue-300 hover:text-white transition-colors mb-4 font-mono uppercase tracking-wider"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Services
-          </Link>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/15 border border-amber-400/20 text-amber-300 rounded-full text-xs font-mono font-semibold tracking-wider uppercase mb-3">
-            <Flame className="w-3.5 h-3.5 text-amber-400" />
-            Surface Metallurgy Division
-          </div>
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white font-mono leading-tight">
+      {/* Header Banner */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-10">
+        <Link
+          href="/services"
+          className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 transition-colors mb-4 font-mono uppercase tracking-wider font-bold"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Services
+        </Link>
+        <div>
+          <span className="text-[10px] font-mono font-bold text-amber-700 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-md border border-amber-200/60 inline-flex items-center gap-1.5 mb-3">
+            <Flame className="w-3.5 h-3.5 text-amber-600" />
+            SURFACE METALLURGY DIVISION
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-tight">
             Thermal Process, Surface Treatment &amp; Coatings
           </h1>
-          <p className="text-slate-300 text-xs sm:text-base mt-3 max-w-3xl font-light leading-relaxed">
+          <p className="text-slate-600 text-xs sm:text-base mt-3 max-w-3xl font-light leading-relaxed">
             Advanced metallurgical coatings engineered to maximize component hardness, mitigate frictional heat, and extend operational lifespan in abrasive industrial environments.
           </p>
         </div>

@@ -66,7 +66,7 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-28 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden">
       
       {/* Dynamic Background Accents */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-red-500/5 rounded-full blur-[140px] pointer-events-none" />

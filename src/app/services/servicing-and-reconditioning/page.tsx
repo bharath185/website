@@ -32,25 +32,29 @@ export default function ServicingReconditioningPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+    <div className="min-h-screen bg-[#fafbfc] font-sans text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden">
+      
+      {/* Blueprint Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.008)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.008)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
       {/* Header Banner */}
-      <div className="bg-[#0b1b4f] text-white pt-24 pb-14 px-4 sm:px-6 lg:px-8 border-b border-blue-950">
-        <div className="max-w-5xl mx-auto">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-1.5 text-xs text-blue-300 hover:text-white transition-colors mb-4 font-mono uppercase tracking-wider"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Services
-          </Link>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-mono font-semibold uppercase tracking-wider mb-3 border border-blue-400/20">
-            <Wrench className="w-3.5 h-3.5" />
-            Turnkey Machine Restoration
-          </div>
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white font-mono">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-10">
+        <Link
+          href="/services"
+          className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 transition-colors mb-4 font-mono uppercase tracking-wider font-bold"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Services
+        </Link>
+        <div>
+          <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40 inline-flex items-center gap-1.5 mb-3">
+            <Wrench className="w-3 h-3 text-blue-600" />
+            TURNKEY MACHINE RESTORATION
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display">
             Servicing &amp; Machine Reconditioning
           </h1>
-          <p className="text-slate-300 text-xs sm:text-base mt-2 max-w-2xl font-light leading-relaxed">
+          <p className="text-slate-600 text-xs sm:text-base mt-2 max-w-2xl font-light leading-relaxed">
             Turnkey retrofitting, overhauling, and precision geometric restoration of CNC and conventional machine tools across India.
           </p>
         </div>
