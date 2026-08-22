@@ -25,6 +25,7 @@ export default function V2Header() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/products", label: "Catalogue" },
+    { href: "/gallery", label: "Gallery" },
     { href: "/services", label: "Services" },
     { href: "/news", label: "News & Journal" },
     ...(!user ? [{ href: "/careers", label: "Careers" }] : []),
