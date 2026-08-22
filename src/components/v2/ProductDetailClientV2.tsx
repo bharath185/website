@@ -128,6 +128,8 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
   // Dynamic reviews state (from verified customer orders)
   const [reviews, setReviews] = useState<any[]>([])
   const [reviewsLoading, setReviewsLoading] = useState(true)
+  const [activeReviewIndex, setActiveReviewIndex] = useState(0)
+  const [showAllTopReviews, setShowAllTopReviews] = useState(false)
 
   const fetchReviews = async () => {
     try {
@@ -444,9 +446,109 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
               )}
             </div>
 
-            <p className="text-slate-600 text-xs sm:text-sm font-light leading-relaxed mb-8">
+            <p className="text-slate-600 text-xs sm:text-sm font-light leading-relaxed mb-6">
               {product.description}
             </p>
+
+            {/* Top Verified Customer Reviews & Feedback Highlight Card (No scrolling needed) */}
+            <div className="bg-gradient-to-br from-amber-50/40 via-white to-slate-50 border border-amber-200/70 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm">
+              <div className="flex items-center justify-between gap-2 border-b border-amber-100/80 pb-3 mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 shrink-0">
+                    <Star className="w-4 h-4 fill-amber-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-extrabold uppercase tracking-wide text-slate-900 flex items-center gap-1.5">
+                      Verified Customer Feedback
+                      <span className="text-[9px] font-mono font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">
+                        ★ {avgRating}
+                      </span>
+                    </h3>
+                    <span className="text-[10px] text-slate-500 font-medium">
+                      {reviews.length > 0 ? `${reviews.length} Verified Purchaser Rating${reviews.length === 1 ? '' : 's'}` : 'Bangalore Quality Assurance Tested'}
+                    </span>
+                  </div>
+                </div>
+
+                {reviews.length > 1 && (
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => setActiveReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length)}
+                      className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-colors shadow-xs cursor-pointer"
+                      title="Previous Review"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="text-[10px] font-mono font-bold text-slate-500 px-1">
+                      {activeReviewIndex + 1}/{reviews.length}
+                    </span>
+                    <button
+                      onClick={() => setActiveReviewIndex((prev) => (prev + 1) % reviews.length)}
+                      className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-colors shadow-xs cursor-pointer"
+                      title="Next Review"
+                    >
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {reviews.length > 0 ? (
+                <div>
+                  <div className="bg-white/90 border border-slate-200/60 rounded-xl p-3.5 space-y-2 shadow-xs">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-extrabold text-slate-900 text-xs">{reviews[activeReviewIndex]?.name}</span>
+                        <span className="text-[9px] font-mono text-emerald-600 font-bold uppercase bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/40">
+                          ✓ Verified Buyer
+                        </span>
+                      </div>
+                      <div className="flex gap-0.5">
+                        {renderStars(reviews[activeReviewIndex]?.rating || 5)}
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-700 font-medium italic leading-relaxed">
+                      "{reviews[activeReviewIndex]?.comment}"
+                    </p>
+                  </div>
+
+                  {reviews.length > 1 && (
+                    <div className="mt-2.5 flex items-center justify-between text-[10px]">
+                      <button
+                        onClick={() => setShowAllTopReviews(!showAllTopReviews)}
+                        className="text-blue-600 hover:text-blue-800 font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer"
+                      >
+                        {showAllTopReviews ? 'Hide Reviews ▲' : `View All ${reviews.length} Customer Reviews ▼`}
+                      </button>
+                      <a href="#verified-feedback" className="text-slate-400 hover:text-slate-600 font-medium">
+                        Full Quality Breakdown &darr;
+                      </a>
+                    </div>
+                  )}
+
+                  {showAllTopReviews && (
+                    <div className="mt-3 pt-3 border-t border-amber-100/80 space-y-2 max-h-60 overflow-y-auto pr-1">
+                      {reviews.map((rev, idx) => (
+                        <div key={idx} className="p-3 bg-white rounded-xl border border-slate-200/70 space-y-1 text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-900">{rev.name}</span>
+                            <div className="flex gap-0.5">{renderStars(rev.rating)}</div>
+                          </div>
+                          <p className="text-slate-600 text-[11px] font-light">"{rev.comment}"</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 bg-white/90 border border-slate-200/60 rounded-xl p-3.5">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <p className="text-xs text-slate-600 leading-relaxed font-light">
+                    <strong className="font-bold text-slate-900">5.0 Star Factory Quality Standard:</strong> Calibrated with laser interferometry and dynamically tested before dispatch.
+                  </p>
+                </div>
+              )}
+            </div>
 
             {/* Technical Specifications Table */}
             <div className="bg-white border border-slate-200/80 rounded-[2rem] p-6 sm:p-8 mb-8 shadow-sm">
@@ -499,7 +601,7 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
         </div>
 
         {/* Verified Customer Feedback & Quality Rating Section (Clean, Verified Orders Only, No Form) */}
-        <div className="bg-white border border-slate-200/80 rounded-[2.5rem] p-6 sm:p-10 mb-16 shadow-sm">
+        <div id="verified-feedback" className="bg-white border border-slate-200/80 rounded-[2.5rem] p-6 sm:p-10 mb-16 shadow-sm scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-100 pb-6 mb-8">
             <div>
               <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40 inline-block mb-2">
