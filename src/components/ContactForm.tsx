@@ -28,9 +28,8 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="py-16 lg:py-24 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-3 gap-10 items-start">
+    <div className="w-full">
+      <div className="grid lg:grid-cols-3 gap-8 sm:gap-10 items-start">
           
           <ScrollReveal className="lg:col-span-2">
             <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
@@ -184,6 +183,5 @@ export default function ContactForm() {
           </ScrollReveal>
         </div>
       </div>
-    </section>
   )
 }
