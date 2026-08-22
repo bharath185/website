@@ -184,7 +184,7 @@ export default function V2Hero() {
           </div>
 
           {/* ========================================================================= */}
-          {/* RIGHT COLUMN: Spacious Big Circular Neon Light Timer Stage                */}
+          {/* RIGHT COLUMN: Spacious Unclipped Circular Neon Light Timer Stage          */}
           {/* ========================================================================= */}
           <div 
             onMouseEnter={() => setIsHovered(true)}
@@ -192,33 +192,33 @@ export default function V2Hero() {
             className="lg:col-span-7 flex flex-col items-center justify-center relative py-4"
           >
             
+            {/* Top Category & QA Indicator Header (Outside of Circle for Perfect Clearance) */}
+            <div className="w-full max-w-[480px] flex items-center justify-between gap-2 mb-3 px-3">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 font-mono font-extrabold text-blue-700 uppercase text-[10px] tracking-wider shadow-2xs">
+                  {currentProduct.category}
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 font-mono font-bold text-emerald-700 uppercase text-[9px] tracking-wider">
+                  <Check className="w-3 h-3 text-emerald-600" /> QA Verified
+                </span>
+              </div>
+
+              <span className="text-slate-500 font-mono text-xs font-bold px-2.5 py-1 bg-white border border-slate-200/80 rounded-full shadow-2xs">
+                {currentIndex + 1} / {products.length}
+              </span>
+            </div>
+
             {/* Big Circular Neon Container */}
-            <div className="relative w-[360px] h-[360px] sm:w-[460px] sm:h-[460px] lg:w-[520px] lg:h-[520px] xl:w-[560px] xl:h-[560px] flex items-center justify-center">
+            <div className="relative w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] lg:w-[460px] lg:h-[460px] xl:w-[480px] xl:h-[480px] flex items-center justify-center">
               
-              {/* Inner Soft White Glass Disc (Spacious & Clean) */}
-              <div className="absolute inset-5 sm:inset-7 rounded-full bg-gradient-to-b from-white via-slate-50/60 to-white border border-slate-200/90 shadow-[0_20px_50px_-15px_rgba(15,23,42,0.09)] flex flex-col items-center justify-between p-7 sm:p-10 overflow-hidden z-10 select-none">
+              {/* Inner Soft White Glass Disc (Dedicated purely to the unclipped machine image) */}
+              <div className="absolute inset-4 sm:inset-6 rounded-full bg-gradient-to-b from-white via-slate-50/50 to-white border border-slate-200/90 shadow-[0_20px_50px_-15px_rgba(15,23,42,0.08)] flex items-center justify-center p-6 sm:p-8 overflow-hidden z-10 select-none">
                 
                 {/* Dynamic Ambient Inner Radial Glow */}
                 <div className="absolute inset-0 bg-radial from-blue-500/10 via-transparent to-transparent pointer-events-none" />
 
-                {/* Top Info Bar: Category Badge, QA Tag & Model Counter */}
-                <div className="w-full flex items-center justify-between z-20 pt-1 px-1">
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 font-mono font-extrabold text-blue-700 uppercase text-[9px] sm:text-[10px] tracking-wider">
-                      {currentProduct.category}
-                    </span>
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 font-mono font-bold text-emerald-700 uppercase text-[9px] tracking-wider">
-                      <Check className="w-3 h-3 text-emerald-600" /> QA Verified
-                    </span>
-                  </div>
-
-                  <span className="text-slate-400 font-mono text-xs font-bold px-2 py-0.5 bg-slate-100/80 rounded-full">
-                    {currentIndex + 1} / {products.length}
-                  </span>
-                </div>
-
-                {/* Central Product Image (Large, Crisp & Unclipped) */}
-                <div className="relative z-20 my-auto py-2 flex items-center justify-center w-full h-[200px] sm:h-[260px] lg:h-[290px] xl:h-[320px]">
+                {/* Central Product Image (Large, Crisp & 100% Unclipped) */}
+                <div className="relative z-20 flex items-center justify-center w-full h-full">
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={currentProduct.id}
@@ -228,26 +228,9 @@ export default function V2Hero() {
                       transition={{ duration: 0.3, ease: "easeOut" }}
                       src={currentProduct.image}
                       alt={currentProduct.name}
-                      className="max-h-full max-w-full object-contain drop-shadow-[0_16px_30px_rgba(0,0,0,0.14)] select-none pointer-events-none"
+                      className="max-h-[220px] sm:max-h-[280px] lg:max-h-[320px] max-w-[90%] object-contain drop-shadow-[0_16px_30px_rgba(0,0,0,0.12)] select-none pointer-events-none"
                     />
                   </AnimatePresence>
-                </div>
-
-                {/* Bottom Product Details Bar (Spacious Title & Link) */}
-                <div className="w-full flex items-center justify-between gap-3 z-20 pt-3 border-t border-slate-100 px-1">
-                  <div className="min-w-0 pr-2">
-                    <h3 className="font-black text-slate-900 text-xs sm:text-base uppercase tracking-tight truncate max-w-[190px] sm:max-w-[280px]">
-                      {currentProduct.name}
-                    </h3>
-                  </div>
-
-                  <Link
-                    href={`/products/${encodeURIComponent(currentProduct.slug || currentProduct.id)}`}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#122f87] hover:bg-[#1a3fa8] text-white rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all shadow-xs shrink-0 cursor-pointer"
-                  >
-                    <span>Specs</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
                 </div>
 
               </div>
@@ -325,8 +308,28 @@ export default function V2Hero() {
 
             </div>
 
+            {/* Bottom Floating Details Card (Spacious Title & Direct Action Link) */}
+            <div className="w-full max-w-[480px] bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-4.5 mt-4 shadow-sm flex items-center justify-between gap-4 z-20">
+              <div className="min-w-0">
+                <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest block mb-0.5">
+                  Model Ref &bull; {currentProduct.category}
+                </span>
+                <h3 className="font-black text-slate-900 text-sm sm:text-base uppercase tracking-tight truncate">
+                  {currentProduct.name}
+                </h3>
+              </div>
+
+              <Link
+                href={`/products/${encodeURIComponent(currentProduct.slug || currentProduct.id)}`}
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#122f87] hover:bg-[#1a3fa8] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-blue-900/15 shrink-0 cursor-pointer"
+              >
+                <span>View Specs</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
             {/* Bottom Dots Indicator */}
-            <div className="flex items-center gap-2 mt-6">
+            <div className="flex items-center gap-2 mt-4">
               {products.map((p, i) => (
                 <button
                   key={p.id}
