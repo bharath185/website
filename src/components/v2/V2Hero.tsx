@@ -87,7 +87,7 @@ export default function V2Hero() {
   const strokeDashoffset = circumference - (progress / 100) * circumference
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-[#ffffff] via-[#f8fafc] to-[#ffffff] text-slate-900 pt-28 pb-16 lg:py-24 relative overflow-hidden font-sans selection:bg-blue-600/20" style={{ colorScheme: 'light' }}>
+    <section className="min-h-screen bg-gradient-to-b from-[#ffffff] via-[#f8fafc] to-[#ffffff] text-slate-900 pt-32 sm:pt-36 lg:pt-40 pb-16 lg:pb-24 relative overflow-hidden font-sans selection:bg-blue-600/20" style={{ colorScheme: 'light' }}>
       
       {/* Subtle Blueprint Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.025)_1px,transparent_1px)] bg-[size:44px_44px] pointer-events-none" />
