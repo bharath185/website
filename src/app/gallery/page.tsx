@@ -47,40 +47,29 @@ export default function GalleryPage() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [lightboxIndex, images.length])
 
-  // Asymmetrical Bento Collage Layout Spans (matching reference style)
-  const getBentoSpanClass = (index: number) => {
-    const pattern = index % 7
+  // Dynamic natural aspect ratio pattern for seamless masonry without any gaps
+  const getAspectRatioClass = (index: number) => {
+    const pattern = index % 5
     switch (pattern) {
       case 0:
-        // Top Left Wide Hero Card (Spans 2 cols)
-        return "col-span-1 sm:col-span-2 lg:col-span-2 aspect-[16/10]"
+        return "aspect-[16/10]" // Wide landscape
       case 1:
-        // Top Right Standard Card 1
-        return "col-span-1 aspect-[16/10]"
+        return "aspect-[4/3]" // Classic landscape
       case 2:
-        // Top Right Standard Card 2
-        return "col-span-1 aspect-[16/10]"
+        return "aspect-[16/11]" // Cinematic
       case 3:
-        // Middle Left Inset Card
-        return "col-span-1 sm:col-span-1 lg:col-span-1 aspect-[16/10]"
+        return "aspect-[3/2]" // Studio proportion
       case 4:
-        // Middle Right Big Wide Feature Card (Spans 3 cols on 4-col grid)
-        return "col-span-1 sm:col-span-2 lg:col-span-3 aspect-[16/9]"
-      case 5:
-        // Bottom Left Wide Card (Spans 2 cols)
-        return "col-span-1 sm:col-span-2 lg:col-span-2 aspect-[16/10]"
-      case 6:
-        // Bottom Right Wide Card (Spans 2 cols)
-        return "col-span-1 sm:col-span-2 lg:col-span-2 aspect-[16/10]"
+        return "aspect-[16/9]" // Widescreen
       default:
-        return "col-span-1 aspect-[16/10]"
+        return "aspect-[16/10]"
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pt-28 pb-20 font-sans" style={{ colorScheme: 'light' }}>
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 pt-28 pb-20 font-sans" style={{ colorScheme: 'light' }}>
       
-      {/* Background Subtle Grid */}
+      {/* Background Subtle Tooling Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -102,18 +91,18 @@ export default function GalleryPage() {
             </p>
           </div>
         ) : (
-          /* Asymmetrical Bento Gallery Grid matching reference collage layout */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          /* Seamless Gapless Multi-Column Masonry Grid */
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
             {images.map((item, idx) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: idx * 0.04 }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: idx * 0.03 }}
                 onClick={() => setLightboxIndex(idx)}
-                className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs hover:shadow-2xl transition-all duration-500 cursor-pointer bg-slate-900 ${getBentoSpanClass(
+                className={`break-inside-avoid relative w-full ${getAspectRatioClass(
                   idx
-                )}`}
+                )} rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer bg-slate-900 group border border-slate-200/80`}
               >
                 <img
                   src={item.url}
@@ -122,8 +111,8 @@ export default function GalleryPage() {
                   className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
                 />
                 
-                {/* Subtle dark gradient overlay on hover */}
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors pointer-events-none" />
+                {/* Gentle ambient lighting flare on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </motion.div>
             ))}
           </div>
