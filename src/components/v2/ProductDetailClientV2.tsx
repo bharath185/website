@@ -518,16 +518,13 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
                   </div>
 
                   {reviews.length > 1 && (
-                    <div className="mt-2.5 flex items-center justify-between text-[10px]">
+                    <div className="mt-2.5 flex items-center justify-start text-[10px]">
                       <button
                         onClick={() => setShowAllTopReviews(!showAllTopReviews)}
                         className="text-blue-600 hover:text-blue-800 font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer"
                       >
                         {showAllTopReviews ? 'Hide Reviews ▲' : `View All ${reviews.length} Customer Reviews ▼`}
                       </button>
-                      <a href="#verified-feedback" className="text-slate-400 hover:text-slate-600 font-medium">
-                        Full Quality Breakdown &darr;
-                      </a>
                     </div>
                   )}
 
@@ -613,82 +610,6 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
 
           </div>
 
-        </div>
-
-        {/* Verified Customer Feedback & Quality Rating Section (Clean, Verified Orders Only, No Form) */}
-        <div id="verified-feedback" className="bg-white border border-slate-200/80 rounded-[2.5rem] p-6 sm:p-10 mb-16 shadow-sm scroll-mt-24">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-100 pb-6 mb-8">
-            <div>
-              <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40 inline-block mb-2">
-                Quality Assurance
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-display uppercase tracking-tight text-slate-900">
-                Customer Ratings &amp; Verified Feedback
-              </h2>
-              <p className="text-xs text-slate-500 mt-1">
-                Ratings are provided exclusively by verified purchasers upon order delivery.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4 bg-slate-50 border border-slate-200/60 px-5 py-3 rounded-2xl">
-              <div className="text-right">
-                <span className="text-2xl font-black font-mono text-slate-900">{avgRating}</span>
-                <span className="text-[10px] text-slate-400 block font-mono">out of 5.0</span>
-              </div>
-              <div className="flex gap-1">
-                {renderStars(Math.round(Number(avgRating)))}
-              </div>
-            </div>
-          </div>
-
-          {reviews.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {reviews.map((rev) => (
-                <div
-                  key={rev.id}
-                  className="p-5 bg-slate-50/80 border border-slate-200/80 rounded-2xl flex flex-col justify-between space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-bold text-slate-900 text-xs block">{rev.name}</span>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[9px] font-mono text-emerald-600 font-bold uppercase">Verified Buyer</span>
-                        {rev.purchaseCount > 1 && (
-                          <span className="text-[8px] font-mono text-amber-700 font-black uppercase bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200 shadow-xs">
-                            {rev.purchaseCount}x Purchases
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex gap-0.5">
-                      {renderStars(rev.rating)}
-                    </div>
-                  </div>
-                  <p className="text-xs text-slate-600 font-light leading-relaxed">
-                    {rev.comment}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-              <div className="p-5 bg-slate-50/60 border border-slate-100 rounded-2xl">
-                <ShieldCheck className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                <h4 className="text-xs font-bold text-slate-900 uppercase">100% Quality Tested</h4>
-                <p className="text-[11px] text-slate-500 mt-1">Inspected for sub-micron tolerances before dispatch.</p>
-              </div>
-              <div className="p-5 bg-slate-50/60 border border-slate-100 rounded-2xl">
-                <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
-                <h4 className="text-xs font-bold text-slate-900 uppercase">Verified Order Tracking</h4>
-                <p className="text-[11px] text-slate-500 mt-1">Real clients rate parts after verified receipt.</p>
-              </div>
-              <div className="p-5 bg-slate-50/60 border border-slate-100 rounded-2xl">
-                <Star className="w-6 h-6 text-amber-500 mx-auto mb-2 fill-amber-400" />
-                <h4 className="text-xs font-bold text-slate-900 uppercase">5.0 Star Factory Standard</h4>
-                <p className="text-[11px] text-slate-500 mt-1">Built to ISO precision standards in Bangalore.</p>
-              </div>
-            </div>
-          )}
         </div>
 
       </div>
