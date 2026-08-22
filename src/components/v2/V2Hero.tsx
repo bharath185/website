@@ -1,35 +1,35 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { RefreshCw, ChevronLeft, ChevronRight } from "lucide-react"
+import Link from "next/link"
+import { 
+  ArrowRight, 
+  ChevronLeft, 
+  ChevronRight, 
+  ShieldCheck, 
+  Activity, 
+  Sparkles, 
+  Cpu, 
+  CheckCircle2, 
+  Maximize2,
+  RefreshCw,
+  Compass
+} from "lucide-react"
 import { Product } from "@/types"
 
 export default function V2Hero() {
   const [productsList, setProductsList] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [rotationOffset, setRotationOffset] = useState(270)
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL")
+  const stageRef = useRef<HTMLDivElement>(null)
 
-  const [radius, setRadius] = useState(270)
+  // 3D Parallax Tilt State
+  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+  const [isHovered, setIsHovered] = useState(false)
 
-  // Dynamically scale radius based on screen size to prevent hydration mismatch
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setRadius(130)
-      } else if (window.innerWidth < 1024) {
-        setRadius(200)
-      } else {
-        setRadius(270)
-      }
-    }
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  // Fetch real products from the API to get user's uploaded images
+  // Fetch real products from the database
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -41,7 +41,7 @@ export default function V2Hero() {
           }
         }
       } catch (err) {
-        console.error("Error loading products for large right-aligned hero wheel:", err)
+        console.error("Error loading products for hero stage:", err)
       } finally {
         setLoading(false)
       }
@@ -49,248 +49,305 @@ export default function V2Hero() {
     fetchProducts()
   }, [])
 
-  const totalProducts = productsList.length
+  // Filter products by selected category
+  const filteredProducts = selectedCategory === "ALL" 
+    ? productsList 
+    : productsList.filter(p => p.category?.toUpperCase() === selectedCategory.toUpperCase())
 
-  const selectProduct = (idx: number) => {
-    setActiveIndex(idx)
-    // Rotate the wheel so the active item is positioned at the top (270 degrees)
-    const anglePerItem = 360 / totalProducts
-    const targetAngle = idx * anglePerItem
-    setRotationOffset(270 - targetAngle)
-  }
+  const activeProducts = filteredProducts.length > 0 ? filteredProducts : productsList
+  const currentProduct = activeProducts[activeIndex] || activeProducts[0] || null
 
-  // Auto cycle every 4.5 seconds
+  // Ensure activeIndex is within bounds when category changes
   useEffect(() => {
-    if (totalProducts <= 1) return
+    setActiveIndex(0)
+  }, [selectedCategory])
+
+  // Auto cycle products every 5 seconds if not hovering
+  useEffect(() => {
+    if (activeProducts.length <= 1 || isHovered) return
 
     const interval = setInterval(() => {
-      const nextIndex = (activeIndex + 1) % totalProducts
-      selectProduct(nextIndex)
-    }, 4500)
+      setActiveIndex((prev) => (prev + 1) % activeProducts.length)
+    }, 5000)
 
     return () => clearInterval(interval)
-  }, [activeIndex, totalProducts])
+  }, [activeProducts.length, isHovered])
 
-  const activeProduct = (productsList.length > 0 && productsList[activeIndex]) ? productsList[activeIndex] : (productsList[0] || null)
+  // Mouse Move Parallax Handler
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!stageRef.current) return
+    const rect = stageRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
 
-  if (loading || !activeProduct || productsList.length === 0) {
+    // Dampen the tilt angles (-12 to 12 deg)
+    const tiltX = -(y / (rect.height / 2)) * 10
+    const tiltY = (x / (rect.width / 2)) * 12
+
+    setTilt({ x: tiltX, y: tiltY })
+  }
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 })
+    setIsHovered(false)
+  }
+
+  const categories = ["ALL", "MACHINERY", "SPINDLES", "GEARBOX", "LOCKNUTS"]
+
+  if (loading || !currentProduct) {
     return (
-      <section className="min-h-screen bg-slate-50 relative overflow-hidden flex flex-col justify-center items-center text-blue-600 gap-3">
-        <RefreshCw className="w-8 h-8 animate-spin" />
+      <section className="min-h-[90vh] bg-slate-50 relative overflow-hidden flex flex-col justify-center items-center text-blue-600 gap-3">
+        <RefreshCw className="w-8 h-8 animate-spin text-[#122f87]" />
         <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">
-          Loading Robotic Console...
+          Initializing 3D Precision Stage...
         </span>
       </section>
     )
   }
 
   return (
-    <section className="min-h-screen bg-slate-50 relative overflow-hidden flex flex-col justify-center pt-24 pb-16">
+    <section className="min-h-screen bg-[#f8fafc] relative overflow-hidden flex flex-col justify-center pt-24 pb-16 lg:py-28">
       
-      {/* Background Tooling Grid overlay (Light mode gray) */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.025)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+      {/* Background Architectural Grid & Subtle Laser Lines */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.025)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none" />
       
-      {/* Dynamic Backlight Spotlight Glows */}
-      <div className="absolute top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2 w-[600px] lg:w-[750px] h-[600px] lg:h-[750px] bg-blue-500/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Dynamic Ambient Spotlights */}
+      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 right-10 w-[700px] h-[700px] bg-[#122f87]/5 rounded-full blur-[160px] pointer-events-none" />
 
-      {/* Main Grid Wrapper */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[600px]">
-          
-          {/* Left Column: Corporate About Details */}
-          <div className="lg:col-span-5 flex flex-col items-start text-left">
-            <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40 mb-6">
-              Est. 1999 • Bangalore Hub
+        
+        {/* Top Operational Status Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-8 mb-8 border-b border-slate-200/80">
+          <div className="flex items-center gap-3">
+            <span className="flex h-2.5 w-2.5 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 uppercase tracking-tight leading-none mb-6 font-display">
+            <span className="text-[10px] font-mono font-bold text-slate-600 uppercase tracking-widest">
+              Bangalore Cleanrooms Operational &bull; ISO 9001:2015
+            </span>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-6 text-[10px] font-mono font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="flex items-center gap-1.5">
+              <Cpu className="w-3.5 h-3.5 text-blue-600" /> Sub-Micron Tolerances
+            </span>
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 100% In-House QA
+            </span>
+          </div>
+        </div>
+
+        {/* Main Hero Split Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[580px]">
+          
+          {/* Left Column: Brand Headline & Value Propositions */}
+          <div className="lg:col-span-5 flex flex-col items-start text-left space-y-6">
+            
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200/60 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              <span className="text-[10px] font-mono font-bold text-blue-900 uppercase tracking-widest">
+                Est. 1999 &bull; Precision Motion Engineering
+              </span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black text-slate-900 uppercase tracking-tight leading-[1.05] font-display">
               We Can Make <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#122f87] via-blue-600 to-indigo-600">
                 What You Can Imagine
               </span>
             </h1>
-            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-light mb-8 max-w-lg">
-              Bharat Machine Tools (BMT) is India's premier manufacturer of high-precision mechanical assemblies. We supply aerospace-grade spindles, zero-backlash ball screws, and axial-radial YRT bearings built for high-stiffness industrial operations.
+
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-normal max-w-lg">
+              Bharat Machine Tools (BMT) is India's leading manufacturer of high-precision spindle systems, zero-backlash planetary gearboxes, and multi-axis rotary tables designed for demanding aerospace, automotive, and defense OEMs.
             </p>
-            
-            {/* Trust highlights */}
-            <div className="grid grid-cols-2 gap-6 w-full max-w-sm border-t border-slate-200 pt-8">
+
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-3 w-full pt-2">
+              <Link
+                href="/products"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-7 py-4 bg-[#122f87] hover:bg-[#1a3fa8] text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-blue-900/15 hover:shadow-blue-900/25 hover:-translate-y-0.5 cursor-pointer"
+              >
+                Explore Full Catalog <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href={`https://wa.me/919530208882?text=Hello%20BMT%20Team%2C%20I%20am%20looking%20for%20custom%20machine%20tool%20specifications.`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-4 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-2xl border border-slate-200 shadow-sm transition-all hover:-translate-y-0.5"
+              >
+                Request Custom RFQ
+              </a>
+            </div>
+
+            {/* Industrial Metrics Matrix */}
+            <div className="grid grid-cols-3 gap-4 w-full border-t border-slate-200/80 pt-6 mt-4">
               <div>
-                <span className="text-xl font-bold text-slate-900 block font-display">25+ Years</span>
-                <span className="text-[9px] text-slate-500 uppercase tracking-widest font-mono font-medium block mt-1">Engineering Legacy</span>
+                <span className="text-2xl sm:text-3xl font-black text-slate-900 block font-display tracking-tight">25+</span>
+                <span className="text-[9px] text-slate-500 uppercase tracking-widest font-mono font-medium block mt-0.5">Years Legacy</span>
               </div>
               <div>
-                <span className="text-xl font-bold text-slate-900 block font-display">Zero Defect</span>
-                <span className="text-[9px] text-slate-500 uppercase tracking-widest font-mono font-medium block mt-1">Quality Assurance</span>
+                <span className="text-2xl sm:text-3xl font-black text-slate-900 block font-display tracking-tight">&lt; 0.001</span>
+                <span className="text-[9px] text-slate-500 uppercase tracking-widest font-mono font-medium block mt-0.5">mm Runout</span>
+              </div>
+              <div>
+                <span className="text-2xl sm:text-3xl font-black text-slate-900 block font-display tracking-tight">1000+</span>
+                <span className="text-[9px] text-slate-500 uppercase tracking-widest font-mono font-medium block mt-0.5">Units Deployed</span>
               </div>
             </div>
-          </div>
-          {/* Right Column: Circular Products Carousel Wheel */}
-          <div className="lg:col-span-7 flex flex-col justify-center items-center">
-            
-            <div className="relative w-[340px] h-[340px] sm:w-[520px] sm:h-[520px] lg:w-[680px] lg:h-[680px] flex items-center justify-center">
-              
-              {/* Dynamic dotted guide line passing through the centers of node bubbles */}
-              <div
-                style={{
-                  width: `${radius * 2}px`,
-                  height: `${radius * 2}px`,
-                }}
-                className="absolute rounded-full border border-dashed border-slate-200 pointer-events-none"
-              />
-              
-              {/* Concentric inner track ring */}
-              <div
-                style={{
-                  width: `${radius * 2 - 80}px`,
-                  height: `${radius * 2 - 80}px`,
-                }}
-                className="absolute rounded-full border border-dotted border-slate-200/50 pointer-events-none"
-              />
-              
-              {/* Rotating outer ring of product thumbnails */}
-              <motion.div
-                animate={{ rotate: rotationOffset }}
-                transition={{ type: "spring", stiffness: 60, damping: 16 }}
-                className="absolute inset-0 w-full h-full flex items-center justify-center z-10"
-              >
-                {productsList.map((p, idx) => {
-                  const anglePerItem = 360 / totalProducts
-                  const angle = idx * anglePerItem
-                  const isSelected = activeIndex === idx
 
-                  return (
-                    <button
-                      key={p.id}
-                      onClick={() => selectProduct(idx)}
-                      style={{
-                        position: "absolute",
-                        transform: `rotate(${angle}deg) translate(${radius}px)`,
-                      }}
-                      className="group focus:outline-none z-20"
-                    >
-                      {/* Node bubble with product thumbnail (Light Theme - Sized Up) */}
-                      <motion.div
-                        animate={{
-                          scale: isSelected ? 1.55 : 1,
-                          rotate: -rotationOffset - angle,
-                          borderColor: isSelected ? "#122f87" : "rgba(15,23,42,0.08)",
-                          backgroundColor: isSelected ? "#ffffff" : "rgba(255,255,255,0.9)",
-                          boxShadow: isSelected ? "0 0 25px rgba(18,47,135,0.25)" : "0 4px 10px rgba(0,0,0,0.03)"
-                        }}
-                        transition={{ type: "spring", stiffness: 60, damping: 16 }}
-                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 flex items-center justify-center transition-all overflow-hidden relative"
-                      >
-                        <img
-                          src={p.image}
-                          alt={p.name}
-                          className="w-8 h-8 sm:w-11 sm:h-11 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
-                        />
-                        {isSelected && (
-                          <span className="absolute bottom-1 w-1 h-1 rounded-full bg-blue-600 animate-ping" />
-                        )}
-                      </motion.div>
-                    </button>
-                  )
-                })}
+          </div>
+
+          {/* Right Column: 3D Perspective Industrial Stage */}
+          <div className="lg:col-span-7 flex flex-col items-center justify-center relative">
+            
+            {/* Category Quick-Filter Bar */}
+            <div className="w-full flex items-center justify-center gap-1.5 mb-6 overflow-x-auto no-scrollbar py-1">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3.5 py-1.5 rounded-xl text-[10px] font-mono font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer shrink-0 ${
+                    selectedCategory === cat
+                      ? "bg-[#122f87] text-white shadow-md shadow-blue-900/20 scale-105"
+                      : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-900"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* 3D Interactive Stage Canvas */}
+            <div
+              ref={stageRef}
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={handleMouseLeave}
+              style={{ perspective: "1000px" }}
+              className="relative w-full max-w-[560px] aspect-[4/3] sm:aspect-[16/11] bg-gradient-to-b from-white via-slate-50/50 to-slate-100/80 rounded-[2.5rem] border border-slate-200/80 p-6 sm:p-8 flex flex-col items-center justify-between shadow-[0_20px_60px_-15px_rgba(15,23,42,0.06)] overflow-hidden cursor-grab active:cursor-grabbing select-none"
+            >
+              
+              {/* Dynamic 3D Stage Grid Floor Reflection */}
+              <div className="absolute inset-x-8 bottom-4 h-28 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-500/10 via-slate-200/20 to-transparent rounded-full blur-xl pointer-events-none" />
+              <div className="absolute bottom-6 w-3/4 h-8 bg-slate-900/10 rounded-full blur-md pointer-events-none" />
+
+              {/* Floating Holographic Technical Spec Badge 1 (Top Left) */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-6 left-6 z-20 hidden sm:flex items-center gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200/80 shadow-sm"
+              >
+                <Activity className="w-3.5 h-3.5 text-blue-600" />
+                <span className="text-[9px] font-mono font-bold text-slate-800 uppercase tracking-wider">
+                  Precision Benchmark &bull; 0.001mm
+                </span>
               </motion.div>
 
-              {/* Central Hub displaying Image, Category, Title, and Description inside (Sized Up) */}
-              <div className="absolute w-[220px] h-[220px] sm:w-[340px] sm:h-[340px] lg:w-[420px] lg:h-[420px] rounded-full bg-white border border-slate-200 z-30 flex flex-col items-center justify-center p-6 sm:p-10 text-center shadow-lg relative overflow-hidden">
-                
-                {/* Spinning gauge element */}
-                <div className="absolute inset-3 rounded-full border border-dashed border-blue-500/20 animate-[spin_50s_linear_infinite] pointer-events-none" />
-                
+              {/* Floating Holographic Technical Spec Badge 2 (Top Right) */}
+              <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl shadow-sm">
+                <Compass className="w-3.5 h-3.5 text-blue-400" />
+                <span className="text-[9px] font-mono font-bold tracking-widest uppercase">
+                  {activeIndex + 1} / {activeProducts.length}
+                </span>
+              </div>
+
+              {/* 3D Floating Machine Presentation */}
+              <motion.div
+                style={{
+                  rotateX: tilt.x,
+                  rotateY: tilt.y,
+                  transformStyle: "preserve-3d",
+                  transition: isHovered ? "none" : "transform 0.5s ease-out",
+                }}
+                className="relative z-10 w-full h-full flex items-center justify-center p-4 my-auto"
+              >
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={activeIndex}
-                    initial={{ opacity: 0, scale: 0.88 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.88 }}
+                    key={currentProduct.id}
+                    initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -15 }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
-                    className="flex flex-col items-center justify-center w-full h-full relative z-10"
+                    className="relative flex flex-col items-center justify-center max-w-full max-h-full"
                   >
-                    {/* Product Image */}
                     <motion.img
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      src={activeProduct?.image || '/logo.png'}
-                      alt={activeProduct?.name || 'Machine Tool'}
-                      className="w-28 h-28 sm:w-40 sm:h-40 lg:w-56 lg:h-56 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)] mb-2 lg:mb-4"
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                      src={currentProduct.image}
+                      alt={currentProduct.name}
+                      className="max-h-[220px] sm:max-h-[270px] max-w-full object-contain drop-shadow-[0_20px_35px_rgba(15,23,42,0.12)] filter"
                     />
-                    
-                    {/* Category, Title, Description (Hidden on mobile/tablet for clarity) */}
-                    <div className="hidden lg:flex flex-col items-center justify-center text-center">
-                      {/* Category Badge */}
-                      <span className="text-[5.5px] sm:text-[7.5px] lg:text-[9px] font-mono text-blue-600 font-extrabold uppercase tracking-wider bg-blue-500/10 px-2.5 py-0.5 rounded border border-blue-500/20 mb-2">
-                        {activeProduct?.category || 'Component'}
-                      </span>
-                      
-                      {/* Product Name (Heading) */}
-                      <h3 className="text-slate-900 font-extrabold text-[10px] sm:text-xs lg:text-sm uppercase tracking-tight max-w-[160px] sm:max-w-[240px] lg:max-w-[310px] line-clamp-1 mb-2">
-                        {activeProduct?.name || 'Precision Tool'}
-                      </h3>
-
-                      {/* Product Description */}
-                      <p className="text-slate-600 text-[8px] sm:text-[9.5px] lg:text-[11px] font-normal leading-relaxed max-w-[150px] sm:max-w-[220px] lg:max-w-[280px] line-clamp-3">
-                        {activeProduct?.shortDescription || activeProduct?.description || ''}
-                      </p>
-                    </div>
                   </motion.div>
                 </AnimatePresence>
+              </motion.div>
+
+              {/* Floating Holographic Technical Spec Badge 3 (Bottom Left) */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute bottom-6 left-6 z-20 hidden sm:flex items-center gap-2 bg-emerald-50/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-emerald-200/60 shadow-sm"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-[9px] font-mono font-bold text-emerald-800 uppercase tracking-wider">
+                  100% In-House Cleanroom Tested
+                </span>
+              </motion.div>
+
+              {/* Stage Navigation Arrows */}
+              <div className="absolute bottom-6 right-6 z-20 flex items-center gap-1.5">
+                <button
+                  onClick={() => setActiveIndex((prev) => (prev - 1 + activeProducts.length) % activeProducts.length)}
+                  className="p-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 shadow-sm transition-all hover:scale-105 cursor-pointer"
+                  title="Previous Machine"
+                  aria-label="Previous Machine"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setActiveIndex((prev) => (prev + 1) % activeProducts.length)}
+                  className="p-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 shadow-sm transition-all hover:scale-105 cursor-pointer"
+                  title="Next Machine"
+                  aria-label="Next Machine"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
 
             </div>
 
-            {/* Mobile/Tablet Product Details Card */}
-            <div className="mt-8 w-full max-w-md mx-auto bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm block lg:hidden text-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeIndex}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25 }}
-                  className="flex flex-col items-center"
-                >
-                  <span className="text-[9px] font-mono text-blue-600 font-bold uppercase tracking-wider bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20">
-                    {activeProduct?.category || 'Component'}
+            {/* Active Machine Live HUD Details Strip */}
+            <div className="w-full max-w-[560px] bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 mt-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[8px] font-mono font-extrabold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-200/40">
+                    {currentProduct.category}
                   </span>
-                  <h4 className="text-sm font-bold text-slate-900 uppercase tracking-tight mt-3 mb-2">
-                    {activeProduct?.name || 'Precision Tool'}
-                  </h4>
-                  <p className="text-xs text-slate-600 font-light leading-relaxed">
-                    {activeProduct?.shortDescription || activeProduct?.description || ''}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                  <span className="text-[8px] font-mono font-bold text-slate-400">
+                    ID: {currentProduct.id}
+                  </span>
+                </div>
+                <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-tight line-clamp-1">
+                  {currentProduct.name}
+                </h3>
+              </div>
 
-            {/* Touch Navigation Controls for Mobile */}
-            <div className="flex items-center justify-center gap-4 mt-6 lg:hidden">
-              <button
-                onClick={() => selectProduct((activeIndex - 1 + totalProducts) % totalProducts)}
-                className="p-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-950 transition shadow-sm"
-                aria-label="Previous product"
+              <Link
+                href={`/products/${encodeURIComponent(currentProduct.slug || currentProduct.id)}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-[#122f87] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-xs shrink-0 cursor-pointer"
               >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <span className="text-xs font-mono text-slate-500">
-                {activeIndex + 1} / {totalProducts}
-              </span>
-              <button
-                onClick={() => selectProduct((activeIndex + 1) % totalProducts)}
-                className="p-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-950 transition shadow-sm"
-                aria-label="Next product"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+                <span>View Specs</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
           </div>
 
         </div>
+
       </div>
+
     </section>
   )
 }
