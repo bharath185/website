@@ -13,7 +13,8 @@ import {
   LogOut, 
   Briefcase,
   Users,
-  Star
+  Star,
+  Image as ImageIcon
 } from "lucide-react"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -46,6 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const menuItems = [
     { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
     { href: "/admin/products", label: "Product", icon: Package },
+    { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
     { href: "/admin/updates", label: "News", icon: Newspaper },
     { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
     { href: "/admin/applicants", label: "Applicants", icon: Users },
