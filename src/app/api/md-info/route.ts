@@ -22,13 +22,13 @@ export async function GET() {
     if (!mdInfo) {
       mdInfo = {
         id: 'md-info',
-        name: 'Mr. B.R. Gowda',
+        name: 'Mr. Abbas Khan',
         role: 'Founder & Managing Director',
         image: '',
-        bioParagraph1: 'Welcome to Bharat Machine Tools (BMT). When we established BMT in Bangalore, our objective was single-focused: to engineer and build dynamic mechanical systems that match the sub-micron tolerances demanded by advanced aerospace, military, and automation OEMs.',
-        bioParagraph2: 'Over the past 25 years, precision manufacturing has evolved, but our foundational promise remains absolute. We invest continuously in our cleanrooms, dynamic testing bays, and state-of-the-art grinding machinery to ensure that every spindle, hydrostatic bearing, and custom part leaving our cells is an operational masterpiece.',
+        bioParagraph1: 'Sub-Micron Engineering: Engineered to match the sub-micron tolerances demanded by advanced aerospace, military, and automation OEMs.\n25+ Years Legacy: Continual investment in Bangalore cleanrooms, dynamic testing bays, and state-of-the-art grinding machinery.\nZero-Defect Standards: Ensuring every spindle, hydrostatic bearing, and custom part leaving our cells is an operational masterpiece.',
+        bioParagraph2: '',
         quote: 'Precision is not a measurement constraint; it is our corporate culture. We don\'t build machines—we craft high-speed rotational masterpieces with sub-micron engineering.',
-        quoteAuthor: 'B. R. Gowda',
+        quoteAuthor: 'Mr. Abbas Khan',
         expTitle: 'Experience',
         expDescription: '30+ Years in rotodynamic systems design.',
         stdTitle: 'Standards',
