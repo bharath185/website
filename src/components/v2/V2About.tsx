@@ -125,47 +125,55 @@ export default function V2About() {
               >
                 <div className="flex flex-col justify-center">
                   <h3 className="text-xl font-bold text-[#122f87] mb-4 tracking-tight uppercase font-mono">
-                    Bangalore Manufacturing Cell
+                    Bangalore Manufacturing &amp; Grinding Cell
                   </h3>
                   <p className="text-slate-600 text-xs leading-relaxed font-light mb-6">
-                    Our manufacturing facility is equipped with automated grinding machines and test chambers capable of generating spindle assemblies with sub-micron geometrical runout tolerances.
+                    Our in-house facility in Bangalore is equipped with heavy CNC turning, multi-axis VMCs, and high-precision cylindrical grinders capable of generating sub-micron tolerances for parts up to 5 meters.
                   </p>
-                  <div className="flex flex-col gap-3.5 text-xs text-slate-600 font-light">
+                  <div className="flex flex-col gap-3 text-xs text-slate-600 font-light">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-[#122f87] shrink-0" />
-                      <span>Precision Cylindrical Grinding Cells (STUDER automated grinders)</span>
+                      <span><strong>External Cylindrical Grinder:</strong> Capacity Ø500 x 5000 mm</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-[#122f87] shrink-0" />
-                      <span>Class 10,000 Cleanroom Assembly Cell for super-precision bearings</span>
+                      <span><strong>Internal &amp; External Grinders:</strong> Ø360x1500, Ø320x1200 &amp; Ø320x1000 mm</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-[#122f87] shrink-0" />
-                      <span>Dynamic Balancing Equipment (Schenck balancing machine up to G0.4)</span>
+                      <span><strong>Heavy Machining:</strong> Big CNC Turning Centres, VMCs, EDM &amp; Jig Boring</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-[#122f87] shrink-0" />
+                      <span><strong>Specialized Cells:</strong> Horizontal Rotary Grinder &amp; Cleanroom Assembly Bay</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-3xl p-6 flex flex-col justify-between shadow-sm">
                   <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4 font-mono">Precision Testing Gear</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4 font-mono">In-House Testing &amp; Calibration Rigs</h4>
                     <div className="grid grid-cols-1 gap-2.5 text-slate-600 text-xs font-light">
-                      <div className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200">
-                        <span>Coordinate Measuring Machine (CMM)</span>
-                        <span className="font-mono text-blue-600 font-semibold">Tolerances to 0.5µm</span>
+                      <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <span>Dynamic Spindle Balancing Rigs</span>
+                        <span className="font-mono text-blue-600 font-semibold">Up to 45,000 RPM (ISO G0.4)</span>
                       </div>
-                      <div className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200">
-                        <span>Spindle Test Run Benches</span>
-                        <span className="font-mono text-blue-600 font-semibold">Continuous 48h load check</span>
+                      <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <span>Spindle Test Run Rigs</span>
+                        <span className="font-mono text-blue-600 font-semibold">Continuous 48h Thermal Check</span>
                       </div>
-                      <div className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200">
+                      <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <span>Ultrasonic Testing (UT Test)</span>
+                        <span className="font-mono text-blue-600 font-semibold">100% In-House Flaw Detection</span>
+                      </div>
+                      <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                         <span>Laser Interferometer Alignments</span>
-                        <span className="font-mono text-blue-600 font-semibold">Deviation testing</span>
+                        <span className="font-mono text-blue-600 font-semibold">&lt; 0.001 mm Geometric Runout</span>
                       </div>
                     </div>
                   </div>
                   <span className="text-[9px] text-slate-400 font-mono mt-4 text-right block uppercase">
-                    All machines are calibrated under ISO standards.
+                    Calibrated under ISO 9001:2015 &bull; Make in India Hub
                   </span>
                 </div>
               </motion.div>
@@ -182,33 +190,33 @@ export default function V2About() {
               >
                 <div className="flex flex-col justify-center">
                   <h3 className="text-xl font-bold text-[#122f87] mb-4 tracking-tight uppercase font-mono">
-                    ISO Quality Management
+                    Zero Defect, Zero Effect QA Culture
                   </h3>
                   <p className="text-slate-600 text-xs leading-relaxed font-light mb-6">
-                    Quality is our signature. Every spindle, bearing, and accessory undergoes rigorous physical inspections and dynamic vibration testing at full target RPM before dispatch.
+                    &ldquo;Quality is not an act, it is a habit. Every job is a reflection of the person who does it.&rdquo; We believe in quality at every stage from raw material traceability to final proofing.
                   </p>
                   <div className="flex flex-col gap-3 text-xs text-slate-600 font-light">
                     <div className="flex items-center gap-2.5">
                       <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                      <span>Certified ISO 9001:2015 Precision Engineering standards</span>
+                      <span>Certified ISO 9001:2015 Precision Engineering &amp; Sub-Micron Standards</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                      <span>Dynamic Balancing to ISO 1940 standard (Class G0.4 or G1.0)</span>
+                      <span>Full Raw Material Traceability &amp; In-House Ultrasonic (UT) Testing</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                      <span>Traceable inspection certificates shipped with every item</span>
+                      <span>Complete Alignment Test Certificates &amp; On-Site Customer Proofing</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-3xl p-6 flex flex-col justify-center items-center shadow-sm">
-                  <div className="p-4 bg-blue-50 border border-blue-200/50 rounded-2xl flex flex-col items-center text-center max-w-[260px]">
+                  <div className="p-5 bg-blue-50 border border-blue-200/50 rounded-2xl flex flex-col items-center text-center max-w-[280px]">
                     <ShieldCheck className="w-8 h-8 text-blue-600 mb-3 animate-pulse" />
-                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-1 font-mono">Zero Defect Promise</h4>
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-1 font-mono">Make In India Promise</h4>
                     <p className="text-[9px] text-slate-600 leading-normal font-light">
-                      BMT adheres strictly to dynamic defense grade QA checklists to prevent runout failures in high load operations.
+                      &ldquo;Stop importing from outside and try BMT for Make in India. Don&apos;t find anything, find quality, find BMT.&rdquo;
                     </p>
                   </div>
                 </div>

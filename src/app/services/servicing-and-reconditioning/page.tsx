@@ -157,6 +157,53 @@ export default function ServicingReconditioningPage() {
           </div>
         </div>
 
+        {/* Featured Case Studies from BMT Industrial Portfolio */}
+        <div className="space-y-6 pt-6 border-t border-slate-200">
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40">
+              PROVEN CASE STUDIES
+            </span>
+            <h2 className="text-xl sm:text-3xl font-bold text-slate-900 font-mono mt-2">
+              Industrial Engineering Case Studies
+            </h2>
+            <p className="text-xs text-slate-500 font-light mt-1">
+              Real engineering solutions delivered and proofed at customer plants across India.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-6">
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between space-y-3">
+              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md w-fit">
+                Rail Wheel Factory
+              </span>
+              <h3 className="font-bold text-slate-900 text-sm font-mono">Heavy Machine Tool Reconditioning</h3>
+              <p className="text-xs text-slate-600 font-light leading-relaxed">
+                Complete mechanical overhaul, guideway scraping, and geometric restoration conducted directly at the Rail Wheel Factory plant.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between space-y-3">
+              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md w-fit">
+                Defense &amp; Aviation
+              </span>
+              <h3 className="font-bold text-slate-900 text-sm font-mono">40-Ton Actuators &amp; Frangible Masts</h3>
+              <p className="text-xs text-slate-600 font-light leading-relaxed">
+                Design and manufacturing of 40-Ton roller-screw actuators (5s stroke time) and airport frangible masts proofed on-site.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between space-y-3">
+              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md w-fit">
+                Special Spindles
+              </span>
+              <h3 className="font-bold text-slate-900 text-sm font-mono">Friction Welding &amp; Bar Peeling</h3>
+              <p className="text-xs text-slate-600 font-light leading-relaxed">
+                Custom manufacturing &amp; reconditioning of heavy-duty friction welding and bar peeling machine spindles with &lt; 0.001mm runout.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Contact Action Banner */}
         <div className="bg-[#0b1b4f] rounded-3xl p-8 sm:p-10 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
           <div>

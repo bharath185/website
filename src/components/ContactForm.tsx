@@ -130,30 +130,31 @@ export default function ContactForm() {
                   <li className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-bold text-slate-900">Address</p>
-                      <p className="text-slate-600 mt-0.5">
-                        Bharat Machine Tools - Unit 1, Lakshmipura Main Road 2nd Cross,
-                        Abbigere Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090
+                      <p className="font-bold text-slate-900">Registered Office &amp; Works</p>
+                      <p className="text-slate-600 mt-0.5 leading-relaxed">
+                        Bharat Machine Tools &bull; #312 Ground Floor, Sharadhamma Illam, GPT, 1st Main Nagappa Block, Near Abbigere HP Petrol Pump, Abbigere, Chikkabanavara, Bangalore - 560090, Karnataka, INDIA
                       </p>
                     </div>
                   </li>
                   <li>
-                    <a href="tel:+918048031763" className="flex items-start gap-3">
+                    <div className="flex items-start gap-3">
                       <Phone className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="font-bold text-slate-900">Phone</p>
-                        <p className="text-slate-600 hover:text-blue-600 transition-colors mt-0.5">080 4803 1763</p>
+                        <p className="font-bold text-slate-900">Key Contacts &amp; Phone</p>
+                        <a href="tel:+919880464557" className="text-slate-700 hover:text-blue-600 transition-colors block font-medium">+91-9880464557 (Abbas Khan, MD)</a>
+                        <a href="tel:08048031763" className="text-slate-500 hover:text-blue-600 transition-colors block text-[11px]">080 4803 1763 / +91-9530208882</a>
                       </div>
-                    </a>
+                    </div>
                   </li>
                   <li>
-                    <a href="mailto:bmt.sangeeta@gmail.com" className="flex items-start gap-3">
+                    <div className="flex items-start gap-3">
                       <Mail className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="font-bold text-slate-900">Email</p>
-                        <p className="text-slate-600 hover:text-blue-600 transition-colors mt-0.5">bmt.sangeeta@gmail.com</p>
+                        <p className="font-bold text-slate-900">Official Email</p>
+                        <a href="mailto:bmt.abbas@gmail.com" className="text-slate-700 hover:text-blue-600 transition-colors block font-medium">bmt.abbas@gmail.com</a>
+                        <a href="mailto:bmt.sangeeta@gmail.com" className="text-slate-500 hover:text-blue-600 transition-colors block text-[11px]">bmt.sangeeta@gmail.com</a>
                       </div>
-                    </a>
+                    </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <Clock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
