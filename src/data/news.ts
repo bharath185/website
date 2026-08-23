@@ -2021,7 +2021,7 @@ export const newsData: NewsItem[] = [
     "slug": "top-tail-stocks-in-bangalore-tail-stocks-provide-e",
     "title": "Top Tail Stocks in Bangalore Tail stocks provide e...",
     "date": "2024-11-08T08:17:48",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/62c7d9bde559d20001686034.jpg",
     "description": "Top Tail Stocks in Bangalore Tail stocks provide essential support for longer workpieces during lathe operations, ensuring stability and precision. At...",
     "content": "Top Tail Stocks in Bangalore Tail stocks provide essential support for longer workpieces during lathe operations, ensuring stability and precision. At Bharat Machine Tools in Bangalore, we offer high-quality tail stocks that reduce vibration and improve accuracy, making them vital for producing precise, high-quality parts in any lathe machine. Need durable tail stocks in Bangalore? Call Bharat Machine Tools today to improve your lathe operations with our premium products."
   },
@@ -2255,7 +2255,7 @@ export const newsData: NewsItem[] = [
     "slug": "straightening-machine-rollers-in-bangalore-bhara",
     "title": "Straightening Machine Rollers in Bangalore",
     "date": "2024-08-08T04:43:45",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/62f9e5db07938000010851e1.jpg",
     "description": "Straightening Machine Rollers in Bangalore | Bharat Machine Tools Best Straightening Machine Rollers Near Me If youre searching for the best straighte...",
     "content": "Straightening Machine Rollers in Bangalore | Bharat Machine Tools Best Straightening Machine Rollers Near Me If youre searching for the best straightening machine rollers in Bangalore, Bharat Machine Tools has you covered. Our high-quality straightening machine rollers are designed for precision and durability, ensuring optimal performance in your metal forming processes. Why Choose Our Straightening Machine Rollers? At Bharat Machine Tools, we prioritize quality and customer satisfaction. Our straightening machine rollers are crafted from top-grade materials, providing superior resistance to wear and tear. They are meticulously engineered to deliver consistent results, minimizing downtime and maintenance costs. Benefits of Our Straightening Machine Rollers High Precision: Achieve perfect alignment and shape with our advanced rollers. Durable Construction: Made from robust materials for long-lasting use. Cost-Effective: Reduce operational costs with our efficient rollers. For the best straightening machine rollers in Bangalore, visit Bharat Machine Tools. We are committed to delivering excellence in every product. Contact us today to learn more about our range of straightening machine rollers and how they can benefit your operations."
   },
@@ -2390,7 +2390,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-specializes-in-the-design-and",
     "title": "Bharat Machine Tools specializes in the design and...",
     "date": "2022-09-23T06:38:43",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/62ff55405567c00001f97e2b.jpg",
     "description": "Bharat Machine Tools specializes in the design and manufacturing of CNC Machines, Machine Tools, Machinery, Hardware & amp; Metal Equipment in India a...",
     "content": "Bharat Machine Tools specializes in the design and manufacturing of CNC Machines, Machine Tools, Machinery, Hardware & amp; Metal Equipment in India according to your specifications. Our company is best known for its superior quality standards of products. We make our products by using top-grade materials and adopting contemporary production techniques. As a result, our products embody high-quality standards and are acclaimed internationally for their features like good designs, durability and excellent functional life. Do visit our website http://www.bmtbharat.com for a detailed list of all our products, their prices, and other relevant data."
   },
@@ -2399,7 +2399,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-are-manufacturers-of-spindles",
     "title": "Bharat Machine Tools are manufacturers of spindles...",
     "date": "2022-09-21T06:53:04",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/6303526966c4eb0001dd8def.jpg",
     "description": "Bharat Machine Tools are manufacturers of spindles, rotary tables, SPM machine tools for extrusion & amp; flow forming machines, RT bearings on large ...",
     "content": "Bharat Machine Tools are manufacturers of spindles, rotary tables, SPM machine tools for extrusion & amp; flow forming machines, RT bearings on large cross roller bearings etc. Each machine, tool and accessory are developed after extensive research and study of industry norms as well as client requirements and the technical specifications detailed by them. Extrusion tools are commonly used to apply an insulating layer around a solid or stranded wire. The extrusion tip, also called extrusion wire guide, guides a single or group of wires into and through an extrusion die. The extrusion die controls the shape and size of the insulating material around the wire. Visit our website http://www.bmtbharat.com for more details."
   },
@@ -2408,7 +2408,7 @@ export const newsData: NewsItem[] = [
     "slug": "we-at-bharat-machine-tools-bangalore-have-marked",
     "title": "We at Bharat Machine Tools, Bangalore, have marked...",
     "date": "2022-09-19T11:24:34",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/63105d6215f9f30001e72342.jpg",
     "description": "We at Bharat Machine Tools, Bangalore, have marked our niche in the market for products such as Spindle, Rotary tables, SPM Machines, Extrusions tools...",
     "content": "We at Bharat Machine Tools, Bangalore, have marked our niche in the market for products such as Spindle, Rotary tables, SPM Machines, Extrusions tools, Flow forming tools, Machine tool accessories, etc. These are fabricated using premium quality raw materials sourced from authorized vendors of the market. To ensure quality, we follow various international and industrial standards. These are available at a competitive price range which is another important feature exhibited by our product range. Visit our website http://www.bmtbharat.com for a detailed list of all our products, their prices, and other relevant data, for your convenience."
   },
@@ -2417,7 +2417,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-are-known-among-the-leading-m",
     "title": "Bharat Machine Tools are known among the leading m...",
     "date": "2022-09-16T10:04:34",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/63315e79670aa9000137968b.jpg",
     "description": "Bharat Machine Tools are known among the leading manufacturers, exporters and suppliers of Thrust ball Bearing & amp; Taper roller Bearing etc. A ball...",
     "content": "Bharat Machine Tools are known among the leading manufacturers, exporters and suppliers of Thrust ball Bearing & amp; Taper roller Bearing etc. A ball thrust bearing is a particular type of rotary ball bearing. Like other ball bearings, they permit rotation between parts, but they are designed to support a high axial load while doing this (parallel to the shaft). Higher-speed applications require oil lubrication. The thrust ball bearings are used to deliver high performance, while the thrust roller bearings are typically used in applications where high load-carrying capacity is needed. Thrust ball bearing - used in low thrust applications where there is little axial load. Visit our website http://www.bmtbharat.com. for more details."
   },
@@ -2426,7 +2426,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-bangalore-have-marked-our-n",
     "title": "Bharat Machine Tools, Bangalore, have marked our n...",
     "date": "2022-09-14T12:43:17",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/63b284daa8fd2d00010e4f07.jpg",
     "description": "Bharat Machine Tools, Bangalore, have marked our niche in the market for products such as Spindle, Rotary tables, SPM Machines, Extrusions tools, Flow...",
     "content": "Bharat Machine Tools, Bangalore, have marked our niche in the market for products such as Spindle, Rotary tables, SPM Machines, Extrusions tools, Flow forming tools, Machine tool accessories, etc. We emphasize providing the best services to our clients through experienced and trusted personnel only. We have tactically divided our workforce into different teams based on their expertise according to our client's needs. This enables us to provide only the best solutions for all our client's problems. The products offered are used in varied industries and appreciated across the market. Visit our website http://www.bmtbharat.com. for a detailed list of all our products, their prices, and other relevant information."
   },
@@ -2435,7 +2435,7 @@ export const newsData: NewsItem[] = [
     "slug": "yrt-rotary-table-bearings-are-the-two-way-thrust-b",
     "title": "YRT Rotary Table Bearings are the two-way thrust b...",
     "date": "2022-09-12T10:24:21",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/63d22c1236875d00015e0662.jpg",
     "description": "YRT Rotary Table Bearings are the two-way thrust bearing that are fixed to the centripetal guide bearing and are designed to be YRT precision rotary t...",
     "content": "YRT Rotary Table Bearings are the two-way thrust bearing that are fixed to the centripetal guide bearing and are designed to be YRT precision rotary table bearings. In terms of load, it can withstand radial loads and can also withstand axial loads in both directions. Due to the gapless tilting moment of the YRT bearings, it can meet the requirements of very high running accuracy in the CNC machine tools used in manufacturing industries. Bharat Machine Tools, India is the manufacturer of YRT Bearings, SPM Machines, Extrusions tools, Flow forming tools, etc India. Visit our website http://www.bmtbharat.com. for a detailed list of all our products, their prices, and other relevant data."
   },
@@ -2444,7 +2444,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-is-a-prominent-manufacturer",
     "title": "Bharat Machine Tools is a prominent manufacturer, ...",
     "date": "2022-09-09T07:31:03",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66a35ab4aa15d8c0a8cec30b.jpg",
     "description": "Bharat Machine Tools is a prominent manufacturer, supplier, and exporter of CNC Machines, Machine Tools, Machinery, Hardware & amp; Metal Equipment in...",
     "content": "Bharat Machine Tools is a prominent manufacturer, supplier, and exporter of CNC Machines, Machine Tools, Machinery, Hardware & amp; Metal Equipment in India. Computer Numerical Control (CNC) machines revolutionized the manufacturing industry a couple of decades back. This technology brought accuracy, precision, and efficiency. When humans make something, it is almost impossible for them to make it exactly the same every time. But machines can do this. Also, the machines can very easily follow the instructions regarding the measurements. Unlike humans, they do not get tired so that they can work all day. For more details about our range of products and their specifications, log on to http://www.bmtbharat.com."
   },
@@ -2453,7 +2453,7 @@ export const newsData: NewsItem[] = [
     "slug": "extrusion-tools-are-commonly-used-to-apply-an-insu",
     "title": "Extrusion tools are commonly used to apply an insu...",
     "date": "2022-09-08T10:24:35",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66a35b261e4562108dd6798c.jpg",
     "description": "Extrusion tools are commonly used to apply an insulating layer around a solid or stranded wire. The extrusion tip, also called extrusion wire guide, g...",
     "content": "Extrusion tools are commonly used to apply an insulating layer around a solid or stranded wire. The extrusion tip, also called extrusion wire guide, guides a single or group of wires into and through an extrusion die. The extrusion die controls the shape and size of the insulating material around the wire. Bharat Machine Tools is a leading manufacturer of Extrusion tools. These are available at a competitive price range which is another important feature exhibited by our product range. Visit our website http://www.bmtbharat.com.for a detailed list of all our products, their prices, and other relevant data, for your convenience."
   },
@@ -2462,7 +2462,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-is-a-leading-manufacturer-of",
     "title": "Bharat Machine Tools is a leading manufacturer of ...",
     "date": "2022-09-07T06:23:05",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66a46b8e86109df83e7dbd97.jpg",
     "description": "Bharat Machine Tools is a leading manufacturer of spindles, rotary tables, SPM machine tools for extrusion & amp; flow forming machines, RT bearings o...",
     "content": "Bharat Machine Tools is a leading manufacturer of spindles, rotary tables, SPM machine tools for extrusion & amp; flow forming machines, RT bearings on large cross roller bearings, and YRT bearings on large cross roller bearings. These products are available in several sizes, dimensions and other specifications, manufactured using utmost grade raw material with the help of advanced machines. We use the most sophisticated methods in procurement and delivery of our products, and put our complete effort into customer satisfaction. The products offered by us are used in varied industries and are highly accepted across the market. Visit our website http://www.bmtbharat.com for a detailed list of all our products, their prices, and other relevant data, for your convenience."
   },
@@ -2471,7 +2471,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-india-is-the-manufacturer-of",
     "title": "Bharat Machine Tools, India is the manufacturer of...",
     "date": "2022-09-03T05:38:02",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66a46d08b347d4b88162e12f.jpg",
     "description": "Bharat Machine Tools, India is the manufacturer of SPM Machines, Extrusions tools, Flow forming tools, etc. We are a prominent manufacturer, supplier,...",
     "content": "Bharat Machine Tools, India is the manufacturer of SPM Machines, Extrusions tools, Flow forming tools, etc. We are a prominent manufacturer, supplier, and exporter of CNC Machines, Machine Tools, Machinery, Hardware & amp; Metal Equipment in India. We have established a world-class infrastructure that is equipped with a long list of efficient machines that support us with the hassle free production and storage of the entire compilation. For accelerating all business practices, we have segmented our entire set-up into several departments such as quality control, sales and marketing, warehousing and packaging, logistics, administrative and several others. Visit our website http://www.bmtbharat.com for a detailed list of all our products, their prices, and other relevant data, for your convenience."
   },
@@ -2489,7 +2489,7 @@ export const newsData: NewsItem[] = [
     "slug": "we-at-bharat-machine-tools-bangalore-constantly",
     "title": "We at Bharat Machine Tools, Bangalore, constantly ...",
     "date": "2022-08-29T16:11:00",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66a86b89313254835e2b78e0.jpg",
     "description": "We at Bharat Machine Tools, Bangalore, constantly strive to meet your demands and needs, and at the same time, we always have an eye for improving wha...",
     "content": "We at Bharat Machine Tools, Bangalore, constantly strive to meet your demands and needs, and at the same time, we always have an eye for improving what we have already engineered. We have established a world-class infrastructure that is equipped with a long list of efficient machines that support us with the hassle-free production and storage of the entire compilation. With a wide range of products, we at Bharat Machine Tools can provide spindles, rotary tables, SPM machine tools for extrusion & amp; flow forming machines, RT bearings on large cross roller bearings, and YRT bearings on large cross roller bearings. Visit our website http://www.bmtbharat.com for a detailed list of all our products, their prices, and other relevant data, for your convenience."
   },
@@ -2498,7 +2498,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-bangalore-have-marked-our-n",
     "title": "Bharat Machine Tools, Bangalore, have marked our n...",
     "date": "2022-08-26T10:48:39",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66a86bdb3f1d75d8e100e5b1.jpg",
     "description": "Bharat Machine Tools, Bangalore, have marked our niche in the market for products such as Spindle, Rotary tables, SPM Machines, Extrusions tools, Flow...",
     "content": "Bharat Machine Tools, Bangalore, have marked our niche in the market for products such as Spindle, Rotary tables, SPM Machines, Extrusions tools, Flow forming tools, Machine tool accessories, etc To ensure quality, we follow various international and industrial standards. Our organization possesses the latest state-of-the-art infrastructure, which enables our products to be manufactured with precision & amp; proper technique. The manufacturing experts make use of sophisticated & amp; high-tech machinery to design the products based on the specific requirements of our clients. Visit our website http://www.bmtbharat.com for a detailed list of all our products, their prices, and other relevant data, for your convenience."
   },
@@ -2507,7 +2507,7 @@ export const newsData: NewsItem[] = [
     "slug": "with-a-wide-range-of-products-we-at-bharat-machin",
     "title": "With a wide range of products, we at Bharat Machin...",
     "date": "2022-08-24T11:28:00",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66ab0a87ab61b44f7aa0f01d.jpg",
     "description": "With a wide range of products, we at Bharat Machine Tools can provide spindles, rotary tables, SPM machine tools for extrusion & amp; flow forming mac...",
     "content": "With a wide range of products, we at Bharat Machine Tools can provide spindles, rotary tables, SPM machine tools for extrusion & amp; flow forming machines, RT bearings on large cross roller bearings, and YRT bearings on large cross roller bearings. The products that we offer to our clients are made under the guidance of our quality check experts who ensure that we deliver only good quality products to our clients. These are available at a competitive price range which is another important feature exhibited by our product range. For more details about our range of products and their specifications, log on to http://www.bmtbharat.com"
   },
@@ -2534,7 +2534,7 @@ export const newsData: NewsItem[] = [
     "slug": "bharat-machine-tools-india-is-the-manufacturer-of",
     "title": "Bharat Machine Tools, India is the manufacturer of...",
     "date": "2022-08-17T07:12:48",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66ab0afb2d27364fa97771c8.jpg",
     "description": "Bharat Machine Tools, India is the manufacturer of SPM Machines, Extrusions tools, Flow forming tools, etc. We are a prominent manufacturer, supplier,...",
     "content": "Bharat Machine Tools, India is the manufacturer of SPM Machines, Extrusions tools, Flow forming tools, etc. We are a prominent manufacturer, supplier, and exporter of CNC Machines, Machine Tools, Machinery, Hardware & amp; Metal Equipment in India. These are fabricated using premium quality raw materials sourced from authorized vendors of the market. Besides, the product that we export is known for its vast array of features that include compact design, low power consumption, and excellent performance. In addition, our range is strictly tested on different parameters such as quality, durability, and flawlessness. For more details about our range of products and their specifications, log on to http://www.bmtbharat.com"
   },
@@ -2552,7 +2552,7 @@ export const newsData: NewsItem[] = [
     "slug": "in-the-production-process-there-is-often-a-long-fe",
     "title": "In the production process there is often a long fe...",
     "date": "2022-08-12T10:47:58",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66adaab5f20dc3c707b079e6.jpg",
     "description": "In the production process there is often a long felt need to improve the quality of product, minimize rejection and increase the productivity per pers...",
     "content": "In the production process there is often a long felt need to improve the quality of product, minimize rejection and increase the productivity per person, to cater to the pressing circumstances in the globalised world economy. Special Purpose Machine (SPM) are those machine which are not available off the shelf and help in achieving precise results in manufacturing processes. These machines are not covered in standard manufacturing programs, therefore they have to be designed & amp; tailor made as Per the customers specific requirements. Bharat Machine Tools in Bangalore is operating as a leading manufacturer, exporter, and supplier of a wide range of Special Purpose Machine (SPM). Please visit our website http://www.bmtbharat.com for more details about our products."
   },
@@ -2561,7 +2561,7 @@ export const newsData: NewsItem[] = [
     "slug": "we-at-bharat-machine-tools-take-the-opportunity-t",
     "title": "We at Bharat Machine Tools, take the opportunity t...",
     "date": "2022-08-10T07:52:02",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66adaaed1b29aba4df4002ca.jpg",
     "description": "We at Bharat Machine Tools, take the opportunity to wish everyone celebrating Rakshabandhan a very joyous day. May your bond of trust and togetherness...",
     "content": "We at Bharat Machine Tools, take the opportunity to wish everyone celebrating Rakshabandhan a very joyous day. May your bond of trust and togetherness grow stronger each day. Bharat Machine Tools in Bangalore is operating as a leading manufacturer, exporter, and supplier of a wide range of Industrial machiney. We have a huge facility to cater to the needs of our customers. Our products include a host of good quality industrial tools like Spindle, Rotary tables, SPM Machines, Extrusions tool, Flow forming tool, Machine tool accessories, Gear Box, Thrust ball Bearing & amp; Tapper roller Bearing, Actuators, Out Riggers, All types of metal spray, Spherical Gears, Duplex worm gear amongst many more. Please visit our website at http://www.bmtbharat.com for more details about our products."
   },
@@ -2570,7 +2570,7 @@ export const newsData: NewsItem[] = [
     "slug": "machine-and-other-industrial-products-are-more-tha",
     "title": "Machine and other industrial products are more tha...",
     "date": "2022-08-09T10:43:49",
-    "image": "https://www.bmtbharat.com/logo.png",
+    "image": "/images/news/66b1a83dba36549a768bd2c1.jpg",
     "description": "Machine and other industrial products are more than just mere products to us as they add a lot of value to any business. What if we had the luxury to ...",
     "content": "Machine and other industrial products are more than just mere products to us as they add a lot of value to any business. What if we had the luxury to procure these machines as per our exact needs? Bharat Machine Tools in Bangalore provides this luxury to its customers by designing and providing industrial machines and associated products as per their requirements. We have marked our niche in the market for products such as Spindle, Rotary tables, SPM Machines, Extrusions tool, Flow forming tool, Machine tool accessories and many more high quality industrial tools. Please visit our website http://www.bmtbharat.com for more details about our products."
   },
