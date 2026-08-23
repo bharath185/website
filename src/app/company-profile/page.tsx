@@ -470,7 +470,128 @@ export default function CompanyProfilePage() {
           </div>
         </div>
 
-        {/* 7. CUSTOMER ADVANTAGE */}
+        {/* 7. WORKS & FACILITY PHOTO GALLERY */}
+        <div className="space-y-8">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40">
+              FACILITY &amp; WORKSHOP SHOWCASE
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 uppercase font-display">
+              Bangalore Production &amp; Assembly Bays
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 font-light">
+              Glimpses of our precision grinding cells, heavy CNC machinery, cleanroom assembly bays, and finished product lots.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_2.jpg" 
+                alt="Precision Grinding Setup" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                Grinding Cell
+              </span>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_3.jpg" 
+                alt="Heavy CNC Turning Bay" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                CNC Turning Bay
+              </span>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_14.jpg" 
+                alt="Machine Tool Beds" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                Heavy Lathes
+              </span>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_15.jpg" 
+                alt="Assembly Bay" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                Assembly QA
+              </span>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_10.jpg" 
+                alt="Rotary Tables & Spindles" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                Spindles &amp; Tables
+              </span>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_11.jpg" 
+                alt="Ball Screws & Bearings" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                Ball Screws
+              </span>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_7.jpg" 
+                alt="Testing & Calibration" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                Metrology Cell
+              </span>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs group relative aspect-[4/3] bg-slate-900">
+              <img 
+                src="/images/company-profile/bmt_web_12.jpg" 
+                alt="Bearings & Locknuts" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-3 text-[10px] font-mono font-bold text-white uppercase">
+                YRT Bearings
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 8. CUSTOMER ADVANTAGE */}
         <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-sm space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40">
