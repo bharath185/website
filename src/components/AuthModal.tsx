@@ -128,6 +128,9 @@ export default function AuthModal() {
         setConfirmPassword('')
         setSuccessMsg('')
         closeAuthModal()
+        if (user?.role === 'ADMIN') {
+          window.location.href = '/admin/products'
+        }
       }, 1000)
     } catch {
       setError('Network error updating password')

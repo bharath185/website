@@ -80,6 +80,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setAuthMode('change-password')
       } else {
         closeAuthModal()
+        if (data.user?.role === 'ADMIN') {
+          window.location.href = '/admin/products'
+        }
       }
       return { success: true }
     } catch (err) {
