@@ -240,18 +240,11 @@ export default function V2MDProfile({ initialData }: { initialData?: MDInfoData 
               </div>
             </div>
 
-            {/* Direct Digital Card & Profile Marketing Hub */}
+            {/* Corporate Profile Link */}
             <div className="mt-6 pt-5 border-t border-slate-200/80 flex flex-wrap items-center gap-3">
               <a
-                href="/card"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all shadow-2xs"
-              >
-                <span>Digital Visiting Card</span>
-                <span className="text-[10px] text-blue-300 font-sans font-normal">(vCard &bull; QR)</span>
-              </a>
-              <a
                 href="/company-profile"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/60 text-xs font-mono font-bold uppercase tracking-wider transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200/60 text-xs font-mono font-bold uppercase tracking-wider transition-all"
               >
                 <span>Read Full Corporate Profile &rarr;</span>
               </a>

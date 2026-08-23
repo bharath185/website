@@ -208,27 +208,19 @@ export default function CompanyProfilePage() {
           {/* Action Hub */}
           <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
             <Link
-              href="/card"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold font-mono uppercase tracking-wider transition-all shadow-sm hover:shadow-md"
-            >
-              <Share2 className="w-4 h-4 text-blue-400" />
-              <span>MD Digital Visiting Card</span>
-            </Link>
-
-            <Link
               href="/products"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#122f87] hover:bg-[#0e256b] text-white text-xs font-bold font-mono uppercase tracking-wider transition-all shadow-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#122f87] hover:bg-[#0e256b] text-white text-xs font-bold font-mono uppercase tracking-wider transition-all shadow-sm"
             >
-              <span>Explore Products</span>
+              <span>Explore Product Catalogue</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold font-mono uppercase tracking-wider transition-all shadow-2xs"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold font-mono uppercase tracking-wider transition-all shadow-2xs"
             >
               <Mail className="w-3.5 h-3.5 text-blue-600" />
-              <span>Request Quote / RFQ</span>
+              <span>Request Technical Quote / RFQ</span>
             </Link>
           </div>
         </div>
@@ -565,13 +557,6 @@ export default function CompanyProfilePage() {
               <Phone className="w-4 h-4" />
               <span>+91-9880464557</span>
             </a>
-            <Link
-              href="/card"
-              className="inline-flex items-center gap-2 px-5 py-3.5 bg-blue-500/30 hover:bg-blue-500/40 text-white font-bold text-xs uppercase font-mono tracking-wider rounded-xl transition-colors border border-white/20"
-            >
-              <Share2 className="w-4 h-4" />
-              <span>Digital Card</span>
-            </Link>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-5 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase font-mono tracking-wider rounded-xl transition-colors shadow-sm"

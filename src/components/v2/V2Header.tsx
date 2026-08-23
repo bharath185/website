@@ -193,15 +193,6 @@ export default function V2Header() {
                 })}
               </div>
 
-              {/* Digital Visiting Card Quick Link */}
-              <Link
-                href="/card"
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-slate-900 to-[#0b1b4f] text-white text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-between shadow-sm"
-              >
-                <span>MD Digital Visiting Card</span>
-                <Sparkles className="w-3.5 h-3.5 text-blue-300" />
-              </Link>
-
               {/* Mobile Auth Button */}
               <div className="pt-2 border-t border-slate-100">
                 {user ? (
