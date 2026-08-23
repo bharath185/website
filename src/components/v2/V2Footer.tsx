@@ -101,6 +101,8 @@ export default function V2Footer() {
               </h4>
               <div className="flex flex-col gap-3 font-light text-slate-600 text-xs">
                 <Link href="/" className="hover:text-blue-600 transition-colors">Home Landing</Link>
+                <Link href="/company-profile" className="hover:text-blue-600 transition-colors font-medium text-slate-900">Company Profile</Link>
+                <Link href="/card" className="hover:text-blue-600 transition-colors font-medium text-blue-600">Digital Visiting Card</Link>
                 <Link href="/products" className="hover:text-blue-600 transition-colors">Product Catalogue</Link>
                 <Link href="/gallery" className="hover:text-blue-600 transition-colors">Visual Gallery</Link>
                 <Link href="/services" className="hover:text-blue-600 transition-colors">Specialized Services</Link>
