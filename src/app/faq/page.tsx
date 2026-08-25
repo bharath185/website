@@ -40,76 +40,92 @@ export default function FAQPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header Banner */}
-      <div className="bg-[#0b1b4f] text-white py-16 px-4 sm:px-6 lg:px-8 border-b border-blue-950">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-mono font-semibold tracking-wider uppercase mb-4 border border-blue-400/20">
-            <HelpCircle className="w-3.5 h-3.5" />
-            Support &amp; Information Hub
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white font-mono">
-            Frequently Asked Questions
+    <div className="min-h-screen bg-[#fafbfc] text-slate-900 pt-28 sm:pt-36 pb-20 font-sans relative overflow-hidden">
+      {/* Dynamic Background Accents */}
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Blueprint Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.01)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-14">
+        {/* Header Block */}
+        <div className="text-center max-w-3xl mx-auto space-y-3.5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+            <HelpCircle className="w-3.5 h-3.5 text-[#122f87]" />
+            <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
+              SUPPORT &bull; ENGINEERING KNOWLEDGE BASE
+            </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.12]">
+            Frequently Asked <span className="text-[#122f87]">Questions</span>
           </h1>
-          <p className="text-slate-300 text-xs sm:text-sm mt-3 max-w-2xl mx-auto font-light leading-relaxed">
-            Find answers to common questions regarding our manufacturing tolerances, custom engineering, machine retrofitting, and order fulfillment.
+
+          <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
+            <span className="w-16 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-10 h-1 bg-blue-500 rounded-full" />
+          </div>
+
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed font-light max-w-2xl mx-auto">
+            Find answers to common technical inquiries regarding our spindle manufacturing, sub-micron tolerances, custom SPM engineering, and nationwide factory commissioning.
           </p>
         </div>
-      </div>
 
-      {/* FAQ Accordion List */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-4">
-        {faqs.map((faq, index) => (
-          <details
-            key={index}
-            className="group bg-white rounded-2xl border border-slate-200 p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden open:border-blue-300 transition-all duration-200"
-          >
-            <summary className="flex items-center justify-between cursor-pointer list-none gap-4">
-              <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-mono group-open:text-blue-600 transition-colors">
-                {faq.q}
-              </h2>
-              <div className="w-7 h-7 rounded-full bg-slate-100 group-open:bg-blue-50 text-slate-500 group-open:text-blue-600 flex items-center justify-center shrink-0 transition-transform duration-200 group-open:rotate-180">
-                <ChevronDown className="w-4 h-4" />
-              </div>
-            </summary>
-            <p className="text-xs sm:text-sm text-slate-600 mt-4 pt-4 border-t border-slate-100 font-light leading-relaxed">
-              {faq.a}
+        {/* FAQ Accordion List */}
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <details
+              key={index}
+              className="group bg-white rounded-2xl border border-slate-200 p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden open:border-blue-300 transition-all duration-200"
+            >
+              <summary className="flex items-center justify-between cursor-pointer list-none gap-4">
+                <h2 className="text-xs sm:text-sm font-bold text-slate-900 font-mono group-open:text-[#122f87] transition-colors">
+                  {faq.q}
+                </h2>
+                <div className="w-7 h-7 rounded-full bg-slate-100 group-open:bg-blue-50 text-slate-500 group-open:text-[#122f87] flex items-center justify-center shrink-0 transition-transform duration-200 group-open:rotate-180">
+                  <ChevronDown className="w-4 h-4" />
+                </div>
+              </summary>
+              <p className="text-xs sm:text-sm text-slate-600 mt-4 pt-4 border-t border-slate-100 font-light leading-relaxed">
+                {faq.a}
+              </p>
+            </details>
+          ))}
+
+          {/* Contact Support Box */}
+          <div className="mt-12 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm text-center space-y-4">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 font-mono">
+              Have a Different Question or Custom Requirement?
+            </h3>
+            <p className="text-xs text-slate-600 max-w-xl mx-auto font-light">
+              Our technical engineering desk is available to assist with custom design drawings, urgent breakdown requirements, and product selection.
             </p>
-          </details>
-        ))}
-
-        {/* Contact Support Box */}
-        <div className="mt-12 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm text-center space-y-4">
-          <h3 className="text-base sm:text-lg font-bold text-slate-900 font-mono">
-            Have a Different Question or Custom Requirement?
-          </h3>
-          <p className="text-xs text-slate-600 max-w-xl mx-auto font-light">
-            Our technical engineering desk is available to assist with custom design drawings, urgent breakdown requirements, and product selection.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <a
-              href="tel:08048031763"
-              className="inline-flex items-center gap-2 px-5 py-3 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
-            >
-              <Phone className="w-4 h-4" />
-              <span>Call 080 4803 1763</span>
-            </a>
-            <a
-              href="https://wa.me/919530208882?text=Hello%2C%20I%20have%20an%20engineering%20inquiry%20regarding%20Bharat%20Machine%20Tools"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
-            >
-              <MessageSquare className="w-4 h-4" />
-              <span>WhatsApp Direct</span>
-            </a>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Submit Inquiry</span>
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <a
+                href="tel:08048031763"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
+              >
+                <Phone className="w-4 h-4" />
+                <span>Call 080 4803 1763</span>
+              </a>
+              <a
+                href="https://wa.me/919530208882?text=Hello%2C%20I%20have%20an%20engineering%20inquiry%20regarding%20Bharat%20Machine%20Tools"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>WhatsApp Direct</span>
+              </a>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
+              >
+                <Mail className="w-4 h-4" />
+                <span>Submit Inquiry</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

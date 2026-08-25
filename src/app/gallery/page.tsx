@@ -67,16 +67,42 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 pt-28 pb-20 font-sans" style={{ colorScheme: 'light' }}>
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 pt-28 sm:pt-36 pb-20 font-sans relative overflow-hidden" style={{ colorScheme: 'light' }}>
       
+      {/* Dynamic Background Accents */}
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+
       {/* Background Subtle Tooling Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-14">
         
+        {/* Header Block */}
+        <div className="text-center max-w-3xl mx-auto space-y-3.5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+            <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
+              MANUFACTURING CELLS &bull; LIVE BANGALORE WORKS
+            </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.12]">
+            Industrial <span className="text-[#122f87]">Works Gallery</span>
+          </h1>
+
+          <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
+            <span className="w-16 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-10 h-1 bg-blue-500 rounded-full" />
+          </div>
+
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed font-light max-w-2xl mx-auto">
+            A visual walkthrough of our high-precision manufacturing cells, 5-meter cylindrical grinding bays, cleanroom assembly lines, and calibrated finished machine tools.
+          </p>
+        </div>
+
         {/* Loading Spinner */}
         {loading ? (
-          <div className="py-32 text-center flex flex-col items-center justify-center gap-3">
+          <div className="py-24 text-center flex flex-col items-center justify-center gap-3">
             <RefreshCw className="w-8 h-8 animate-spin text-[#122f87]" />
             <span className="text-xs font-mono text-slate-400 uppercase tracking-widest">
               Loading Visual Gallery...

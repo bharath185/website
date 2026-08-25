@@ -78,15 +78,24 @@ export default function NewsPage() {
       <div className="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
         
         {/* Header Block */}
-        <div className="text-center mb-10 max-w-2xl mx-auto">
-          <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40">
-            TECHNICAL JOURNAL &amp; NEWS
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 uppercase mt-4 mb-4 tracking-tight font-display">
-            Precision Machining Journal
+        <div className="text-center mb-12 sm:mb-14 max-w-3xl mx-auto space-y-3.5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+            <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
+              TECHNICAL JOURNAL &bull; COMPANY UPDATES &amp; INSIGHTS
+            </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.12]">
+            Precision <span className="text-[#122f87]">Machining Journal</span>
           </h1>
-          <p className="text-slate-600 text-xs leading-relaxed font-light">
-            Browse our complete engineering updates catalog featuring {postsList.length} entries on spindle maintenance, crossed roller bearing design, and thermal surface treatment.
+
+          <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
+            <span className="w-16 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-10 h-1 bg-blue-500 rounded-full" />
+          </div>
+
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed font-light max-w-2xl mx-auto">
+            Browse our engineering case studies, rotodynamic insights, spindle maintenance whitepapers, and latest manufacturing breakthroughs at Bharat Machine Tools.
           </p>
         </div>
 

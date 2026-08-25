@@ -44,6 +44,11 @@ export default function ContactPage() {
             Contact <span className="text-[#122f87]">Engineering</span> Team
           </motion.h1>
 
+          <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
+            <span className="w-16 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-10 h-1 bg-blue-500 rounded-full" />
+          </div>
+
           <motion.p 
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}

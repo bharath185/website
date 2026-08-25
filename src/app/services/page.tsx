@@ -92,17 +92,26 @@ export default function ServicesPage() {
 
       <div className="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
         
-        {/* Header Block (Exact News page matching style) */}
-        <div className="text-center mb-16 max-w-3xl mx-auto">
-          <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40 inline-flex items-center gap-1.5">
-            <Wrench className="w-3 h-3 text-blue-600" />
-            ENGINEERING &amp; RECONDITIONING DIVISION
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase mt-4 mb-4 tracking-tight font-display">
-            Specialized Industrial Services
+        {/* Header Block */}
+        <div className="text-center mb-14 sm:mb-16 max-w-3xl mx-auto space-y-3.5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+            <Wrench className="w-3.5 h-3.5 text-[#122f87]" />
+            <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
+              ENGINEERING &amp; RECONDITIONING DIVISION &bull; BANGALORE
+            </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.12]">
+            Specialized <span className="text-[#122f87]">Industrial Services</span>
           </h1>
-          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-light">
-            Turnkey machine tool retrofitting, spindle rebuilding, and plasma thermal surface treatments. Restoring your heavy industrial assets to sub-micron factory accuracy in Bangalore.
+
+          <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
+            <span className="w-16 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-10 h-1 bg-blue-500 rounded-full" />
+          </div>
+
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed font-light max-w-2xl mx-auto">
+            Turnkey machine tool retrofitting, high-frequency spindle rebuilding, and plasma thermal surface treatments. Restoring your heavy industrial assets to sub-micron factory accuracy.
           </p>
         </div>
 

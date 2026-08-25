@@ -305,7 +305,7 @@ export default function CareersPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] text-slate-900 pt-20 sm:pt-24 pb-20 font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-[#fafbfc] text-slate-900 pt-28 sm:pt-36 pb-20 font-sans relative overflow-hidden">
       
       {/* Precision Blueprint Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(18,47,135,0.018)_1px,transparent_1px),linear-gradient(to_bottom,rgba(18,47,135,0.018)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
@@ -314,13 +314,13 @@ export default function CareersPage() {
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-indigo-600/5 rounded-full blur-[130px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6 sm:space-y-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8 sm:space-y-10">
         
         {/* ========================================================================= */}
         {/* COMPACT & PROFESSIONAL HEADER CONTROL BAR                                 */}
         {/* ========================================================================= */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-5">
-          <div className="space-y-1.5 max-w-xl">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
+          <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
               <Sparkles className="w-3 h-3 text-[#122f87]" />
               <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
@@ -328,11 +328,16 @@ export default function CareersPage() {
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 uppercase font-display">
-              Open Engineering Roles
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 uppercase font-display leading-[1.12]">
+              Open <span className="text-[#122f87]">Engineering Roles</span>
             </h1>
 
-            <p className="text-xs text-slate-500 font-light leading-relaxed">
+            <div className="flex items-center gap-1.5 pt-0.5 pb-0.5">
+              <span className="w-16 h-1 bg-[#122f87] rounded-full" />
+              <span className="w-10 h-1 bg-blue-500 rounded-full" />
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-600 font-light leading-relaxed">
               Join Bangalore&apos;s leading machine tool manufacturer crafting sub-micron motorized spindles and CNC rotary tables.
             </p>
           </div>

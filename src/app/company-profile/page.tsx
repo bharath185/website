@@ -180,28 +180,33 @@ export default function CompanyProfilePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-20">
 
         {/* 1. HERO BANNER */}
-        <div className="text-center max-w-4xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/60 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-blue-700">
+        <div className="text-center max-w-4xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#122f87] animate-pulse" />
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#122f87]">
               OFFICIAL CORPORATE PROFILE &bull; ESTD. 1999
             </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 uppercase tracking-tight font-display leading-[1.1]">
-            Bharat Machine Tools
+            Bharat <span className="text-[#122f87]">Machine Tools</span>
           </h1>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs font-mono font-bold uppercase tracking-wider text-blue-900">
-            <span className="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-2xs">
+          <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
+            <span className="w-20 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-12 h-1 bg-blue-500 rounded-full" />
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs font-mono font-bold uppercase tracking-wider text-blue-900 pt-1">
+            <span className="bg-white px-4 py-2 rounded-xl border border-slate-200/90 shadow-2xs">
               &ldquo;We Can Make What You Can Imagine&rdquo;
             </span>
-            <span className="bg-blue-600 text-white px-4 py-2 rounded-xl shadow-xs">
+            <span className="bg-[#122f87] text-white px-4 py-2 rounded-xl shadow-xs">
               Stop Importing &bull; Try BMT For Make In India
             </span>
           </div>
 
-          <p className="text-slate-600 text-xs sm:text-sm max-w-3xl mx-auto leading-relaxed font-light">
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base max-w-3xl mx-auto leading-relaxed font-light pt-1">
             Premier Indian engineering OEM specializing in the design, manufacturing, and sub-micron reconditioning of motorized spindles, hydrostatic bearings, CNC rotary tables, precision ball screws, defense actuators, and heavy machine tools.
           </p>
 
