@@ -26,7 +26,8 @@ import {
   Cpu,
   Layers,
   Flame,
-  Zap
+  Zap,
+  Filter
 } from "lucide-react"
 
 interface Job {
@@ -44,7 +45,7 @@ interface Job {
 const CAREER_OPPORTUNITIES: Job[] = [
   {
     id: "job-1",
-    title: "Senior Spindle Design Engineer",
+    title: "Senior Spindle Design Engineer (CAD/FEA)",
     department: "R&D & Engineering",
     location: "Bangalore Works",
     type: "Full-Time",
@@ -74,7 +75,7 @@ const CAREER_OPPORTUNITIES: Job[] = [
   },
   {
     id: "job-3",
-    title: "Precision Cylindrical Grinding Machinist",
+    title: "Precision Cylindrical Grinding Machinist (5m Bed)",
     department: "Machining & Production",
     location: "Bangalore Works",
     type: "Full-Time",
@@ -105,7 +106,7 @@ const CAREER_OPPORTUNITIES: Job[] = [
   {
     id: "job-5",
     title: "Technical Sales & Application Engineer",
-    department: "Sales & Field Engineering",
+    department: "Sales & Field Support",
     location: "Bangalore / Pan-India",
     type: "Full-Time",
     experienceLevel: "2–5 Years",
@@ -116,6 +117,81 @@ const CAREER_OPPORTUNITIES: Job[] = [
       "On-site technical consultation across India"
     ],
     requirements: "• B.E. in Mechanical / Mechatronics Engineering.\n• 2–5 years in machine tool components, CNC retrofits, or industrial automation sales.\n• Strong communication skills and willingness to travel for client site consultations."
+  },
+  {
+    id: "job-6",
+    title: "5-Axis CNC Machining Center Programmer",
+    department: "Machining & Production",
+    location: "Bangalore Works",
+    type: "Full-Time",
+    experienceLevel: "3–6 Years",
+    description: "Generate multi-axis CAM toolpaths (Mastercam/Siemens NX) for high-precision rotary table platters, spindle housings, and aerospace composite tooling fixtures.",
+    highlights: [
+      "5-axis simultaneous CAM toolpath optimization",
+      "Tool life monitoring & surface finish optimization",
+      "In-process probe macro programming"
+    ],
+    requirements: "• Diploma / Degree in Mechanical Engineering.\n• 3+ years in multi-axis CNC milling and CAM programming.\n• Strong knowledge of Fanuc, Siemens, and Heidenhain controllers."
+  },
+  {
+    id: "job-7",
+    title: "Hydrostatic Bearing & Lubrication Specialist",
+    department: "R&D & Engineering",
+    location: "Bangalore Works",
+    type: "Full-Time",
+    experienceLevel: "4+ Years",
+    description: "Design and optimize high-pressure hydrostatic bearing fluid pockets, oil film compensation valves, and closed-loop hydraulic lubrication circuits for ultra-precision rotary tables.",
+    highlights: [
+      "Hydrostatic oil pocket pressure calculations",
+      "Capillary & flow restrictor hydraulic tuning",
+      "Sub-micron stiffness and damping testing"
+    ],
+    requirements: "• B.Tech/M.Tech in Mechanical / Fluid Dynamics.\n• Experience in hydraulic circuits, hydrostatic bearing design, or precision lubrication.\n• Knowledge of ISO viscosity grades and thermal stabilization units."
+  },
+  {
+    id: "job-8",
+    title: "Defense Linear Actuator Assembly Technician",
+    department: "Defense & Special Projects",
+    location: "Bangalore Works",
+    type: "Full-Time",
+    experienceLevel: "2–5 Years",
+    description: "Assemble, pressure-test, and align heavy-duty telescopic leveling outriggers, ball screws, and hydraulic positioners engineered for military radar and launcher vehicles.",
+    highlights: [
+      "Military-grade mechanical assembly & pressure testing",
+      "Zero-backlash ball screw installation & preloading",
+      "Environmental seal integrity testing"
+    ],
+    requirements: "• ITI / Diploma in Mechanical or Automobile Engineering.\n• 2–5 years in hydraulic assembly, defense tooling, or heavy mechanical actuators.\n• Rigorous adherence to defense quality checklists."
+  },
+  {
+    id: "job-9",
+    title: "Machine Reconditioning & Slideway Retrofitter",
+    department: "Assembly & Craftsmanship",
+    location: "Bangalore / Field Service",
+    type: "Full-Time",
+    experienceLevel: "3–6 Years",
+    description: "Perform comprehensive rebuilds of worn grinding machines, lathes, and milling centers, including guideway grinding, Turcite scraping, and spindle refurbishing.",
+    highlights: [
+      "Complete mechanical teardown & overhaul",
+      "Precision slideway scraping & alignment restoration",
+      "On-site geometric laser calibration across India"
+    ],
+    requirements: "• ITI / Diploma in Mechanical Engineering.\n• Experience in machine tool overhauls, slideway scraping, and mechanical retrofits.\n• Strong diagnostic and troubleshooting capabilities."
+  },
+  {
+    id: "job-10",
+    title: "Metrology Calibration & Laser Interferometry Specialist",
+    department: "Quality & Testing",
+    location: "Bangalore Works",
+    type: "Full-Time",
+    experienceLevel: "3–5 Years",
+    description: "Operate Renishaw laser interferometers, autocollimators, and roundness testers to certify linear pitch accuracy, angular runout, and rotational concentricity.",
+    highlights: [
+      "Renishaw laser interferometry pitch calibration",
+      "Autocollimator straightness and squareness tests",
+      "Traceable NABL/ISO 17025 certification reports"
+    ],
+    requirements: "• Diploma / B.E. in Mechanical / Instrumentation Engineering.\n• 3+ years in precision metrology and laser calibration.\n• Expertise in ISO 230 machine tool testing standards."
   }
 ]
 
@@ -137,29 +213,6 @@ export default function CareersPage() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMsg, setErrorMsg] = useState("")
   const [successMsg, setSuccessMsg] = useState("")
-
-  // Fetch db jobs if available
-  useEffect(() => {
-    fetch("/api/jobs")
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          const merged = data.map((d: any) => ({
-            id: d.id,
-            title: d.title,
-            department: d.department || "Engineering",
-            location: d.location || "Bangalore Works",
-            type: d.type || "Full-Time",
-            experienceLevel: "2–5 Years",
-            description: d.description,
-            highlights: ["Precision machine tool operations", "Sub-micron tolerance standards", "ISO 9001:2015 workflow"],
-            requirements: d.requirements
-          }))
-          setJobs(merged)
-        }
-      })
-      .catch(() => {})
-  }, [])
 
   // Handle Resume File Upload
   const handleResumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -246,7 +299,8 @@ export default function CareersPage() {
     const matchesDept = activeDept === "All" || job.department === activeDept
     const matchesSearch = searchQuery === "" || 
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.department.toLowerCase().includes(searchQuery.toLowerCase())
+      job.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.description.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesDept && matchesSearch
   })
 
@@ -263,14 +317,14 @@ export default function CareersPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6 sm:space-y-8">
         
         {/* ========================================================================= */}
-        {/* STUNNING & COMPACT HERO BAR                                               */}
+        {/* COMPACT & PROFESSIONAL HEADER CONTROL BAR                                 */}
         {/* ========================================================================= */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-5">
           <div className="space-y-1.5 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
               <Sparkles className="w-3 h-3 text-[#122f87]" />
               <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
-                CAREERS &bull; BHARAT MACHINE TOOLS
+                CAREERS &bull; 10 ACTIVE OPENINGS IN BANGALORE
               </span>
             </div>
 
@@ -290,7 +344,7 @@ export default function CareersPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search positions or skills..."
+              placeholder="Search 10 positions, skills, CAD..."
               className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] transition-all placeholder-slate-400 font-medium shadow-2xs"
             />
           </div>
@@ -301,26 +355,32 @@ export default function CareersPage() {
         {/* ========================================================================= */}
         <div className="flex flex-wrap gap-1.5 items-center">
           <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mr-1">
-            FILTER:
+            DEPARTMENT:
           </span>
-          {departments.map((dept) => (
-            <button
-              key={dept}
-              type="button"
-              onClick={() => setActiveDept(dept)}
-              className={`px-3 py-1 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                activeDept === dept
-                  ? "bg-[#122f87] text-white shadow-xs"
-                  : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              {dept}
-            </button>
-          ))}
+          {departments.map((dept) => {
+            const count = dept === "All" ? jobs.length : jobs.filter(j => j.department === dept).length
+            return (
+              <button
+                key={dept}
+                type="button"
+                onClick={() => setActiveDept(dept)}
+                className={`px-3 py-1 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer inline-flex items-center gap-1.5 ${
+                  activeDept === dept
+                    ? "bg-[#122f87] text-white shadow-xs"
+                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <span>{dept}</span>
+                <span className={`text-[9px] px-1.5 py-0.2 rounded-full ${activeDept === dept ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                  {count}
+                </span>
+              </button>
+            )
+          })}
         </div>
 
         {/* ========================================================================= */}
-        {/* STUNNING JOB CARDS GRID                                                   */}
+        {/* 10 JOB CARDS GRID                                                         */}
         {/* ========================================================================= */}
         {filteredJobs.length === 0 ? (
           <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-2">
@@ -329,14 +389,14 @@ export default function CareersPage() {
             <p className="text-xs text-slate-500">Please clear search filter or email your CV directly to HR.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
             {filteredJobs.map((job, idx) => (
               <motion.div 
                 key={job.id}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: idx * 0.04 }}
-                className="group bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:border-blue-400/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4"
+                transition={{ duration: 0.3, delay: (idx % 4) * 0.04 }}
+                className="group bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-xs hover:shadow-xl hover:border-blue-400/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4"
               >
                 {/* Card Top Details */}
                 <div className="space-y-3">
@@ -375,7 +435,7 @@ export default function CareersPage() {
                 </div>
 
                 {/* Card Bottom CTA Strip */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
                     <MapPin className="w-3.5 h-3.5 text-[#122f87]" />
                     <span>{job.location}</span>
