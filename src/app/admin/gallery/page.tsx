@@ -60,7 +60,61 @@ export default function AdminGalleryPage() {
     fetchGalleryImages()
   }, [])
 
-  // Handle local file uploads (converts to base64 Data URLs)
+  const compressGalleryImage = (src: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let width = img.width
+        let height = img.height
+        const MAX_DIM = 1200
+        if (width > height) {
+          if (width > MAX_DIM) {
+            height = Math.round((height * MAX_DIM) / width)
+            width = MAX_DIM
+          }
+        } else {
+          if (height > MAX_DIM) {
+            width = Math.round((width * MAX_DIM) / height)
+            height = MAX_DIM
+          }
+        }
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          ctx.clearRect(0, 0, width, height)
+          ctx.drawImage(img, 0, 0, width, height)
+          let result = canvas.toDataURL('image/webp', 0.8)
+          if (!result.startsWith('data:image/webp')) {
+            result = canvas.toDataURL('image/jpeg', 0.82)
+          }
+          if (result.length > 350000) {
+            const smallCanvas = document.createElement('canvas')
+            const scale = 800 / Math.max(width, height)
+            smallCanvas.width = Math.round(width * scale)
+            smallCanvas.height = Math.round(height * scale)
+            const sCtx = smallCanvas.getContext('2d')
+            if (sCtx) {
+              sCtx.drawImage(canvas, 0, 0, smallCanvas.width, smallCanvas.height)
+              const smallRes = smallCanvas.toDataURL('image/webp', 0.72)
+              if (smallRes.startsWith('data:image/webp') || smallRes.length < result.length) {
+                result = smallRes
+              }
+            }
+          }
+          resolve(result)
+        } else {
+          resolve(src)
+        }
+      }
+      img.onerror = () => resolve(src)
+      img.src = src
+    })
+  }
+
+  // Handle local file uploads (converts to compressed WebP Data URLs)
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
@@ -71,10 +125,11 @@ export default function AdminGalleryPage() {
         return
       }
       const reader = new FileReader()
-      reader.onload = (loadEvt) => {
-        const base64Url = loadEvt.target?.result as string
-        if (base64Url) {
-          setPreviewImages((prev) => [...prev, base64Url])
+      reader.onload = async (loadEvt) => {
+        const rawUrl = loadEvt.target?.result as string
+        if (rawUrl) {
+          const compressed = await compressGalleryImage(rawUrl)
+          setPreviewImages((prev) => [...prev, compressed])
         }
       }
       reader.readAsDataURL(file)
@@ -84,11 +139,15 @@ export default function AdminGalleryPage() {
   }
 
   // Handle adding custom Image URL
-  const handleAddUrl = () => {
+  const handleAddUrl = async () => {
     const trimmed = customImageUrl.trim()
     if (!trimmed) return
-    if (!previewImages.includes(trimmed)) {
-      setPreviewImages((prev) => [...prev, trimmed])
+    let finalUrl = trimmed
+    if (trimmed.startsWith('data:image/')) {
+      finalUrl = await compressGalleryImage(trimmed)
+    }
+    if (!previewImages.includes(finalUrl)) {
+      setPreviewImages((prev) => [...prev, finalUrl])
       setCustomImageUrl("")
     }
   }
@@ -111,10 +170,20 @@ export default function AdminGalleryPage() {
     setSuccessMsg("")
 
     try {
+      const sanitizedImages: string[] = []
+      for (const imgUrl of previewImages) {
+        if (imgUrl.startsWith('data:image/') && imgUrl.length > 250000) {
+          const comp = await compressGalleryImage(imgUrl)
+          sanitizedImages.push(comp)
+        } else {
+          sanitizedImages.push(imgUrl)
+        }
+      }
+
       const res = await fetch("/api/gallery", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ urls: previewImages })
+        body: JSON.stringify({ urls: sanitizedImages })
       })
 
       const data = await res.json()

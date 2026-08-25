@@ -41,9 +41,18 @@ export async function POST(req: Request) {
       })
     } catch (fsError) {
       console.warn('Local filesystem write failed, using base64 fallback:', fsError)
-      // Fallback for serverless or read-only filesystems
-      const base64Data = buffer.toString('base64')
-      const dataUrl = `data:${file.type};base64,${base64Data}`
+      // Fallback for serverless or read-only filesystems - compress buffer to keep payload small
+      let dataUrl = `data:${file.type};base64,${buffer.toString('base64')}`
+      try {
+        const sharp = (await import('sharp')).default
+        const compressedBuffer = await sharp(buffer)
+          .resize(1000, 1000, { fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toBuffer()
+        dataUrl = `data:image/webp;base64,${compressedBuffer.toString('base64')}`
+      } catch (sharpErr) {
+        console.warn('Sharp compression skipped or unavailable:', sharpErr)
+      }
       
       return NextResponse.json({ 
         success: true, 
