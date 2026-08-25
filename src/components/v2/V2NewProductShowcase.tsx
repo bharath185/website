@@ -9,7 +9,7 @@ import { RotateCw, Compass, ShieldAlert, Sparkles, Settings2, HelpCircle } from 
 export default function V2NewProductShowcase() {
   const mountRef = useRef<HTMLDivElement>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isSpinning, setIsSpinning] = useState(false)
+  const [isSpinning, setIsSpinning] = useState(true)
   
   // Real-time telemetry simulation
   const [telemetry, setTelemetry] = useState({
@@ -175,8 +175,8 @@ export default function V2NewProductShowcase() {
 
           let spinAngle = 0
           animateCallback = () => {
-            if (isSpinning && modelContainer) {
-              spinAngle += 0.0035
+            if (isSpinning && modelContainer && !isDragging) {
+              spinAngle += 0.0055
               modelContainer.rotation.y = spinAngle
             }
           }
