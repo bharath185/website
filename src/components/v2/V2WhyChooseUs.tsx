@@ -21,8 +21,9 @@ import {
   Activity,
   Factory,
   ChevronRight,
-  Flame,
-  Check
+  Check,
+  PhoneCall,
+  Flame
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -35,7 +36,6 @@ interface FeatureItem {
   statValue: string
   statLabel: string
   accentColor: string
-  glowColor: string
   details: string[]
 }
 
@@ -43,49 +43,46 @@ const LEFT_FEATURES: FeatureItem[] = [
   {
     id: 1,
     title: "Engineering Expertise & Professional Management",
-    subtitle: "Over 25+ years of proprietary machine tool R&D, master scraping craftsmanship, and ISO 9001:2015 institutional leadership.",
+    subtitle: "Over 25+ years of proprietary machine tool R&D, master scraping craftsmanship, and ISO 9001:2015 institutional leadership under Mr. Abbas Khan.",
     icon: DraftingCompass,
-    badge: "PROPRIETARY R&D",
+    badge: "PROPRIETARY R&D &bull; ESTD. 1999",
     statValue: "25+ YRS",
-    statLabel: "Machine Engineering",
+    statLabel: "Precision Machine Engineering",
     accentColor: "#122f87",
-    glowColor: "rgba(18, 47, 135, 0.2)",
     details: [
-      "Dedicated CAD/CAM engineering team",
-      "Dynamic FEA stress & harmonic analysis",
-      "ISO 9001:2015 certified workflow"
+      "Master hand-scraping & geometric alignment",
+      "Dynamic FEA stress & harmonic simulation",
+      "Proven aerospace & defense supply track record"
     ]
   },
   {
     id: 2,
     title: "One-Stop Solution for All Kinds Of Machinery",
-    subtitle: "Integrated manufacturing of motorized spindles, CNC rotary tables, hydrostatic bearings, ball screws, defense actuators & rebuilding.",
+    subtitle: "Turnkey design & manufacturing of High-Frequency Spindles, 4th/5th Axis Rotary Tables, Hydrostatic Bearings, Ball Screws & Defense Actuators.",
     icon: Puzzle,
-    badge: "FULL-LINE OEM",
+    badge: "COMPLETE PRODUCT PORTFOLIO",
     statValue: "100+ SKUS",
-    statLabel: "Turnkey Assemblies",
-    accentColor: "#dc2626",
-    glowColor: "rgba(220, 38, 38, 0.2)",
+    statLabel: "Turnkey Mechanical Assemblies",
+    accentColor: "#1d4ed8",
     details: [
-      "Custom high-frequency motorized spindles",
-      "4th & 5th axis CNC tilting rotary tables",
+      "Motorized & belt-driven precision spindles",
+      "4th & 5th axis tilting CNC rotary tables",
       "Heavy defense outriggers & linear actuators"
     ]
   },
   {
     id: 3,
     title: "Best Quality Products with Extra Features",
-    subtitle: "Defense-grade metallurgy, thermal stabilization, runouts < 0.001 mm, and 100% dynamic load testing before dispatch.",
+    subtitle: "Defense-grade metallurgy, cryogenic thermal stabilization, sub-micron runout (<0.001 mm), and 100% full-load dynamic testing before dispatch.",
     icon: Award,
     badge: "SUB-MICRON QUALITY",
     statValue: "< 0.001mm",
-    statLabel: "Radial & Axial Runout",
+    statLabel: "Radial & Axial Runout Run",
     accentColor: "#122f87",
-    glowColor: "rgba(18, 47, 135, 0.2)",
     details: [
       "Sub-micron laser interferometry verification",
       "ISO G0.4 dynamic balancing up to 45,000 RPM",
-      "Ultrasonic flaw testing & metallurgy QA"
+      "48h continuous thermal test run benches"
     ]
   }
 ]
@@ -94,49 +91,46 @@ const RIGHT_FEATURES: FeatureItem[] = [
   {
     id: 4,
     title: "Reasonable & Competitive Prices",
-    subtitle: "Indigenous Make in India manufacturing saving up to 40% over foreign imports without any compromise on precision.",
+    subtitle: "Proudly championing Make in India. Indigenous manufacturing eliminates expensive foreign import markups and delays—saving up to 40% on CAPEX.",
     icon: Tag,
-    badge: "MAKE IN INDIA",
+    badge: "MAKE IN INDIA OEM",
     statValue: "40% SAVINGS",
-    statLabel: "Direct OEM Direct Pricing",
-    accentColor: "#dc2626",
-    glowColor: "rgba(220, 38, 38, 0.2)",
+    statLabel: "Direct Factory OEM Pricing",
+    accentColor: "#1d4ed8",
     details: [
-      "Zero import duties or long shipping lag",
-      "Transparent engineering BOM breakdown",
-      "Direct factory pricing with warranty"
+      "Direct factory OEM pricing with no middleman",
+      "Zero import tariffs or overseas shipping lag",
+      "Comprehensive warranty & readily available spares"
     ]
   },
   {
     id: 5,
     title: "Largest Display of Machinery In India",
-    subtitle: "Modern Bangalore facilities featuring large CNC turning bays, cylindrical grinding cells up to 5 meters, and live test benches.",
+    subtitle: "Expansive Bangalore facility equipped with heavy cylindrical grinders (Ø 500 x 5000 mm), large CNC turning centers, and cleanroom assembly bays.",
     icon: Building2,
-    badge: "MEGA CAPACITY",
+    badge: "HEAVY CAPACITY FACILITY",
     statValue: "5,000mm",
     statLabel: "Grinding Length Capacity",
     accentColor: "#122f87",
-    glowColor: "rgba(18, 47, 135, 0.2)",
     details: [
-      "Heavy cylindrical grinding: Ø500 x 5000mm",
-      "High-precision bore grinding cells",
-      "In-house cleanroom assembly & test rigs"
+      "Heavy cylindrical grinding up to 5 meters",
+      "Multi-axis CNC turning and boring centers",
+      "In-house metrology & cleanroom testing bays"
     ]
   },
   {
     id: 6,
     title: "Excellent Service with Good After-Sales Support",
-    subtitle: "24/7 round-the-clock technical helpline, rapid on-site engineer deployment, and complete lifecycle emergency reconditioning.",
+    subtitle: "24/7 direct factory SLA. Dedicated senior engineers provide immediate phone consultation, rapid on-site troubleshooting across India, and emergency reconditioning.",
     icon: Headphones,
-    badge: "24x7 SUPPORT",
+    badge: "24x7 DIRECT FACTORY SLA",
     statValue: "24x7 SLA",
-    statLabel: "Rapid Response Support",
-    accentColor: "#dc2626",
-    glowColor: "rgba(220, 38, 38, 0.2)",
+    statLabel: "Rapid Response Support Across India",
+    accentColor: "#1d4ed8",
     details: [
       "Direct engineer-to-engineer phone hotline",
-      "On-site emergency dynamic alignment",
-      "Complete spindle & guideway rebuilding"
+      "Rapid on-site deployment across India",
+      "Turnkey machine reconditioning & retrofitting"
     ]
   }
 ]
@@ -162,12 +156,12 @@ export default function V2WhyChooseUs() {
     <section className="py-24 sm:py-32 bg-[#fafbfc] relative overflow-hidden border-t border-slate-200/80">
       
       {/* Precision Blueprint Grid Background Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.018)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.018)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(18,47,135,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(18,47,135,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
-      {/* Atmospheric Radial Ambient Glow Accents */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[550px] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-20 left-10 w-[450px] h-[450px] bg-indigo-500/5 rounded-full blur-[130px] pointer-events-none" />
+      {/* Atmospheric Royal Blue Radial Glow Accents */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[550px] bg-blue-600/5 rounded-full blur-[170px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-20 left-10 w-[450px] h-[450px] bg-indigo-600/5 rounded-full blur-[130px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
@@ -181,11 +175,11 @@ export default function V2WhyChooseUs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 shadow-2xs"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#122f87] animate-pulse" />
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#122f87]">
-              WHY BHARAT MACHINE TOOLS
+              WHY CHOOSE BHARAT MACHINE TOOLS
             </span>
           </motion.div>
 
@@ -196,10 +190,10 @@ export default function V2WhyChooseUs() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 uppercase tracking-tight font-display leading-[1.12]"
           >
-            Why We are Customer’s <span className="text-red-600">Choice</span> <br className="hidden sm:inline" />NOT an Option?
+            Why We are Customer’s <span className="text-[#122f87]">Choice</span> <br className="hidden sm:inline" />NOT an Option?
           </motion.h2>
 
-          {/* Signature Red and Navy Accent Underline Bar */}
+          {/* Signature BMT Royal Blue and Cobalt Underline Accent Bar */}
           <motion.div 
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
@@ -207,8 +201,8 @@ export default function V2WhyChooseUs() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex items-center justify-center gap-1.5 mx-auto pt-1 pb-1"
           >
-            <span className="w-16 sm:w-20 h-1 bg-red-600 rounded-full" />
-            <span className="w-16 sm:w-20 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-20 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-20 h-1 bg-blue-500 rounded-full" />
           </motion.div>
 
           <motion.p 
@@ -218,7 +212,7 @@ export default function V2WhyChooseUs() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="text-slate-600 text-sm sm:text-base font-semibold font-sans tracking-wide max-w-2xl mx-auto"
           >
-            Unmatched Expertise, Unrivaled Dedication &bull; Delivering Sub-Micron Industrial Machine Tool Solutions
+            Unmatched Expertise, Unrivaled Dedication &bull; Delivering Sub-Micron Precision Across India
           </motion.p>
 
         </div>
@@ -261,7 +255,7 @@ export default function V2WhyChooseUs() {
                       <span className={`text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded transition-colors ${
                         isSelected 
                           ? 'bg-[#122f87] text-white' 
-                          : 'bg-blue-50 text-[#122f87]'
+                          : 'bg-blue-50 text-[#122f87] border border-blue-100'
                       }`}>
                         {item.badge}
                       </span>
@@ -279,14 +273,14 @@ export default function V2WhyChooseUs() {
                     <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isSelected 
                         ? 'bg-[#122f87] text-white shadow-lg shadow-blue-900/30 scale-110' 
-                        : 'bg-slate-100 text-slate-700 group-hover:bg-blue-50 group-hover:text-[#122f87]'
+                        : 'bg-blue-50/70 text-[#122f87] group-hover:bg-[#122f87] group-hover:text-white'
                     }`}>
                       <Icon className="w-6 h-6" />
                     </div>
                     
                     {/* Animated Outer Orbit Ring */}
                     <div className={`absolute -inset-1.5 rounded-full border-2 transition-opacity duration-300 pointer-events-none ${
-                      isSelected ? 'border-red-500 opacity-100 animate-pulse' : 'border-transparent opacity-0'
+                      isSelected ? 'border-blue-600 opacity-100 animate-pulse' : 'border-transparent opacity-0'
                     }`} />
                   </div>
                 </motion.div>
@@ -309,8 +303,8 @@ export default function V2WhyChooseUs() {
               
               {/* Spinning Precision Blueprint Rings */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[310px] h-[310px] sm:w-[350px] sm:h-[350px] rounded-full border border-dashed border-blue-200/80 animate-[spin_50s_linear_infinite]" />
-                <div className="absolute w-[240px] h-[240px] sm:w-[270px] sm:h-[270px] rounded-full border border-slate-300/60 animate-[spin_30s_linear_infinite_reverse]" />
+                <div className="w-[310px] h-[310px] sm:w-[350px] sm:h-[350px] rounded-full border border-dashed border-blue-200 animate-[spin_50s_linear_infinite]" />
+                <div className="absolute w-[240px] h-[240px] sm:w-[270px] sm:h-[270px] rounded-full border border-blue-300/40 animate-[spin_30s_linear_infinite_reverse]" />
                 <div className="absolute w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] rounded-full bg-blue-500/5 blur-2xl" />
               </div>
 
@@ -353,7 +347,7 @@ export default function V2WhyChooseUs() {
                     transition={{ duration: 0.25 }}
                     className="w-full space-y-2 pt-1"
                   >
-                    <span className="text-[10px] font-mono font-bold text-red-600 uppercase tracking-widest bg-red-50 px-2.5 py-1 rounded-md inline-block">
+                    <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest bg-blue-50 border border-blue-200/80 px-2.5 py-1 rounded-md inline-block">
                       {currentFeature.badge}
                     </span>
                     
@@ -414,7 +408,7 @@ export default function V2WhyChooseUs() {
                   onMouseEnter={() => setActiveId(item.id)}
                   className={`group relative p-5 rounded-2xl transition-all duration-300 cursor-pointer flex items-center gap-4 ${
                     isSelected 
-                      ? 'bg-white shadow-xl shadow-blue-900/10 border-2 border-red-600 ring-4 ring-red-500/10 -translate-y-1' 
+                      ? 'bg-white shadow-xl shadow-blue-900/10 border-2 border-blue-600 ring-4 ring-blue-500/10 -translate-y-1' 
                       : 'bg-white/80 hover:bg-white border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-slate-300'
                   }`}
                 >
@@ -422,8 +416,8 @@ export default function V2WhyChooseUs() {
                   <div className="relative shrink-0">
                     <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isSelected 
-                        ? 'bg-red-600 text-white shadow-lg shadow-red-600/30 scale-110' 
-                        : 'bg-slate-100 text-slate-700 group-hover:bg-red-50 group-hover:text-red-600'
+                        ? 'bg-[#122f87] text-white shadow-lg shadow-blue-900/30 scale-110' 
+                        : 'bg-blue-50/70 text-[#122f87] group-hover:bg-[#122f87] group-hover:text-white'
                     }`}>
                       <Icon className="w-6 h-6" />
                     </div>
@@ -439,8 +433,8 @@ export default function V2WhyChooseUs() {
                     <div className="flex items-center gap-2">
                       <span className={`text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded transition-colors ${
                         isSelected 
-                          ? 'bg-red-600 text-white' 
-                          : 'bg-red-50 text-red-600'
+                          ? 'bg-[#122f87] text-white' 
+                          : 'bg-blue-50 text-[#122f87] border border-blue-100'
                       }`}>
                         {item.badge}
                       </span>
@@ -471,23 +465,23 @@ export default function V2WhyChooseUs() {
         >
           <div className="space-y-1">
             <span className="text-2xl sm:text-3xl font-black text-[#122f87] font-display">25+</span>
-            <span className="text-xs text-slate-600 font-mono block uppercase font-bold">Years Experience</span>
-            <span className="text-[10px] text-slate-400 font-light block">Estd. 1999 Bangalore</span>
+            <span className="text-xs text-slate-700 font-mono block uppercase font-bold">Years Experience</span>
+            <span className="text-[10px] text-slate-500 font-light block">Estd. 1999 Bangalore</span>
           </div>
           <div className="space-y-1 border-l border-slate-100">
-            <span className="text-2xl sm:text-3xl font-black text-red-600 font-display">&lt; 0.001mm</span>
-            <span className="text-xs text-slate-600 font-mono block uppercase font-bold">Sub-Micron Runout</span>
-            <span className="text-[10px] text-slate-400 font-light block">Laser Aligned Quality</span>
+            <span className="text-2xl sm:text-3xl font-black text-[#122f87] font-display">&lt; 0.001mm</span>
+            <span className="text-xs text-slate-700 font-mono block uppercase font-bold">Sub-Micron Runout</span>
+            <span className="text-[10px] text-slate-500 font-light block">Laser Aligned Quality</span>
           </div>
           <div className="space-y-1 border-l border-slate-100">
             <span className="text-2xl sm:text-3xl font-black text-[#122f87] font-display">5,000mm</span>
-            <span className="text-xs text-slate-600 font-mono block uppercase font-bold">Grinding Length</span>
-            <span className="text-[10px] text-slate-400 font-light block">Heavy Shafts & Spindles</span>
+            <span className="text-xs text-slate-700 font-mono block uppercase font-bold">Grinding Length</span>
+            <span className="text-[10px] text-slate-500 font-light block">Heavy Shafts & Spindles</span>
           </div>
           <div className="space-y-1 border-l border-slate-100">
-            <span className="text-2xl sm:text-3xl font-black text-red-600 font-display">24x7</span>
-            <span className="text-xs text-slate-600 font-mono block uppercase font-bold">Engineering SLA</span>
-            <span className="text-[10px] text-slate-400 font-light block">Rapid On-Site Support</span>
+            <span className="text-2xl sm:text-3xl font-black text-[#122f87] font-display">24x7</span>
+            <span className="text-xs text-slate-700 font-mono block uppercase font-bold">Engineering SLA</span>
+            <span className="text-[10px] text-slate-500 font-light block">Rapid On-Site Support</span>
           </div>
         </motion.div>
 
