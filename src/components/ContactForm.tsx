@@ -62,26 +62,26 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
       
       {/* ========================================================================= */}
-      {/* LEFT COLUMN: CLEAN & ATTRACTIVE CONTACT CHANNELS                          */}
+      {/* LEFT COLUMN: DIRECT CONTACT CHANNELS                                      */}
       {/* ========================================================================= */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="lg:col-span-5 space-y-5"
+        transition={{ duration: 0.4 }}
+        className="lg:col-span-5 space-y-4"
       >
-        <div className="space-y-2">
-          <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/60 inline-block">
-            DIRECT COMMUNICATIONS
+        <div className="space-y-1">
+          <span className="text-[9px] font-mono font-bold text-[#122f87] uppercase tracking-widest bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded inline-block">
+            DIRECT DESK
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 uppercase tracking-tight font-display">
-            We&apos;re Here to Help
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 uppercase tracking-tight font-display mt-1">
+            Contact Details
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-light leading-relaxed">
-            Reach out directly to our engineering desk in Bangalore for quotes, drawings, or technical consultation.
+          <p className="text-xs text-slate-500 font-light">
+            Connect directly with our senior engineers and management in Bangalore.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export default function ContactForm() {
             href="tel:+919880464557"
             className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-blue-400 transition-all flex items-center gap-4 group cursor-pointer block"
           >
-            <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#122f87] group-hover:bg-[#122f87] group-hover:text-white transition-colors flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#122f87] group-hover:bg-[#122f87] group-hover:text-white transition-colors flex items-center justify-center shrink-0">
               <Phone className="w-5 h-5" />
             </div>
             <div className="flex-1">
@@ -117,7 +117,7 @@ export default function ContactForm() {
             rel="noopener noreferrer"
             className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-400 transition-all flex items-center gap-4 group cursor-pointer block"
           >
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors flex items-center justify-center shrink-0">
               <MessageSquare className="w-5 h-5" />
             </div>
             <div className="flex-1">
@@ -128,7 +128,7 @@ export default function ContactForm() {
                 +91-9530208882
               </span>
               <span className="text-[10px] text-slate-500 font-light">
-                Instant quotes &amp; spec discussions
+                Instant quotes &amp; drawings
               </span>
             </div>
             <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors shrink-0" />
@@ -136,7 +136,7 @@ export default function ContactForm() {
 
           {/* Email Card */}
           <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-blue-400 transition-all flex items-center gap-4 group">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#122f87] flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#122f87] flex items-center justify-center shrink-0">
               <Mail className="w-5 h-5" />
             </div>
             <div className="flex-1 truncate">
@@ -150,7 +150,7 @@ export default function ContactForm() {
                 bmt.abbas@gmail.com
               </a>
               <span className="text-[10px] text-slate-500 font-light">
-                Send blueprints &amp; CAD models
+                Send RFQs &amp; CAD models
               </span>
             </div>
             <button
@@ -168,7 +168,7 @@ export default function ContactForm() {
             <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
               <div className="text-xs text-slate-600 leading-relaxed font-light">
-                <strong className="text-slate-900 block font-semibold">Registered Works &amp; Plant:</strong>
+                <strong className="text-slate-900 block font-semibold">Bangalore Works &amp; Plant:</strong>
                 #312 Ground Floor, Sharadhamma Illam, GPT, 1st Main Nagappa Block, Near Abbigere HP Petrol Pump, Abbigere, Bangalore - 560090, India
               </div>
             </div>
@@ -190,13 +190,13 @@ export default function ContactForm() {
       </motion.div>
 
       {/* ========================================================================= */}
-      {/* RIGHT COLUMN: SIMPLE & ELEGANT CONTACT / RFQ FORM                         */}
+      {/* RIGHT COLUMN: SIMPLE & ATTRACTIVE RFQ FORM                                */}
       {/* ========================================================================= */}
       <motion.div 
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-9 shadow-lg shadow-slate-900/5 relative"
+        transition={{ duration: 0.4 }}
+        className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-md shadow-slate-900/5 relative"
       >
         {submitted ? (
           <div className="text-center py-12 space-y-4">
@@ -207,7 +207,7 @@ export default function ContactForm() {
               Message Formatted &amp; Dispatched!
             </h3>
             <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-              Your inquiry has been compiled. Our engineering team in Bangalore will respond shortly.
+              Your inquiry has been sent to our team on WhatsApp. We will respond immediately.
             </p>
             <div className="pt-2">
               <button
@@ -223,24 +223,27 @@ export default function ContactForm() {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             
-            {/* Header */}
-            <div>
+            {/* Clean Form Header */}
+            <div className="border-b border-slate-100 pb-3">
+              <span className="text-[9px] font-mono font-bold text-[#122f87] uppercase tracking-widest bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded inline-block mb-1.5">
+                QUICK RFQ
+              </span>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 uppercase tracking-tight font-display">
-                Send an Inquiry / Request a Quote
+                Send Us a Message
               </h3>
               <p className="text-xs text-slate-500 font-light mt-0.5">
-                Fill in the details below and we will respond with technical specs &amp; pricing.
+                Fill in your requirements below for an instant response.
               </p>
             </div>
 
             {/* Category selection chips */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider">
                 Select Requirement
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {TOPICS.map((topic) => {
                   const isSelected = selectedTopic === topic
                   return (
@@ -262,7 +265,7 @@ export default function ContactForm() {
             </div>
 
             {/* Inputs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
                 <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
                   Full Name *
@@ -285,7 +288,7 @@ export default function ContactForm() {
                   type="text"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                  placeholder="e.g. Bharat Precision Tools"
+                  placeholder="e.g. Precision Tools Ltd."
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium"
                 />
               </div>
@@ -325,7 +328,7 @@ export default function ContactForm() {
               </label>
               <textarea
                 required
-                rows={4}
+                rows={3}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Tell us about the dimensions, RPM, machine model, or service required..."
