@@ -87,26 +87,26 @@ export default function ProductsPage() {
       <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Header Block Section */}
-      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-6 sm:pt-10 pb-10 sm:pb-14 relative z-10 text-center sm:text-left">
-        <div className="max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-4 sm:pt-6 pb-6 sm:pb-8 relative z-10 text-center sm:text-left">
+        <div className="max-w-2xl space-y-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-[#122f87] animate-pulse" />
             <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
               BHARAT MACHINE TOOLS &bull; PRECISION CATALOGUE
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.12]">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.15]">
             High-Precision <span className="text-[#122f87]">Machine Tools</span> &amp; Spindles
           </h1>
 
           <div className="flex items-center justify-center sm:justify-start gap-1.5 pt-0.5 pb-0.5">
-            <span className="w-16 h-1 bg-[#122f87] rounded-full" />
-            <span className="w-10 h-1 bg-blue-500 rounded-full" />
+            <span className="w-12 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-8 h-1 bg-blue-500 rounded-full" />
           </div>
 
-          <p className="text-slate-600 text-xs sm:text-sm font-light max-w-2xl leading-relaxed">
-            Explore our comprehensive range of high-frequency motorized spindles, 4th &amp; 5th axis CNC rotary tables, precision ground ball screws, and axial-radial YRT bearings engineered to sub-micron tolerances in Bangalore.
+          <p className="text-slate-600 text-xs sm:text-sm font-light max-w-xl leading-relaxed">
+            Explore our range of motorized spindles, CNC rotary tables, precision ball screws, and axial-radial YRT bearings engineered to sub-micron tolerances in Bangalore.
           </p>
         </div>
       </div>

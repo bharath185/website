@@ -168,7 +168,7 @@ export default function CompanyProfilePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] font-sans text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-24 relative overflow-hidden">
+    <div className="min-h-screen bg-[#fafbfc] font-sans text-slate-800 pt-24 sm:pt-28 pb-20 relative overflow-hidden">
       
       {/* Blueprint Grid Background Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
@@ -177,36 +177,36 @@ export default function CompanyProfilePage() {
       <div className="absolute top-20 right-10 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-40 left-10 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[130px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-16">
 
         {/* 1. HERO BANNER */}
-        <div className="text-center max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#122f87] animate-pulse" />
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+            <Sparkles className="w-3 h-3 text-[#122f87] animate-pulse" />
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#122f87]">
               OFFICIAL CORPORATE PROFILE &bull; ESTD. 1999
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 uppercase tracking-tight font-display leading-[1.1]">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.12]">
             Bharat <span className="text-[#122f87]">Machine Tools</span>
           </h1>
 
           <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
-            <span className="w-20 h-1 bg-[#122f87] rounded-full" />
-            <span className="w-12 h-1 bg-blue-500 rounded-full" />
+            <span className="w-14 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-8 h-1 bg-blue-500 rounded-full" />
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs font-mono font-bold uppercase tracking-wider text-blue-900 pt-1">
-            <span className="bg-white px-4 py-2 rounded-xl border border-slate-200/90 shadow-2xs">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-xs font-mono font-bold uppercase tracking-wider text-blue-900 pt-0.5">
+            <span className="bg-white px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-2xs">
               &ldquo;We Can Make What You Can Imagine&rdquo;
             </span>
-            <span className="bg-[#122f87] text-white px-4 py-2 rounded-xl shadow-xs">
-              Stop Importing &bull; Try BMT For Make In India
+            <span className="bg-[#122f87] text-white px-3 py-1.5 rounded-xl shadow-xs">
+              Make In India Excellence
             </span>
           </div>
 
-          <p className="text-slate-600 text-xs sm:text-sm md:text-base max-w-3xl mx-auto leading-relaxed font-light pt-1">
+          <p className="text-slate-600 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-light">
             Premier Indian engineering OEM specializing in the design, manufacturing, and sub-micron reconditioning of motorized spindles, hydrostatic bearings, CNC rotary tables, precision ball screws, defense actuators, and heavy machine tools.
           </p>
 

@@ -66,10 +66,10 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-24 sm:pt-28 pb-16 relative overflow-hidden font-sans">
       
       {/* Dynamic Background Accents */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-red-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Blueprint Grid Overlay */}
@@ -78,29 +78,29 @@ export default function NewsPage() {
       <div className="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
         
         {/* Header Block */}
-        <div className="text-center mb-12 sm:mb-14 max-w-3xl mx-auto space-y-3.5">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
+        <div className="text-center mb-8 sm:mb-10 max-w-2xl mx-auto space-y-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
             <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
-              TECHNICAL JOURNAL &bull; COMPANY UPDATES &amp; INSIGHTS
+              TECHNICAL JOURNAL &bull; COMPANY UPDATES
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.12]">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 uppercase tracking-tight font-display leading-[1.15]">
             Precision <span className="text-[#122f87]">Machining Journal</span>
           </h1>
 
           <div className="flex items-center justify-center gap-1.5 pt-0.5 pb-0.5">
-            <span className="w-16 h-1 bg-[#122f87] rounded-full" />
-            <span className="w-10 h-1 bg-blue-500 rounded-full" />
+            <span className="w-12 h-1 bg-[#122f87] rounded-full" />
+            <span className="w-8 h-1 bg-blue-500 rounded-full" />
           </div>
 
-          <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed font-light max-w-2xl mx-auto">
-            Browse our engineering case studies, rotodynamic insights, spindle maintenance whitepapers, and latest manufacturing breakthroughs at Bharat Machine Tools.
+          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-light max-w-xl mx-auto">
+            Browse our engineering case studies, rotodynamic insights, spindle maintenance whitepapers, and manufacturing breakthroughs at Bharat Machine Tools.
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className="max-w-md mx-auto mb-16 relative">
+        <div className="max-w-md mx-auto mb-10 sm:mb-12 relative">
           <div className="relative flex items-center bg-white border border-slate-200 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.015)] overflow-hidden focus-within:border-slate-350 focus-within:shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all">
             <Search className="w-4 h-4 text-slate-400 absolute left-5 pointer-events-none" />
             <input 

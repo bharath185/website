@@ -36,20 +36,19 @@ export default function V2Header() {
     { href: "/gallery", label: "Gallery" },
     { href: "/services", label: "Services" },
     { href: "/news", label: "News" },
-    ...(!user ? [{ href: "/careers", label: "Careers" }] : []),
-    ...(!user ? [{ href: "/contact", label: "Contact" }] : []),
+    { href: "/careers", label: "Careers" },
+    { href: "/contact", label: "Contact" },
     ...(user && user.role !== "ADMIN" ? [{ href: "/orders", label: "Orders" }] : []),
   ]
 
-  const isLanding = pathname === "/"
-  const isTransparent = isLanding && !scrolled && !mobileMenuOpen
+  const isTransparent = !scrolled && !mobileMenuOpen
 
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isTransparent
           ? "bg-transparent border-b border-transparent shadow-none py-3.5 sm:py-4.5"
-          : "bg-white/95 border-b border-slate-200/85 backdrop-blur-xl shadow-[0_2px_15px_rgba(0,0,0,0.03)] py-2.5 sm:py-3"
+          : "bg-white/92 border-b border-slate-200/80 backdrop-blur-xl shadow-[0_2px_15px_rgba(0,0,0,0.03)] py-2.5 sm:py-3"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4">
