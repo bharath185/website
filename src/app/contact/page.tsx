@@ -1,63 +1,106 @@
-"use client"
+'use client'
 
-import React, { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/context/AuthContext"
-import ContactForm from "@/components/ContactForm"
-import { Sparkles, RefreshCw } from "lucide-react"
+import React from 'react'
+import { motion } from 'framer-motion'
+import ContactForm from '@/components/ContactForm'
+import { 
+  Sparkles, 
+  ShieldCheck, 
+  MapPin, 
+  Activity, 
+  Phone, 
+  Mail, 
+  Clock, 
+  Zap,
+  Cpu,
+  Layers,
+  Building2
+} from 'lucide-react'
 
 export default function ContactPage() {
-  const { user, loading: authLoading } = useAuth()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!authLoading && user) {
-      if (user.role === "ADMIN") {
-        router.replace("/admin/orders")
-      } else {
-        router.replace("/orders")
-      }
-    }
-  }, [user, authLoading, router])
-
-  if (user) {
-    return (
-      <div className="min-h-screen bg-[#fafbfc] pt-32 pb-20 flex flex-col items-center justify-center text-slate-500 gap-3">
-        <RefreshCw className="w-6 h-6 animate-spin text-[#122f87]" />
-        <p className="text-xs font-mono font-bold uppercase tracking-widest text-[#122f87]">
-          Redirecting to your dashboard...
-        </p>
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-28 sm:pt-32 pb-20 relative overflow-hidden font-sans">
-      {/* Background Tooling Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.008)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.008)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-28 sm:pt-36 pb-24 relative overflow-hidden font-sans">
+      
+      {/* Precision Blueprint Grid Background Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(18,47,135,0.018)_1px,transparent_1px),linear-gradient(to_bottom,rgba(18,47,135,0.018)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
       
       {/* Ambient Lighting Flares */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header Block (Matching News & Services clean style) */}
-        <div className="text-center mb-10 max-w-2xl mx-auto">
-          <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-md border border-blue-200/40 inline-flex items-center gap-1.5 mb-3">
-            <Sparkles className="w-3 h-3 text-blue-600" />
-            SUPPORT &amp; QUOTATION DESK
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 uppercase tracking-tight font-display">
-            Contact Engineering Team
-          </h1>
-          <p className="text-slate-600 text-xs sm:text-sm mt-3 leading-relaxed font-light">
-            Have a custom machine tool requirement or need a rapid technical quote? Reach out to our engineering team in Bangalore directly.
-          </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-16">
+        
+        {/* ========================================================================= */}
+        {/* TRENDY HERO SECTION & TELEMETRY STATUS BAR                                */}
+        {/* ========================================================================= */}
+        <div className="text-center max-w-4xl mx-auto space-y-6">
+          
+          {/* Top Badge */}
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 shadow-2xs"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#122f87] animate-pulse" />
+            <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
+              SUPPORT &amp; RAPID QUOTATION DESK &bull; ESTD. 1999
+            </span>
+          </motion.div>
+
+          {/* Main Title */}
+          <motion.h1 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 uppercase tracking-tight font-display leading-[1.1]"
+          >
+            Let&apos;s Build Sub-Micron <br />
+            <span className="text-[#122f87]">Precision</span> Together
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-slate-600 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-light"
+          >
+            Connect directly with our chief machine tool engineers in Bangalore. Request custom spindle designs, CNC rotary tables, defense actuators, or on-site reconditioning support.
+          </motion.p>
+
+          {/* Live Industrial Telemetry Pill Strip */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 pt-2 text-[11px] font-mono font-bold text-slate-700"
+          >
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Bangalore Plant: ACTIVE</span>
+            </div>
+
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
+              <Clock className="w-3.5 h-3.5 text-blue-600" />
+              <span>RFQ Response: &lt; 2 Hours</span>
+            </div>
+
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
+              <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+              <span>ISO 9001:2015 Registered</span>
+            </div>
+          </motion.div>
+
         </div>
 
-        {/* Contact Form & Contact Details Grid */}
+        {/* ========================================================================= */}
+        {/* INTERACTIVE FORM & CONTACT DETAILS                                        */}
+        {/* ========================================================================= */}
         <ContactForm />
+
       </div>
+
     </div>
   )
 }
