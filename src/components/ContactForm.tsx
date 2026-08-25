@@ -23,8 +23,8 @@ const TOPICS = [
   'CNC Rotary Tables',
   'Ball Screws & Bearings',
   'Defense Actuators',
-  'Machine Reconditioning',
-  'General Inquiry'
+  'Reconditioning / Scraping',
+  'Other / Inquiry'
 ]
 
 export default function ContactForm() {
@@ -62,152 +62,171 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch max-w-6xl mx-auto w-full">
       
       {/* ========================================================================= */}
-      {/* LEFT COLUMN: DIRECT CONTACT CHANNELS                                      */}
+      {/* LEFT COLUMN: COMPACT & SLEEK BRAND CONTACT CARD                           */}
       {/* ========================================================================= */}
       <motion.div 
-        initial={{ opacity: 0, x: -20 }}
+        initial={{ opacity: 0, x: -15 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4 }}
-        className="lg:col-span-5 space-y-4"
+        className="lg:col-span-5 bg-gradient-to-br from-[#0b1b4f] via-[#122f87] to-[#1a3fa8] rounded-3xl p-6 sm:p-7 text-white shadow-xl shadow-blue-950/15 flex flex-col justify-between relative overflow-hidden"
       >
-        <div className="space-y-1">
-          <span className="text-[9px] font-mono font-bold text-[#122f87] uppercase tracking-widest bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded inline-block">
-            DIRECT DESK
-          </span>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 uppercase tracking-tight font-display mt-1">
-            Contact Details
-          </h2>
-          <p className="text-xs text-slate-500 font-light">
-            Connect directly with our senior engineers and management in Bangalore.
-          </p>
-        </div>
+        {/* Subtle Ambient Decorative Circles */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/15 rounded-full blur-2xl pointer-events-none" />
 
-        {/* Contact Info Cards */}
-        <div className="space-y-3 pt-2">
+        <div className="space-y-6 relative z-10">
           
-          {/* Phone Card */}
-          <a
-            href="tel:+919880464557"
-            className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-blue-400 transition-all flex items-center gap-4 group cursor-pointer block"
-          >
-            <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#122f87] group-hover:bg-[#122f87] group-hover:text-white transition-colors flex items-center justify-center shrink-0">
-              <Phone className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-blue-600 block">
-                Call Chief Engineer
-              </span>
-              <span className="text-sm font-bold text-slate-900 font-mono block mt-0.5">
-                +91-9880464557
-              </span>
-              <span className="text-[10px] text-slate-500 font-light">
-                Mr. Abbas Khan, MD (Direct)
-              </span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all shrink-0" />
-          </a>
-
-          {/* WhatsApp Card */}
-          <a
-            href="https://wa.me/919530208882?text=Hello%20BMT%20Team%2C%20I%20would%20like%20to%20request%20a%20technical%20quote."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-400 transition-all flex items-center gap-4 group cursor-pointer block"
-          >
-            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors flex items-center justify-center shrink-0">
-              <MessageSquare className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-600 block">
-                24x7 WhatsApp Desk
-              </span>
-              <span className="text-sm font-bold text-slate-900 font-mono block mt-0.5">
-                +91-9530208882
-              </span>
-              <span className="text-[10px] text-slate-500 font-light">
-                Instant quotes &amp; drawings
-              </span>
-            </div>
-            <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors shrink-0" />
-          </a>
-
-          {/* Email Card */}
-          <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-blue-400 transition-all flex items-center gap-4 group">
-            <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#122f87] flex items-center justify-center shrink-0">
-              <Mail className="w-5 h-5" />
-            </div>
-            <div className="flex-1 truncate">
-              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-blue-600 block">
-                Official Email
-              </span>
-              <a 
-                href="mailto:bmt.abbas@gmail.com" 
-                className="text-xs sm:text-sm font-bold text-slate-900 hover:text-blue-600 transition-colors font-mono block mt-0.5 truncate"
-              >
-                bmt.abbas@gmail.com
-              </a>
-              <span className="text-[10px] text-slate-500 font-light">
-                Send RFQs &amp; CAD models
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={handleCopyEmail}
-              className="p-2 text-slate-400 hover:text-[#122f87] hover:bg-slate-100 rounded-lg transition-colors cursor-pointer shrink-0"
-              title="Copy Email"
-            >
-              {copiedEmail ? <Check className="w-4 h-4 text-blue-600" /> : <Copy className="w-4 h-4" />}
-            </button>
+          {/* Section Header */}
+          <div className="space-y-1.5 border-b border-white/10 pb-4">
+            <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-blue-200 bg-white/10 px-2.5 py-0.5 rounded-full inline-block">
+              DIRECT DESK
+            </span>
+            <h2 className="text-xl sm:text-2xl font-extrabold uppercase tracking-tight font-display text-white">
+              Contact Details
+            </h2>
+            <p className="text-xs text-blue-100/80 font-light leading-relaxed">
+              Connect directly with our senior engineers and management in Bangalore.
+            </p>
           </div>
 
-          {/* Address Card */}
-          <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-2">
-            <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-              <div className="text-xs text-slate-600 leading-relaxed font-light">
-                <strong className="text-slate-900 block font-semibold">Bangalore Works &amp; Plant:</strong>
-                #312 Ground Floor, Sharadhamma Illam, GPT, 1st Main Nagappa Block, Near Abbigere HP Petrol Pump, Abbigere, Bangalore - 560090, India
+          {/* Compact Channels List */}
+          <div className="space-y-3.5 text-xs">
+            
+            {/* Phone */}
+            <a
+              href="tel:+919880464557"
+              className="flex items-center gap-3.5 p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 transition-all group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-white/15 text-white flex items-center justify-center shrink-0">
+                <Phone className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-blue-200 block">
+                  Call Chief Engineer (Direct)
+                </span>
+                <span className="text-xs sm:text-sm font-bold text-white font-mono block">
+                  +91-9880464557
+                </span>
+                <span className="text-[10px] text-blue-200/80 font-light truncate block">
+                  Mr. Abbas Khan, Managing Director
+                </span>
+              </div>
+              <ArrowRight className="w-4 h-4 text-blue-300 group-hover:translate-x-1 transition-transform shrink-0" />
+            </a>
+
+            {/* WhatsApp */}
+            <a
+              href="https://wa.me/919530208882?text=Hello%20BMT%20Team%2C%20I%20would%20like%20to%20request%20a%20technical%20quote."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3.5 p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 transition-all group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0">
+                <MessageSquare className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-300 block">
+                  24x7 WhatsApp Desk
+                </span>
+                <span className="text-xs sm:text-sm font-bold text-white font-mono block">
+                  +91-9530208882
+                </span>
+                <span className="text-[10px] text-blue-200/80 font-light truncate block">
+                  Instant quotes &amp; drawings
+                </span>
+              </div>
+              <ExternalLink className="w-4 h-4 text-emerald-300 shrink-0" />
+            </a>
+
+            {/* Email */}
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-white/10 border border-white/10">
+              <div className="w-10 h-10 rounded-xl bg-white/15 text-white flex items-center justify-center shrink-0">
+                <Mail className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-blue-200 block">
+                  Official Email
+                </span>
+                <a 
+                  href="mailto:bmt.abbas@gmail.com" 
+                  className="text-xs font-bold text-white font-mono block hover:underline truncate"
+                >
+                  bmt.abbas@gmail.com
+                </a>
+                <span className="text-[10px] text-blue-200/80 font-light block truncate">
+                  bmt.sangeeta@gmail.com
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyEmail}
+                className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors cursor-pointer shrink-0"
+                title="Copy Email"
+              >
+                {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
+              </button>
+            </div>
+
+            {/* Address */}
+            <div className="p-3 rounded-2xl bg-white/10 border border-white/10 space-y-2">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-blue-300 shrink-0 mt-0.5" />
+                <div className="text-[11px] text-blue-100/90 leading-relaxed font-light">
+                  <strong className="text-white block font-semibold">Works &amp; Plant:</strong>
+                  #312 Ground Floor, Sharadhamma Illam, Abbigere, Bangalore - 560090, India
+                </div>
+              </div>
+              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
+                <span className="text-blue-200/80">Mon - Sat: 9 AM - 6:30 PM</span>
+                <a
+                  href="https://maps.google.com/?q=Sharadhamma+Illam+Nagappa+Block+Abbigere+Bangalore+560090"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white font-bold inline-flex items-center gap-1 hover:underline"
+                >
+                  <span>Map</span>
+                  <Navigation className="w-3 h-3 text-blue-300" />
+                </a>
               </div>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono">
-              <span className="text-slate-500">Mon - Sat: 9:00 AM - 6:30 PM</span>
-              <a
-                href="https://maps.google.com/?q=Sharadhamma+Illam+Nagappa+Block+Abbigere+Bangalore+560090"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline font-bold inline-flex items-center gap-1"
-              >
-                <span>Directions</span>
-                <Navigation className="w-3 h-3" />
-              </a>
-            </div>
+
           </div>
 
         </div>
+
+        {/* Bottom plant status */}
+        <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-blue-200/80 relative z-10">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Bangalore Plant: ACTIVE</span>
+          </div>
+          <span>ISO 9001:2015</span>
+        </div>
+
       </motion.div>
 
       {/* ========================================================================= */}
-      {/* RIGHT COLUMN: SIMPLE & ATTRACTIVE RFQ FORM                                */}
+      {/* RIGHT COLUMN: SIMPLE, ELEGANT & COMPACT RFQ FORM                          */}
       {/* ========================================================================= */}
       <motion.div 
-        initial={{ opacity: 0, x: 20 }}
+        initial={{ opacity: 0, x: 15 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4 }}
-        className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-md shadow-slate-900/5 relative"
+        className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-lg shadow-slate-900/5 flex flex-col justify-between"
       >
         {submitted ? (
-          <div className="text-center py-12 space-y-4">
+          <div className="text-center py-12 space-y-4 my-auto">
             <div className="w-14 h-14 rounded-full bg-blue-50 text-[#122f87] flex items-center justify-center mx-auto border border-blue-200">
               <CheckCircle className="w-7 h-7" />
             </div>
             <h3 className="text-xl font-bold text-slate-900 uppercase font-display">
-              Message Formatted &amp; Dispatched!
+              Message Dispatched!
             </h3>
-            <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-              Your inquiry has been sent to our team on WhatsApp. We will respond immediately.
+            <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed font-light">
+              Your inquiry has been compiled on WhatsApp. Our engineering team in Bangalore will respond with specs &amp; quotation shortly.
             </p>
             <div className="pt-2">
               <button
@@ -223,27 +242,32 @@ export default function ContactForm() {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 flex flex-col justify-between h-full">
             
-            {/* Clean Form Header */}
+            {/* Header */}
             <div className="border-b border-slate-100 pb-3">
-              <span className="text-[9px] font-mono font-bold text-[#122f87] uppercase tracking-widest bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded inline-block mb-1.5">
-                QUICK RFQ
-              </span>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 uppercase tracking-tight font-display">
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-mono font-bold text-[#122f87] uppercase tracking-widest bg-blue-50 border border-blue-100 px-2 py-0.5 rounded">
+                  QUICK RFQ
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  Avg. Response: &lt; 2h
+                </span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 uppercase tracking-tight font-display mt-1">
                 Send Us a Message
               </h3>
-              <p className="text-xs text-slate-500 font-light mt-0.5">
-                Fill in your requirements below for an instant response.
+              <p className="text-xs text-slate-500 font-light">
+                Fill in your requirements below for an instant quotation.
               </p>
             </div>
 
-            {/* Category selection chips */}
+            {/* Requirement Pills */}
             <div className="space-y-1.5">
-              <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider">
+              <label className="block text-[10px] font-bold text-slate-700 uppercase font-mono tracking-wider">
                 Select Requirement
               </label>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {TOPICS.map((topic) => {
                   const isSelected = selectedTopic === topic
                   return (
@@ -251,10 +275,10 @@ export default function ContactForm() {
                       key={topic}
                       type="button"
                       onClick={() => setSelectedTopic(topic)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-xl text-[11px] font-medium transition-all cursor-pointer ${
                         isSelected 
                           ? 'bg-[#122f87] text-white shadow-xs' 
-                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'
                       }`}
                     >
                       {topic}
@@ -264,10 +288,10 @@ export default function ContactForm() {
               </div>
             </div>
 
-            {/* Inputs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {/* 2x2 Input Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
+                <label className="block text-[10px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
                   Full Name *
                 </label>
                 <input
@@ -276,25 +300,25 @@ export default function ContactForm() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. Ramesh Kumar"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
+                <label className="block text-[10px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
                   Company Name
                 </label>
                 <input
                   type="text"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                  placeholder="e.g. Precision Tools Ltd."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium"
+                  placeholder="e.g. Precision Engineering Ltd."
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
+                <label className="block text-[10px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
                   Phone Number *
                 </label>
                 <input
@@ -303,12 +327,12 @@ export default function ContactForm() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="+91 98765 43210"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-mono"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
+                <label className="block text-[10px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
                   Email Address *
                 </label>
                 <input
@@ -317,33 +341,36 @@ export default function ContactForm() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="name@company.com"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium"
                 />
               </div>
             </div>
 
+            {/* Message Area */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
-                Your Requirement / Message *
+              <label className="block text-[10px] font-bold text-slate-700 uppercase font-mono tracking-wider mb-1">
+                Requirement Details *
               </label>
               <textarea
                 required
                 rows={3}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Tell us about the dimensions, RPM, machine model, or service required..."
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium resize-none"
+                placeholder="Describe your machine specs (RPM, taper, dimensions, stroke, or services)..."
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] outline-none text-xs text-slate-900 transition-all font-medium resize-none"
               />
             </div>
 
-            {/* Submit button */}
-            <button
-              type="submit"
-              className="w-full py-3.5 bg-[#122f87] hover:bg-[#0e256b] text-white font-bold rounded-xl text-xs font-mono uppercase tracking-wider transition-all shadow-md shadow-blue-900/10 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.005] active:scale-[0.995]"
-            >
-              <Send className="w-4 h-4" />
-              <span>Send Message via WhatsApp</span>
-            </button>
+            {/* Submit Button */}
+            <div className="pt-1">
+              <button
+                type="submit"
+                className="w-full py-3 bg-[#122f87] hover:bg-[#0e256b] text-white font-bold rounded-xl text-xs font-mono uppercase tracking-wider transition-all shadow-md shadow-blue-900/10 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.005] active:scale-[0.995]"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>Send Message via WhatsApp</span>
+              </button>
+            </div>
 
           </form>
         )}
