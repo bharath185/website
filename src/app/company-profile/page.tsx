@@ -208,15 +208,6 @@ export default function CompanyProfilePage() {
           {/* Action Hub */}
           <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
             <Link
-              href="/booklet"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold font-mono uppercase tracking-wider transition-all shadow-md shadow-blue-600/20"
-            >
-              <FileCheck className="w-3.5 h-3.5" />
-              <span>Open Digital Interactive Booklet</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
-
-            <Link
               href="/products"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#122f87] hover:bg-[#0e256b] text-white text-xs font-bold font-mono uppercase tracking-wider transition-all shadow-sm"
             >
