@@ -5,6 +5,7 @@ import V2About from "@/components/v2/V2About"
 import V2MDProfile from "@/components/v2/V2MDProfile"
 import V2ServicesShowcase from "@/components/v2/V2ServicesShowcase"
 import V2Industries from "@/components/v2/V2Industries"
+import V2WhyChooseUs from "@/components/v2/V2WhyChooseUs"
 import V2NewProductShowcase from "@/components/v2/V2NewProductShowcase"
 import V2Updates from "@/components/v2/V2Updates"
 import { getPgClient } from "@/lib/pg-products"
@@ -40,6 +41,9 @@ export default async function Home() {
 
       {/* Dynamic precision industries and inspection dashboard */}
       <V2Industries />
+
+      {/* Animated Why We Are Customer's Choice section */}
+      <V2WhyChooseUs />
       
       {/* Interactive new product showcase */}
       <V2NewProductShowcase />
