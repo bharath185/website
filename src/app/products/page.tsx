@@ -183,17 +183,11 @@ export default function ProductsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <AnimatePresence mode="wait">
                   {filtered.map((p) => {
-                    const name = (p.name || '').toLowerCase()
-                    let voucher = { topText: "DISCOUNT", bottomText: "25%", sideText: "BIG SALE" }
-                    if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
-                      voucher = { topText: "NEW ARRIVAL", bottomText: "25% OFF", sideText: "BIG SALE" }
-                    } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
-                      voucher = { topText: "FEATURED", bottomText: "HOT DEAL", sideText: "SPECIAL" }
-                    } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
-                      voucher = { topText: "DISCOUNT", bottomText: "20% OFF", sideText: "OFFER" }
-                    } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
-                      voucher = { topText: "MAKE IN INDIA", bottomText: "BEST DEAL", sideText: "BMT MFG" }
-                    }
+                    const tagType = p.tag === 'NEW_ARRIVAL' 
+                      ? 'new_arrival' 
+                      : p.tag === 'FEATURED' 
+                        ? 'featured' 
+                        : null
 
                     return (
                       <motion.div
@@ -207,14 +201,12 @@ export default function ProductsPage() {
                         {/* Blueprint Grid Hover Overlay */}
                         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.012)_1px,transparent_1px)] bg-[size:20px_20px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                        {/* Top-Right Ticket Voucher Tag (Exact matching reference image!) */}
-                        <div className="absolute top-3.5 right-3.5 z-20">
-                          <TicketVoucherTag
-                            topText={voucher.topText}
-                            bottomText={voucher.bottomText}
-                            sideText={voucher.sideText}
-                          />
-                        </div>
+                        {/* Top-Right Ticket Voucher Tag (Only rendered when product has NEW_ARRIVAL or FEATURED tag) */}
+                        {tagType && (
+                          <div className="absolute top-3.5 right-3.5 z-20">
+                            <TicketVoucherTag tagType={tagType} />
+                          </div>
+                        )}
                         
                         {/* Mobile centered image top showcase (hidden on desktop viewports) */}
                         <div className="w-full h-40 flex items-center justify-center sm:hidden mb-4 relative z-10 pointer-events-none">

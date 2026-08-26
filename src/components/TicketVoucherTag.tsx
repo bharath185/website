@@ -3,168 +3,94 @@
 import React from "react"
 
 export interface TicketVoucherTagProps {
-  topText?: string       // e.g. "DISCOUNT", "NEW ARRIVAL", "FEATURED", "SPECIAL"
-  bottomText?: string    // e.g. "25%", "HOT DEAL", "SUB-MICRON", "BESTSELLER"
-  sideText?: string      // e.g. "BIG SALE", "BMT TECH", "LIMITED"
+  tagType?: "new_arrival" | "featured" | "top_seller" | "make_in_india" | "precision" | "custom"
+  topText?: string
+  mainText?: string
+  sideText?: string
   className?: string
 }
 
 export default function TicketVoucherTag({
-  topText = "DISCOUNT",
-  bottomText = "25%",
-  sideText = "BIG SALE",
+  tagType = "featured",
+  topText,
+  mainText,
+  sideText,
   className = "",
 }: TicketVoucherTagProps) {
+  // Determine copy and colors based on tagType
+  let defaultTop = "OFFICIAL"
+  let defaultMain = "FEATURED"
+  let defaultSide = "BMT"
+  let mainColor = "text-[#122f87]" // BMT Royal Blue
+
+  if (tagType === "new_arrival") {
+    defaultTop = "NEW LAUNCH"
+    defaultMain = "NEW ARRIVAL"
+    defaultSide = "NEW"
+    mainColor = "text-[#0284c7]" // Cyan / Ocean Blue
+  } else if (tagType === "top_seller") {
+    defaultTop = "BEST CHOICE"
+    defaultMain = "TOP SELLER"
+    defaultSide = "HOT"
+    mainColor = "text-[#047857]" // Emerald
+  } else if (tagType === "make_in_india") {
+    defaultTop = "BANGALORE WORKS"
+    defaultMain = "MAKE IN INDIA"
+    defaultSide = "INDIA"
+    mainColor = "text-[#b91c1c]" // Crimson
+  } else if (tagType === "precision") {
+    defaultTop = "SUB-MICRON"
+    defaultMain = "PRECISION"
+    defaultSide = "PRO"
+    mainColor = "text-[#4338ca]" // Indigo
+  }
+
+  const resolvedTop = topText || defaultTop
+  const resolvedMain = mainText || defaultMain
+  const resolvedSide = sideText || defaultSide
+
   return (
     <div
-      className={`inline-flex items-center select-none filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.12)] transition-transform duration-300 hover:scale-105 ${className}`}
-      title={`${topText} ${bottomText}`}
+      className={`inline-flex items-center select-none shadow-[0_3px_10px_rgba(0,0,0,0.12)] hover:scale-105 transition-all duration-200 rounded-r-xl rounded-l-md overflow-hidden bg-gradient-to-r from-[#fff799] via-[#fed766] to-[#fec740] border border-amber-500/90 py-1 pl-1.5 pr-2.5 ${className}`}
+      title={`${resolvedTop} • ${resolvedMain}`}
     >
-      <svg
-        viewBox="0 0 178 72"
-        className="h-8 sm:h-9 md:h-10 w-auto overflow-visible"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          {/* Subtle Warm Gradient for the yellow ticket */}
-          <linearGradient id="ticketYellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#fff385" />
-            <stop offset="50%" stopColor="#fed766" />
-            <stop offset="100%" stopColor="#fecd50" />
-          </linearGradient>
+      {/* Left Stub: Serrated mini border & Barcode stripes & Vertical text */}
+      <div className="flex items-center gap-1 border-r-2 border-dashed border-amber-700/50 pr-2 relative">
+        {/* Semi-circular notch cutouts */}
+        <span className="absolute -top-[7px] -right-[5px] w-2 h-2 bg-white rounded-full border-b border-amber-600/40" />
+        <span className="absolute -bottom-[7px] -right-[5px] w-2 h-2 bg-white rounded-full border-t border-amber-600/40" />
 
-          {/* Eyelet gradient ring */}
-          <linearGradient id="eyeletGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#22d3ee" />
-            <stop offset="100%" stopColor="#0891b2" />
-          </linearGradient>
-        </defs>
+        {/* Barcode lines */}
+        <div className="flex items-center gap-[1.5px] h-6 py-0.5 opacity-80 shrink-0">
+          <span className="w-[2px] h-full bg-amber-950 rounded-xs" />
+          <span className="w-[1px] h-full bg-amber-950 rounded-xs" />
+          <span className="w-[2.5px] h-full bg-amber-950 rounded-xs" />
+          <span className="w-[1px] h-full bg-amber-950 rounded-xs" />
+          <span className="w-[2px] h-full bg-amber-950 rounded-xs" />
+        </div>
 
-        {/* ========================================================================= */}
-        {/* TICKET BACKGROUND PATH WITH SERRATED LEFT EDGE & ROUNDED RIGHT EYELET     */}
-        {/* ========================================================================= */}
-        <path
-          d="
-            M 14,3 
-            L 152,3 
-            A 6,6 0 0 1 158,9 
-            L 158,22 
-            A 14,14 0 0 1 174,36 
-            A 14,14 0 0 1 158,50 
-            L 158,63 
-            A 6,6 0 0 1 152,69 
-            L 14,69 
-            A 4,4 0 0 1 10,65 
-            Q 13,61 10,57 
-            Q 7,53 10,49 
-            Q 13,45 10,41 
-            Q 7,37 10,33 
-            Q 13,29 10,25 
-            Q 7,21 10,17 
-            Q 13,13 10,9 
-            A 4,4 0 0 1 14,3 
-            Z
-          "
-          fill="url(#ticketYellowGrad)"
-          stroke="#ca8a04"
-          strokeWidth="1"
-          strokeLinejoin="round"
-        />
+        {/* Rotated side text */}
+        <span className="text-[7px] font-black tracking-widest text-amber-950 uppercase -rotate-90 origin-center leading-none select-none py-1">
+          {resolvedSide}
+        </span>
+      </div>
 
-        {/* 4 Decorative Corner dots on left serration */}
-        <circle cx="16" cy="10" r="1.2" fill="#ca8a04" opacity="0.6" />
-        <circle cx="21" cy="10" r="1.2" fill="#ca8a04" opacity="0.6" />
-        <circle cx="26" cy="10" r="1.2" fill="#ca8a04" opacity="0.6" />
-        <circle cx="16" cy="62" r="1.2" fill="#ca8a04" opacity="0.6" />
-        <circle cx="21" cy="62" r="1.2" fill="#ca8a04" opacity="0.6" />
-        <circle cx="26" cy="62" r="1.2" fill="#ca8a04" opacity="0.6" />
+      {/* Center Main Text Area - Razor Sharp HTML Typography */}
+      <div className="flex flex-col items-center justify-center px-2.5 min-w-[76px]">
+        <span className="text-[7.5px] font-black tracking-wider text-amber-950 uppercase leading-none opacity-85">
+          {resolvedTop}
+        </span>
+        <span className={`text-[11px] sm:text-[11.5px] font-black tracking-tight uppercase leading-tight drop-shadow-[0_1px_0px_rgba(255,255,255,0.9)] ${mainColor}`}>
+          {resolvedMain}
+        </span>
+      </div>
 
-        {/* Mini Barcode Lines on the left */}
-        <g fill="#451a03" opacity="0.75">
-          <rect x="18" y="20" width="1.5" height="32" rx="0.5" />
-          <rect x="21" y="20" width="0.8" height="32" rx="0.4" />
-          <rect x="23" y="20" width="2" height="32" rx="0.5" />
-          <rect x="26.5" y="20" width="1" height="32" rx="0.5" />
-          <rect x="28.5" y="20" width="1.8" height="32" rx="0.5" />
-        </g>
-
-        {/* Vertical Text: "BIG SALE" / "BMT TECH" */}
-        <text
-          x="-36"
-          y="37"
-          transform="rotate(-90)"
-          fill="#451a03"
-          fontSize="7"
-          fontWeight="900"
-          fontFamily="system-ui, -apple-system, sans-serif"
-          letterSpacing="0.8"
-          textAnchor="middle"
-        >
-          {sideText}
-        </text>
-
-        {/* Perforated Dashed Line Divider */}
-        <line
-          x1="45"
-          y1="5"
-          x2="45"
-          y2="67"
-          stroke="#ca8a04"
-          strokeWidth="1.2"
-          strokeDasharray="2.5,2.5"
-          strokeLinecap="round"
-          opacity="0.8"
-        />
-
-        {/* Semi-circular cutouts at top and bottom of perforation line */}
-        <circle cx="45" cy="3" r="3.2" fill="#ffffff" />
-        <circle cx="45" cy="69" r="3.2" fill="#ffffff" />
-
-        {/* Top Text: "DISCOUNT" / "NEW ARRIVAL" / "FEATURED" */}
-        <text
-          x="100"
-          y="27"
-          fill="#1c1917"
-          fontSize="12.5"
-          fontWeight="900"
-          fontFamily="Impact, 'Arial Black', sans-serif"
-          letterSpacing="0.6"
-          textAnchor="middle"
-        >
-          {topText.toUpperCase()}
-        </text>
-
-        {/* Bottom Main Text: "25%" / "HOT DEAL" / "SPECIAL" in Crimson Red */}
-        <text
-          x="100"
-          y="56"
-          fill="#991b1b"
-          fontSize="22"
-          fontWeight="900"
-          fontFamily="Impact, 'Arial Black', sans-serif"
-          letterSpacing="-0.5"
-          textAnchor="middle"
-        >
-          {bottomText.toUpperCase()}
-        </text>
-
-        {/* Tag Eyelet Hole with Cyan/Turquoise Ring (Exact match to reference!) */}
-        <g>
-          {/* Ring */}
-          <circle cx="163" cy="36" r="6" fill="url(#eyeletGrad)" stroke="#0e7490" strokeWidth="0.8" />
-          {/* Hole */}
-          <circle cx="163" cy="36" r="2.8" fill="#1e293b" />
-          {/* Subtle string/loop */}
-          <path
-            d="M 166,35 C 172,32 178,34 182,32"
-            fill="none"
-            stroke="#94a3b8"
-            strokeWidth="0.8"
-            strokeDasharray="1,1"
-            opacity="0.7"
-          />
-        </g>
-      </svg>
+      {/* Right Eyelet Punch Ring */}
+      <div className="pl-1 flex items-center justify-center shrink-0">
+        <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-cyan-400 to-sky-600 border border-sky-700 flex items-center justify-center shadow-inner">
+          <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+        </div>
+      </div>
     </div>
   )
 }

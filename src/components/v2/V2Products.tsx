@@ -92,17 +92,11 @@ export default function V2Products() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <AnimatePresence mode="wait">
                   {filtered.map((p) => {
-                    const name = (p.name || '').toLowerCase()
-                    let voucher = { topText: "DISCOUNT", bottomText: "25%", sideText: "BIG SALE" }
-                    if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
-                      voucher = { topText: "NEW ARRIVAL", bottomText: "25% OFF", sideText: "BIG SALE" }
-                    } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
-                      voucher = { topText: "FEATURED", bottomText: "HOT DEAL", sideText: "SPECIAL" }
-                    } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
-                      voucher = { topText: "DISCOUNT", bottomText: "20% OFF", sideText: "OFFER" }
-                    } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
-                      voucher = { topText: "MAKE IN INDIA", bottomText: "BEST DEAL", sideText: "BMT MFG" }
-                    }
+                    const tagType = p.tag === 'NEW_ARRIVAL' 
+                      ? 'new_arrival' 
+                      : p.tag === 'FEATURED' 
+                        ? 'featured' 
+                        : null
 
                     return (
                       <motion.div
@@ -113,14 +107,12 @@ export default function V2Products() {
                         transition={{ duration: 0.35 }}
                         className="group bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] border border-slate-300/60 rounded-3xl p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 min-h-[270px]"
                       >
-                        {/* Top-Right Ticket Voucher Tag */}
-                        <div className="absolute top-3 right-3 z-10">
-                          <TicketVoucherTag
-                            topText={voucher.topText}
-                            bottomText={voucher.bottomText}
-                            sideText={voucher.sideText}
-                          />
-                        </div>
+                        {/* Top-Right Ticket Voucher Tag (Only if tagged NEW_ARRIVAL or FEATURED) */}
+                        {tagType && (
+                          <div className="absolute top-3 right-3 z-10">
+                            <TicketVoucherTag tagType={tagType} />
+                          </div>
+                        )}
 
                         <div>
                           {/* Product Name (title) */}

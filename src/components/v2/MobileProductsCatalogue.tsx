@@ -108,17 +108,11 @@ export default function MobileProductsCatalogue({ productsList, categories, load
           <AnimatePresence>
             {filtered.map((p) => {
               const inCart = isItemInCart(p.id)
-              const name = (p.name || '').toLowerCase()
-              let voucher = { topText: "DISCOUNT", bottomText: "25%", sideText: "BIG SALE" }
-              if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
-                voucher = { topText: "NEW ARRIVAL", bottomText: "25% OFF", sideText: "BIG SALE" }
-              } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
-                voucher = { topText: "FEATURED", bottomText: "HOT DEAL", sideText: "SPECIAL" }
-              } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
-                voucher = { topText: "DISCOUNT", bottomText: "20% OFF", sideText: "OFFER" }
-              } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
-                voucher = { topText: "MAKE IN INDIA", bottomText: "BEST DEAL", sideText: "BMT MFG" }
-              }
+              const tagType = p.tag === 'NEW_ARRIVAL' 
+                ? 'new_arrival' 
+                : p.tag === 'FEATURED' 
+                  ? 'featured' 
+                  : null
 
               return (
                 <motion.div
@@ -135,14 +129,12 @@ export default function MobileProductsCatalogue({ productsList, categories, load
                     {p.category}
                   </span>
 
-                  {/* Ticket Voucher Tag */}
-                  <div className="absolute top-1.5 right-2 z-20 scale-75 origin-top-right">
-                    <TicketVoucherTag
-                      topText={voucher.topText}
-                      bottomText={voucher.bottomText}
-                      sideText={voucher.sideText}
-                    />
-                  </div>
+                  {/* Ticket Voucher Tag (Only when tagged NEW_ARRIVAL or FEATURED) */}
+                  {tagType && (
+                    <div className="absolute top-1.5 right-2 z-20 scale-75 origin-top-right">
+                      <TicketVoucherTag tagType={tagType} />
+                    </div>
+                  )}
 
                   {/* Centered Image Frame */}
                   <div className="w-full aspect-square bg-slate-50/50 rounded-2xl flex items-center justify-center p-2 mb-2 pointer-events-none relative">
