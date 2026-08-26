@@ -34,6 +34,25 @@ export default function ProductCard({ product }: ProductCardProps) {
     setRotateY(0)
   }
 
+  const getProductBadge = () => {
+    const name = (product.name || '').toLowerCase()
+    if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
+      return { label: '✨ NEW ARRIVAL', bg: 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white' }
+    }
+    if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
+      return { label: '🔥 FEATURED PRODUCT', bg: 'bg-gradient-to-r from-[#122f87] to-blue-600 text-white' }
+    }
+    if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
+      return { label: '⚡ TOP SELLER', bg: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' }
+    }
+    if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
+      return { label: '🇮🇳 MAKE IN INDIA', bg: 'bg-gradient-to-r from-slate-900 to-blue-950 text-white' }
+    }
+    return { label: '⭐ PRECISION GRADE', bg: 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white' }
+  }
+
+  const badge = getProductBadge()
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
@@ -58,9 +77,17 @@ export default function ProductCard({ product }: ProductCardProps) {
                 loading="lazy"
                 className="w-full h-full object-contain p-2 group-hover:scale-112 transition-transform duration-300 ease-in-out"
               />
-              <div className="absolute top-3 left-3">
-                <span className="px-2.5 py-1 bg-white/90 backdrop-blur-md border border-slate-200 text-blue-900 font-extrabold text-[10px] rounded-md uppercase tracking-wider shadow-sm">
+              {/* Category Badge (Top-Left) */}
+              <div className="absolute top-2.5 left-2.5">
+                <span className="px-2.5 py-0.5 bg-white/95 backdrop-blur-md border border-slate-200 text-slate-700 font-bold text-[10px] rounded-md uppercase tracking-wider shadow-2xs font-mono">
                   {product.category}
+                </span>
+              </div>
+
+              {/* Promotional Sale-Style Tag (Top-Right) */}
+              <div className="absolute top-2.5 right-2.5">
+                <span className={`px-2.5 py-0.5 rounded-md font-black text-[9px] uppercase tracking-wider shadow-xs ${badge.bg}`}>
+                  {badge.label}
                 </span>
               </div>
             </div>

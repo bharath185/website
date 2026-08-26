@@ -297,11 +297,16 @@ export default function V2NewProductShowcase() {
       <div className="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-2xl mb-16">
-          <span className="text-[10px] font-mono font-bold text-[#122f87] bg-blue-50 border border-blue-100 px-3 py-1 rounded-md uppercase tracking-widest">
-            Engineering Breakthrough
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 uppercase mt-4 mb-3 tracking-tight font-display">
+        <div className="max-w-2xl mb-12 space-y-2.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-black text-[10px] rounded-md uppercase tracking-wider shadow-xs font-mono">
+              ✨ NEW ARRIVAL
+            </span>
+            <span className="px-3 py-1 bg-gradient-to-r from-[#122f87] to-indigo-600 text-white font-black text-[10px] rounded-md uppercase tracking-wider shadow-xs font-mono">
+              🔥 FEATURED PRODUCT
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 uppercase tracking-tight font-display">
             Our New Innovations
           </h2>
           <p className="text-slate-600 text-xs sm:text-sm font-light leading-relaxed">
@@ -315,7 +320,12 @@ export default function V2NewProductShowcase() {
           {/* Left Column: Details & Specs */}
           <div className="lg:col-span-5 order-2 lg:order-1 space-y-6">
             <div>
-              <span className="text-[9px] font-mono font-bold uppercase text-blue-600 tracking-wider">Model: BMT-RH250</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-mono font-bold uppercase text-blue-600 tracking-wider">Model: BMT-RH250</span>
+                <span className="px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-[8px] rounded uppercase font-mono">
+                  ⚡ TOP SELLER
+                </span>
+              </div>
               <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1 uppercase tracking-tight font-display">
                 Precision Indexing Headstock
               </h3>

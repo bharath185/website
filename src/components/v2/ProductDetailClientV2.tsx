@@ -413,21 +413,32 @@ export default function ProductDetailClientV2({ product: initialProduct, slug }:
 
           {/* Right Column: Details & Technical Data */}
           <div className="lg:col-span-7 flex flex-col">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[8px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-200/40 inline-block">
-                {product.category}
-              </span>
-              {product.tag === 'NEW_ARRIVAL' && (
-                <span className="text-[8px] font-mono font-black text-white uppercase tracking-widest bg-emerald-600 px-2 py-0.5 rounded inline-block shadow-sm">
-                  New Arrival
-                </span>
-              )}
-              {product.tag === 'FEATURED' && (
-                <span className="text-[8px] font-mono font-black text-white uppercase tracking-widest bg-[#122f87] px-2 py-0.5 rounded inline-block shadow-sm">
-                  Featured Product
-                </span>
-              )}
-            </div>
+            {(() => {
+              const name = (product.name || '').toLowerCase()
+              let tag = { label: '⭐ PRECISION GRADE', bg: 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white' }
+              if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
+                tag = { label: '✨ NEW ARRIVAL', bg: 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white' }
+              } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
+                tag = { label: '🔥 FEATURED PRODUCT', bg: 'bg-gradient-to-r from-[#122f87] to-blue-600 text-white' }
+              } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
+                tag = { label: '⚡ TOP SELLER', bg: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' }
+              } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
+                tag = { label: '🇮🇳 MAKE IN INDIA', bg: 'bg-gradient-to-r from-slate-900 to-blue-950 text-white' }
+              }
+              return (
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="text-[10px] font-mono font-bold text-slate-700 uppercase tracking-widest bg-white px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs inline-block">
+                    {product.category}
+                  </span>
+                  <span className={`text-[10px] font-mono font-black uppercase tracking-wider px-2.5 py-1 rounded-md inline-block shadow-xs ${tag.bg}`}>
+                    {tag.label}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold text-blue-900 uppercase tracking-wider bg-blue-50 border border-blue-200/60 px-2.5 py-1 rounded-md inline-block">
+                    SUB-MICRON QUALITY
+                  </span>
+                </div>
+              )
+            })()}
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight font-display uppercase leading-tight">
               {product.name}
             </h1>

@@ -107,6 +107,18 @@ export default function MobileProductsCatalogue({ productsList, categories, load
           <AnimatePresence>
             {filtered.map((p) => {
               const inCart = isItemInCart(p.id)
+              const name = (p.name || '').toLowerCase()
+              let tag = { label: '⭐ PRECISION', bg: 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white' }
+              if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
+                tag = { label: '✨ NEW ARRIVAL', bg: 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white' }
+              } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
+                tag = { label: '🔥 FEATURED', bg: 'bg-gradient-to-r from-[#122f87] to-blue-600 text-white' }
+              } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
+                tag = { label: '⚡ TOP SELLER', bg: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' }
+              } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
+                tag = { label: '🇮🇳 MAKE IN INDIA', bg: 'bg-gradient-to-r from-slate-900 to-blue-950 text-white' }
+              }
+
               return (
                 <motion.div
                   key={p.id}
@@ -122,16 +134,10 @@ export default function MobileProductsCatalogue({ productsList, categories, load
                     {p.category}
                   </span>
 
-                  {p.tag === 'NEW_ARRIVAL' && (
-                    <span className="absolute top-[26px] left-2 z-10 text-[6px] font-mono font-black text-white uppercase tracking-widest bg-emerald-600 px-1.5 py-0.5 rounded shadow-sm">
-                      New Arrival
-                    </span>
-                  )}
-                  {p.tag === 'FEATURED' && (
-                    <span className="absolute top-[26px] left-2 z-10 text-[6px] font-mono font-black text-white uppercase tracking-widest bg-[#122f87] px-1.5 py-0.5 rounded shadow-sm">
-                      Featured
-                    </span>
-                  )}
+                  {/* Promotional Sale Tag */}
+                  <span className={`absolute top-[22px] left-2 z-10 text-[6px] font-mono font-black uppercase tracking-wider px-1.5 py-0.5 rounded shadow-xs ${tag.bg}`}>
+                    {tag.label}
+                  </span>
 
                   {/* Info Link */}
                   <Link
