@@ -10,6 +10,7 @@ import MobileProductsCatalogue from "@/components/v2/MobileProductsCatalogue"
 import { useIsMobile } from "@/hooks/useIsMobile"
 
 import { getClientStoredProducts, getClientDeletedIds, saveClientStoredProducts } from "@/lib/products-client"
+import TicketVoucherTag from "@/components/TicketVoucherTag"
 
 const getCategoryIcon = (category: string) => {
   switch (category.toLowerCase()) {
@@ -181,50 +182,62 @@ export default function ProductsPage() {
               /* Products Grid */
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <AnimatePresence mode="wait">
-                  {filtered.map((p) => (
-                    <motion.div
-                      key={p.id}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.35 }}
-                      className="group bg-white border border-slate-200/85 rounded-[2.2rem] p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 min-h-[360px] sm:min-h-[290px]"
-                    >
-                      {/* Blueprint Grid Hover Overlay */}
-                      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.012)_1px,transparent_1px)] bg-[size:20px_20px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                      
-                      {/* Mobile centered image top showcase (hidden on desktop viewports) */}
-                      <div className="w-full h-40 flex items-center justify-center sm:hidden mb-4 relative z-10 pointer-events-none">
-                        <div className="absolute w-24 h-24 bg-blue-500/5 rounded-full blur-xl" />
-                        <img 
-                          src={p.image} 
-                          alt={p.name} 
-                          className="max-w-full max-h-full object-contain drop-shadow-[0_8px_18px_rgba(0,0,0,0.05)]" 
-                        />
-                      </div>
+                  {filtered.map((p) => {
+                    const name = (p.name || '').toLowerCase()
+                    let voucher = { topText: "DISCOUNT", bottomText: "25%", sideText: "BIG SALE" }
+                    if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
+                      voucher = { topText: "NEW ARRIVAL", bottomText: "25% OFF", sideText: "BIG SALE" }
+                    } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
+                      voucher = { topText: "FEATURED", bottomText: "HOT DEAL", sideText: "SPECIAL" }
+                    } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
+                      voucher = { topText: "DISCOUNT", bottomText: "20% OFF", sideText: "OFFER" }
+                    } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
+                      voucher = { topText: "MAKE IN INDIA", bottomText: "BEST DEAL", sideText: "BMT MFG" }
+                    }
 
-                      <div className="relative z-10 space-y-2">
-                        {/* Category Badge & Star Ratings */}
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[8px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-200/40 inline-block">
-                            {p.category}
-                          </span>
-                          {p.tag === 'NEW_ARRIVAL' && (
-                            <span className="text-[8px] font-mono font-black text-white uppercase tracking-widest bg-emerald-600 px-2 py-0.5 rounded inline-block">
-                              New Arrival
-                            </span>
-                          )}
-                          {p.tag === 'FEATURED' && (
-                            <span className="text-[8px] font-mono font-black text-white uppercase tracking-widest bg-[#122f87] px-2 py-0.5 rounded inline-block">
-                              Featured Product
-                            </span>
-                          )}
-                          {p.reviews && p.reviews.length > 0 && (
-                            <span className="inline-flex items-center gap-0.5 text-[8px] font-mono font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-250">
-                              ★ {(p.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / p.reviews.length).toFixed(1)} ({p.reviews.length})
-                            </span>
-                          )}
+                    return (
+                      <motion.div
+                        key={p.id}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        transition={{ duration: 0.35 }}
+                        className="group bg-white border border-slate-200/85 rounded-[2.2rem] p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 min-h-[360px] sm:min-h-[290px]"
+                      >
+                        {/* Blueprint Grid Hover Overlay */}
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.012)_1px,transparent_1px)] bg-[size:20px_20px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                        {/* Top-Right Ticket Voucher Tag (Exact matching reference image!) */}
+                        <div className="absolute top-3.5 right-3.5 z-20">
+                          <TicketVoucherTag
+                            topText={voucher.topText}
+                            bottomText={voucher.bottomText}
+                            sideText={voucher.sideText}
+                          />
                         </div>
+                        
+                        {/* Mobile centered image top showcase (hidden on desktop viewports) */}
+                        <div className="w-full h-40 flex items-center justify-center sm:hidden mb-4 relative z-10 pointer-events-none">
+                          <div className="absolute w-24 h-24 bg-blue-500/5 rounded-full blur-xl" />
+                          <img 
+                            src={p.image} 
+                            alt={p.name} 
+                            className="max-w-full max-h-full object-contain drop-shadow-[0_8px_18px_rgba(0,0,0,0.05)]" 
+                          />
+                        </div>
+
+                        <div className="relative z-10 space-y-2">
+                          {/* Category Badge & Star Ratings */}
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[8px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded border border-blue-200/40 inline-block">
+                              {p.category}
+                            </span>
+                            {p.reviews && p.reviews.length > 0 && (
+                              <span className="inline-flex items-center gap-0.5 text-[8px] font-mono font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-250">
+                                ★ {(p.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / p.reviews.length).toFixed(1)} ({p.reviews.length})
+                              </span>
+                            )}
+                          </div>
                         
                         {/* Product Name (title) */}
                         <h3 className="text-slate-900 font-extrabold text-base uppercase tracking-tight font-display leading-tight group-hover:text-blue-600 transition-colors duration-300 max-w-full sm:max-w-[50%] lg:max-w-[42%]">
@@ -277,8 +290,9 @@ export default function ProductsPage() {
                         )}
                       </div>
                     </motion.div>
-                  ))}
-                </AnimatePresence>
+                  )
+                })}
+              </AnimatePresence>
               </div>
             )}
           </div>

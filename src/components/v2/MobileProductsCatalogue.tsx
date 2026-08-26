@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Search, ShoppingCart, Check, LayoutGrid, Wrench, Settings, RotateCw, CircleDot, Info, Plus } from "lucide-react"
 import { useEnquiry } from "@/context/EnquiryContext"
 import { Product } from "@/types"
+import TicketVoucherTag from "@/components/TicketVoucherTag"
 
 const getCategoryIcon = (category: string) => {
   switch (category.toLowerCase()) {
@@ -108,15 +109,15 @@ export default function MobileProductsCatalogue({ productsList, categories, load
             {filtered.map((p) => {
               const inCart = isItemInCart(p.id)
               const name = (p.name || '').toLowerCase()
-              let tag = { label: '⭐ PRECISION', bg: 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white' }
+              let voucher = { topText: "DISCOUNT", bottomText: "25%", sideText: "BIG SALE" }
               if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
-                tag = { label: '✨ NEW ARRIVAL', bg: 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white' }
+                voucher = { topText: "NEW ARRIVAL", bottomText: "25% OFF", sideText: "BIG SALE" }
               } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
-                tag = { label: '🔥 FEATURED', bg: 'bg-gradient-to-r from-[#122f87] to-blue-600 text-white' }
+                voucher = { topText: "FEATURED", bottomText: "HOT DEAL", sideText: "SPECIAL" }
               } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
-                tag = { label: '⚡ TOP SELLER', bg: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' }
+                voucher = { topText: "DISCOUNT", bottomText: "20% OFF", sideText: "OFFER" }
               } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
-                tag = { label: '🇮🇳 MAKE IN INDIA', bg: 'bg-gradient-to-r from-slate-900 to-blue-950 text-white' }
+                voucher = { topText: "MAKE IN INDIA", bottomText: "BEST DEAL", sideText: "BMT MFG" }
               }
 
               return (
@@ -134,18 +135,14 @@ export default function MobileProductsCatalogue({ productsList, categories, load
                     {p.category}
                   </span>
 
-                  {/* Promotional Sale Tag */}
-                  <span className={`absolute top-[22px] left-2 z-10 text-[6px] font-mono font-black uppercase tracking-wider px-1.5 py-0.5 rounded shadow-xs ${tag.bg}`}>
-                    {tag.label}
-                  </span>
-
-                  {/* Info Link */}
-                  <Link
-                    href={`/products/${p.slug}`}
-                    className="absolute top-2 right-2 z-10 p-1 bg-slate-50 border border-slate-100 rounded-full text-slate-400 hover:text-slate-900 transition-colors"
-                  >
-                    <Info className="w-3.5 h-3.5" />
-                  </Link>
+                  {/* Ticket Voucher Tag */}
+                  <div className="absolute top-1.5 right-2 z-20 scale-75 origin-top-right">
+                    <TicketVoucherTag
+                      topText={voucher.topText}
+                      bottomText={voucher.bottomText}
+                      sideText={voucher.sideText}
+                    />
+                  </div>
 
                   {/* Centered Image Frame */}
                   <div className="w-full aspect-square bg-slate-50/50 rounded-2xl flex items-center justify-center p-2 mb-2 pointer-events-none relative">

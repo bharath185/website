@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { Check, ShoppingCart } from "lucide-react"
 import { useEnquiry } from "@/context/EnquiryContext"
 import { Product } from "@/types"
+import TicketVoucherTag from "@/components/TicketVoucherTag"
 
 interface ProductCardProps {
   product: Product
@@ -34,24 +35,24 @@ export default function ProductCard({ product }: ProductCardProps) {
     setRotateY(0)
   }
 
-  const getProductBadge = () => {
+  const getProductVoucher = () => {
     const name = (product.name || '').toLowerCase()
     if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
-      return { label: '✨ NEW ARRIVAL', bg: 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white' }
+      return { topText: "NEW ARRIVAL", bottomText: "25% OFF", sideText: "BIG SALE" }
     }
     if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
-      return { label: '🔥 FEATURED PRODUCT', bg: 'bg-gradient-to-r from-[#122f87] to-blue-600 text-white' }
+      return { topText: "FEATURED", bottomText: "HOT DEAL", sideText: "SPECIAL" }
     }
     if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
-      return { label: '⚡ TOP SELLER', bg: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' }
+      return { topText: "DISCOUNT", bottomText: "20% OFF", sideText: "OFFER" }
     }
     if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
-      return { label: '🇮🇳 MAKE IN INDIA', bg: 'bg-gradient-to-r from-slate-900 to-blue-950 text-white' }
+      return { topText: "MAKE IN INDIA", bottomText: "BEST DEAL", sideText: "BMT MFG" }
     }
-    return { label: '⭐ PRECISION GRADE', bg: 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white' }
+    return { topText: "DISCOUNT", bottomText: "25%", sideText: "BIG SALE" }
   }
 
-  const badge = getProductBadge()
+  const voucher = getProductVoucher()
 
   return (
     <motion.div
@@ -78,17 +79,19 @@ export default function ProductCard({ product }: ProductCardProps) {
                 className="w-full h-full object-contain p-2 group-hover:scale-112 transition-transform duration-300 ease-in-out"
               />
               {/* Category Badge (Top-Left) */}
-              <div className="absolute top-2.5 left-2.5">
+              <div className="absolute top-2.5 left-2.5 z-10">
                 <span className="px-2.5 py-0.5 bg-white/95 backdrop-blur-md border border-slate-200 text-slate-700 font-bold text-[10px] rounded-md uppercase tracking-wider shadow-2xs font-mono">
                   {product.category}
                 </span>
               </div>
 
-              {/* Promotional Sale-Style Tag (Top-Right) */}
-              <div className="absolute top-2.5 right-2.5">
-                <span className={`px-2.5 py-0.5 rounded-md font-black text-[9px] uppercase tracking-wider shadow-xs ${badge.bg}`}>
-                  {badge.label}
-                </span>
+              {/* Ticket Voucher Tag (Top-Right) matching uploaded reference! */}
+              <div className="absolute top-2 right-2 z-20">
+                <TicketVoucherTag
+                  topText={voucher.topText}
+                  bottomText={voucher.bottomText}
+                  sideText={voucher.sideText}
+                />
               </div>
             </div>
 

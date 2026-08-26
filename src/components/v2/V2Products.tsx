@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, ShoppingCart, Check } from "lucide-react"
 import { useEnquiry } from "@/context/EnquiryContext"
 import { Product } from "@/types"
+import TicketVoucherTag from "@/components/TicketVoucherTag"
 
 export default function V2Products() {
   const [productsList, setProductsList] = useState<Product[]>([])
@@ -92,15 +93,15 @@ export default function V2Products() {
                 <AnimatePresence mode="wait">
                   {filtered.map((p) => {
                     const name = (p.name || '').toLowerCase()
-                    let tag = { label: '⭐ PRECISION GRADE', bg: 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white' }
+                    let voucher = { topText: "DISCOUNT", bottomText: "25%", sideText: "BIG SALE" }
                     if (name.includes('spindle') || name.includes('motorized') || name.includes('45,000') || name.includes('high frequency')) {
-                      tag = { label: '✨ NEW ARRIVAL', bg: 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white' }
+                      voucher = { topText: "NEW ARRIVAL", bottomText: "25% OFF", sideText: "BIG SALE" }
                     } else if (name.includes('rotary') || name.includes('tilting') || name.includes('5th axis') || name.includes('table')) {
-                      tag = { label: '🔥 FEATURED PRODUCT', bg: 'bg-gradient-to-r from-[#122f87] to-blue-600 text-white' }
+                      voucher = { topText: "FEATURED", bottomText: "HOT DEAL", sideText: "SPECIAL" }
                     } else if (name.includes('bearing') || name.includes('yrt') || name.includes('crossed') || name.includes('locknut')) {
-                      tag = { label: '⚡ TOP SELLER', bg: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' }
+                      voucher = { topText: "DISCOUNT", bottomText: "20% OFF", sideText: "OFFER" }
                     } else if (name.includes('grind') || name.includes('mandrel') || name.includes('actuator')) {
-                      tag = { label: '🇮🇳 MAKE IN INDIA', bg: 'bg-gradient-to-r from-slate-900 to-blue-950 text-white' }
+                      voucher = { topText: "MAKE IN INDIA", bottomText: "BEST DEAL", sideText: "BMT MFG" }
                     }
 
                     return (
@@ -112,11 +113,13 @@ export default function V2Products() {
                         transition={{ duration: 0.35 }}
                         className="group bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] border border-slate-300/60 rounded-3xl p-6 sm:p-8 relative flex flex-col justify-between overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 min-h-[270px]"
                       >
-                        {/* Top-Right Promotional Sale Tag */}
-                        <div className="absolute top-4 right-4 z-10">
-                          <span className={`px-2.5 py-0.5 rounded-md font-black text-[9px] uppercase tracking-wider shadow-xs ${tag.bg}`}>
-                            {tag.label}
-                          </span>
+                        {/* Top-Right Ticket Voucher Tag */}
+                        <div className="absolute top-3 right-3 z-10">
+                          <TicketVoucherTag
+                            topText={voucher.topText}
+                            bottomText={voucher.bottomText}
+                            sideText={voucher.sideText}
+                          />
                         </div>
 
                         <div>
