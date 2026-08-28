@@ -201,6 +201,52 @@ export default function CareersPage() {
   const [activeDept, setActiveDept] = useState("All")
   const [searchQuery, setSearchQuery] = useState("")
 
+  // Fetch dynamic jobs from Admin Panel / Neon DB
+  useEffect(() => {
+    async function loadDynamicJobs() {
+      try {
+        const res = await fetch("/api/jobs")
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data) && data.length > 0) {
+            const mappedJobs: Job[] = data.map((j: any) => {
+              let highlightsArr: string[] = []
+              if (Array.isArray(j.highlights)) {
+                highlightsArr = j.highlights
+              } else if (typeof j.highlights === "string") {
+                try {
+                  const parsed = JSON.parse(j.highlights)
+                  if (Array.isArray(parsed)) highlightsArr = parsed
+                } catch {
+                  highlightsArr = j.highlights.split("\n").filter(Boolean)
+                }
+              }
+              if (highlightsArr.length === 0 && j.description) {
+                highlightsArr = j.description.split("\n").filter(Boolean).slice(0, 3)
+              }
+
+              return {
+                id: j.id,
+                title: j.title,
+                department: j.department || "Engineering",
+                location: j.location || "Bangalore Works",
+                type: j.type || "Full-Time",
+                experienceLevel: j.experienceLevel || "2+ Years",
+                description: j.description || "",
+                highlights: highlightsArr,
+                requirements: j.requirements || ""
+              }
+            })
+            setJobs(mappedJobs)
+          }
+        }
+      } catch (err) {
+        console.error("Error loading dynamic jobs:", err)
+      }
+    }
+    loadDynamicJobs()
+  }, [])
+
   // Application form states
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")

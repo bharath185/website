@@ -18,7 +18,7 @@ export async function PUT(
 
     const { id } = await params
     const body = await req.json()
-    const { title, department, location, type, description, requirements, isActive } = body
+    const { title, department, location, type, experienceLevel, description, highlights, requirements, isActive } = body
 
     const client = await getPgClient()
     try {
@@ -33,16 +33,20 @@ export async function PUT(
       const updatedDept = department !== undefined ? department : existing.department
       const updatedLoc = location !== undefined ? location : existing.location
       const updatedType = type !== undefined ? type : existing.type
+      const updatedExp = experienceLevel !== undefined ? experienceLevel : (existing.experienceLevel || '2+ Years')
       const updatedDesc = description !== undefined ? description : existing.description
+      const updatedHighlights = highlights !== undefined 
+        ? (Array.isArray(highlights) ? JSON.stringify(highlights) : highlights) 
+        : existing.highlights
       const updatedReq = requirements !== undefined ? requirements : existing.requirements
       const updatedActive = isActive !== undefined ? isActive : existing.isActive
 
       const updateRes = await client.query(`
         UPDATE "Job"
-        SET "title" = $1, "department" = $2, "location" = $3, "type" = $4, "description" = $5, "requirements" = $6, "isActive" = $7, "updatedAt" = NOW()
-        WHERE "id" = $8
+        SET "title" = $1, "department" = $2, "location" = $3, "type" = $4, "experienceLevel" = $5, "description" = $6, "highlights" = $7, "requirements" = $8, "isActive" = $9, "updatedAt" = NOW()
+        WHERE "id" = $10
         RETURNING *;
-      `, [updatedTitle, updatedDept, updatedLoc, updatedType, updatedDesc, updatedReq, updatedActive, id])
+      `, [updatedTitle, updatedDept, updatedLoc, updatedType, updatedExp, updatedDesc, updatedHighlights, updatedReq, updatedActive, id])
 
       return NextResponse.json(updateRes.rows[0])
     } finally {

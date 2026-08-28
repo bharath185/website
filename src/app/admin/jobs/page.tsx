@@ -9,6 +9,7 @@ interface Job {
   department: string
   location: string
   type: string
+  experienceLevel?: string
   description: string
   requirements: string
   isActive: boolean
@@ -26,6 +27,7 @@ export default function AdminJobsPage() {
   const [department, setDepartment] = useState("")
   const [location, setLocation] = useState("")
   const [type, setType] = useState("Full-time")
+  const [experienceLevel, setExperienceLevel] = useState("2–5 Years")
   const [description, setDescription] = useState("")
   const [requirements, setRequirements] = useState("")
   const [isActive, setIsActive] = useState(true)
@@ -59,8 +61,9 @@ export default function AdminJobsPage() {
     setEditingJob(null)
     setTitle("")
     setDepartment("")
-    setLocation("Bangalore, India")
+    setLocation("Bangalore Works")
     setType("Full-time")
+    setExperienceLevel("2–5 Years")
     setDescription("")
     setRequirements("")
     setIsActive(true)
@@ -76,6 +79,7 @@ export default function AdminJobsPage() {
     setDepartment(job.department)
     setLocation(job.location)
     setType(job.type)
+    setExperienceLevel(job.experienceLevel || "2–5 Years")
     setDescription(job.description)
     setRequirements(job.requirements)
     setIsActive(job.isActive)
@@ -108,6 +112,7 @@ export default function AdminJobsPage() {
           department,
           location,
           type,
+          experienceLevel,
           description,
           requirements,
           isActive,
@@ -345,7 +350,7 @@ export default function AdminJobsPage() {
                 </div>
               </div>
 
-              {/* Type and Active status */}
+              {/* Type, Experience, and Active status */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                 <div className="space-y-1.5">
                   <label className="font-bold text-slate-500 uppercase tracking-wide text-[9px]">Job Type</label>
@@ -354,24 +359,35 @@ export default function AdminJobsPage() {
                     onChange={(e) => setType(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-[#122f87] focus:bg-white transition-colors font-medium"
                   >
-                    <option value="Full-time">Full-time</option>
-                    <option value="Part-time">Part-time</option>
+                    <option value="Full-Time">Full-Time</option>
+                    <option value="Part-Time">Part-Time</option>
                     <option value="Contract">Contract</option>
                     <option value="Internship">Internship</option>
                   </select>
                 </div>
-                <div className="flex items-center gap-2 pt-5">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-500 uppercase tracking-wide text-[9px]">Experience Level</label>
                   <input
-                    type="checkbox"
-                    id="isActive"
-                    checked={isActive}
-                    onChange={(e) => setIsActive(e.target.checked)}
-                    className="h-4.5 w-4.5 text-[#122f87] border-slate-300 rounded focus:ring-[#122f87] cursor-pointer"
+                    type="text"
+                    value={experienceLevel}
+                    onChange={(e) => setExperienceLevel(e.target.value)}
+                    placeholder="e.g. 3–6 Years / Freshers"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-[#122f87] focus:bg-white transition-colors"
                   />
-                  <label htmlFor="isActive" className="font-bold text-slate-700 uppercase tracking-wide text-[9px] cursor-pointer select-none">
-                    Make Posting Active Immediately
-                  </label>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  checked={isActive}
+                  onChange={(e) => setIsActive(e.target.checked)}
+                  className="h-4.5 w-4.5 text-[#122f87] border-slate-300 rounded focus:ring-[#122f87] cursor-pointer"
+                />
+                <label htmlFor="isActive" className="font-bold text-slate-700 uppercase tracking-wide text-[9px] cursor-pointer select-none">
+                  Make Posting Active Immediately on Careers Page
+                </label>
               </div>
 
               {/* Description */}
