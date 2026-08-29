@@ -151,14 +151,17 @@ export default function ContactForm() {
                   Official Email
                 </span>
                 <a 
-                  href="mailto:bmt.abbas@gmail.com" 
+                  href="mailto:bmt.sangeeta@gmail.com" 
                   className="text-xs font-bold text-white font-mono block hover:underline truncate"
+                >
+                  bmt.sangeeta@gmail.com
+                </a>
+                <a
+                  href="mailto:bmt.abbas@gmail.com"
+                  className="text-[10px] text-blue-200/80 font-light block truncate hover:underline"
                 >
                   bmt.abbas@gmail.com
                 </a>
-                <span className="text-[10px] text-blue-200/80 font-light block truncate">
-                  bmt.sangeeta@gmail.com
-                </span>
               </div>
               <button
                 type="button"
@@ -176,13 +179,13 @@ export default function ContactForm() {
                 <MapPin className="w-4 h-4 text-blue-300 shrink-0 mt-0.5" />
                 <div className="text-[11px] text-blue-100/90 leading-relaxed font-light">
                   <strong className="text-white block font-semibold">Works &amp; Plant:</strong>
-                  #312 Ground Floor, Sharadhamma Illam, Abbigere, Bangalore - 560090, India
+                  155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090
                 </div>
               </div>
               <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
-                <span className="text-blue-200/80">Mon - Sat: 9 AM - 6:30 PM</span>
+                <span className="text-blue-200/80">GSTIN: 29AAUFB7927K1ZK</span>
                 <a
-                  href="https://maps.google.com/?q=Sharadhamma+Illam+Nagappa+Block+Abbigere+Bangalore+560090"
+                  href="https://maps.google.com/?q=155/59+Lakshmipura+Main+Road+2nd+Cross+Abbigere+Industrial+Area+Chikkabanavara+Post+Bengaluru+560090"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white font-bold inline-flex items-center gap-1 hover:underline"

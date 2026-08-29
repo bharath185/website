@@ -671,7 +671,7 @@ export default function CompanyProfilePage() {
               Connect With Our Engineering Team
             </h3>
             <p className="text-xs text-blue-100 font-light max-w-xl">
-              <strong>Registered Works:</strong> #312 Ground Floor, Sharadhamma Illam, GPT, 1st Main Nagappa Block, Near Abbigere HP Petrol Pump, Abbigere, Chikkabanavara, Bangalore - 560090, Karnataka, INDIA
+              <strong>Registered Works:</strong> 155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090
             </p>
           </div>
 

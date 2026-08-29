@@ -229,11 +229,11 @@ export default function ServicesPage() {
 
           <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
             <a
-              href="tel:08048031763"
+              href="tel:+919880464557"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md"
             >
               <Phone className="w-4 h-4" />
-              <span>080 4803 1763</span>
+              <span>+91-9880464557</span>
             </a>
             <a
               href="mailto:bmt.sangeeta@gmail.com"

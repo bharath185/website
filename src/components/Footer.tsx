@@ -127,28 +127,30 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-blue-800 mt-0.5 flex-shrink-0" />
-                <span className="text-xs text-slate-600 font-medium">
-                  Bharat Machine Tools - Unit 1, Lakshmipura Main Road 2nd Cross, Abbigere
-                  Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090
+                <span className="text-xs text-slate-600 font-medium leading-relaxed">
+                  155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090
                 </span>
               </li>
               <li>
                 <a
-                  href="tel:+918048031763"
-                  className="flex items-center gap-2.5 text-xs text-slate-600 hover:text-blue-900 transition-colors font-medium"
+                  href="tel:+919880464557"
+                  className="flex items-center gap-2.5 text-xs text-slate-700 hover:text-blue-900 transition-colors font-semibold"
                 >
                   <Phone className="w-4 h-4 text-blue-800 flex-shrink-0" />
-                  080 4803 1763
+                  +91-9880464557 (Abbas Khan)
                 </a>
               </li>
               <li>
-                <a
-                  href="mailto:bmt.sangeeta@gmail.com"
-                  className="flex items-center gap-2.5 text-xs text-slate-600 hover:text-blue-900 transition-colors font-medium"
-                >
-                  <Mail className="w-4 h-4 text-blue-800 flex-shrink-0" />
-                  bmt.sangeeta@gmail.com
-                </a>
+                <div className="flex items-start gap-2.5 text-xs text-slate-600 font-medium">
+                  <Mail className="w-4 h-4 text-blue-800 flex-shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <a href="mailto:bmt.sangeeta@gmail.com" className="hover:text-blue-900 transition-colors">bmt.sangeeta@gmail.com</a>
+                    <a href="mailto:bmt.abbas@gmail.com" className="text-slate-500 hover:text-blue-900 transition-colors">bmt.abbas@gmail.com</a>
+                  </div>
+                </div>
+              </li>
+              <li className="pt-2 border-t border-slate-200/80 text-[10px] font-mono text-slate-500">
+                GSTIN: <span className="font-bold text-slate-800">29AAUFB7927K1ZK</span>
               </li>
             </ul>
           </div>

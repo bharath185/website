@@ -214,11 +214,11 @@ export default function ServicingReconditioningPage() {
           </div>
           <div className="flex flex-wrap items-center gap-3 shrink-0">
             <a
-              href="tel:08048031763"
+              href="tel:+919880464557"
               className="inline-flex items-center gap-2 px-5 py-3.5 bg-white text-[#0b1b4f] font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-slate-100 transition-colors shadow-sm font-sans"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>080 4803 1763</span>
+              <span>+91-9880464557</span>
             </a>
             <a
               href="https://wa.me/919530208882?text=Hello%2C%20I%20need%20machine%20servicing%20and%20reconditioning%20assistance"

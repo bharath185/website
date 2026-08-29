@@ -84,8 +84,7 @@ export async function POST(req: Request) {
             <span style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Temporary Password</span>
             <span style="font-family: monospace; font-size: 18px; font-weight: bold; color: #0f172a; tracking: 1px;">${tempPassword}</span>
           </div>
-          <p style="color: #b91c1c; font-weight: bold;">Important: You will be required to change this password immediately after logging in.</p>
-          <p style="font-size: 12px; color: #64748b; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px;">Bharat Machine Tools | Peenya Industrial Area, Bangalore</p>
+          <p style="font-size: 12px; color: #64748b; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px;">Bharat Machine Tools | 155/59, Lakshmipura Main Road, Abbigere Ind. Area, Bengaluru - 560090 | +91-9880464557</p>
         </div>
       `
     })

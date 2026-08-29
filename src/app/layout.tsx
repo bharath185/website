@@ -93,15 +93,17 @@ export default function RootLayout({
               "@type": "LocalBusiness",
               "name": "Bharat Machine Tools",
               "image": "https://www.bmtbharat.com/images/logo.png",
-              "telephone": "+919530208882",
-              "email": "contact@bmtbharat.com",
+              "telephone": "+919880464557",
+              "email": "bmt.sangeeta@gmail.com",
+              "vatID": "29AAUFB7927K1ZK",
+              "taxID": "29AAUFB7927K1ZK",
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "Peenya Industrial Area",
-                "addressLocality": "Bangalore",
+                "streetAddress": "155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post",
+                "addressLocality": "Bengaluru",
                 "addressRegion": "Karnataka",
                 "addressCountry": "IN",
-                "postalCode": "560058"
+                "postalCode": "560090"
               },
               "url": "https://www.bmtbharat.com"
             })

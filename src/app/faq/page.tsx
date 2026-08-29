@@ -31,7 +31,7 @@ export default function FAQPage() {
     },
     {
       q: 'How can I request a technical quote or submit an RFQ for products?',
-      a: 'You can submit an inquiry through our website Enquiry Cart, call our sales engineering desk directly at 080 4803 1763, send an email to bmt.sangeeta@gmail.com, or chat with us on WhatsApp at +91 95302 08882.'
+      a: 'You can submit an inquiry through our website Enquiry Cart, call our desk directly at +91-9880464557 (Abbas Khan), send an email to bmt.sangeeta@gmail.com / bmt.abbas@gmail.com, or chat with us on WhatsApp.'
     },
     {
       q: 'Do you supply products outside Bangalore and internationally?',
@@ -103,11 +103,11 @@ export default function FAQPage() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <a
-                href="tel:08048031763"
+                href="tel:+919880464557"
                 className="inline-flex items-center gap-2 px-5 py-3 bg-[#122f87] hover:bg-[#0f266c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
               >
                 <Phone className="w-4 h-4" />
-                <span>Call 080 4803 1763</span>
+                <span>Call +91-9880464557</span>
               </a>
               <a
                 href="https://wa.me/919530208882?text=Hello%2C%20I%20have%20an%20engineering%20inquiry%20regarding%20Bharat%20Machine%20Tools"

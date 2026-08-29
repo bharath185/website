@@ -33,9 +33,9 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
     }
   }
 
-  if (q.includes("address") || q.includes("location") || q.includes("where") || q.includes("office") || q.includes("bangalore")) {
+  if (q.includes("address") || q.includes("location") || q.includes("where") || q.includes("office") || q.includes("plant") || q.includes("works")) {
     return {
-      reply: "Our main BMT corporate office and warehouse is located in Peenya Industrial Area, Bangalore. Let me direct you to our Contact page:",
+      reply: "Our registered works and plant is at 155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090. Let me direct you to our Contact page:",
       redirect: "/contact",
     }
   }
@@ -61,9 +61,9 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
     }
   }
 
-  if (q.includes("contact") || q.includes("address") || q.includes("location") || q.includes("bangalore")) {
+  if (q.includes("contact") || q.includes("phone") || q.includes("email") || q.includes("gstin")) {
     return {
-      reply: "We are located in Bangalore Industrial Area, Karnataka. You can reach our technical team at +91 95302 08882 or sales@bmtbharat.com. Guiding you to Contact page! [REDIRECT:/contact]",
+      reply: "You can reach Mr. Abbas Khan at +91-9880464557 or email bmt.sangeeta@gmail.com / bmt.abbas@gmail.com (GSTIN: 29AAUFB7927K1ZK). Directing you to Contact page! [REDIRECT:/contact]",
       redirect: "/contact",
     }
   }

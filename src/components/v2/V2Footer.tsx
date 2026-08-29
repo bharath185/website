@@ -139,24 +139,23 @@ export default function V2Footer() {
               </h4>
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                <span>#312 Ground Floor, Sharadhamma Illam, GPT, 1st Main Nagappa Block, Near Abbigere HP Petrol Pump, Abbigere, Chikkabanavara, Bangalore - 560090, Karnataka, INDIA</span>
+                <span className="leading-relaxed">155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-blue-600 shrink-0" />
                 <div className="flex flex-col">
-                  <a href="tel:+919880464557" className="hover:text-blue-600 transition-colors">+91-9880464557 (Abbas Khan)</a>
-                  <a href="tel:08048031763" className="text-[11px] text-slate-500 hover:text-blue-600 transition-colors">080 4803 1763 / +91-9530208882</a>
+                  <a href="tel:+919880464557" className="font-semibold text-slate-900 hover:text-blue-600 transition-colors">+91-9880464557 (Abbas Khan)</a>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-blue-600 shrink-0" />
                 <div className="flex flex-col">
-                  <a href="mailto:bmt.abbas@gmail.com" className="hover:text-blue-600 transition-colors">bmt.abbas@gmail.com</a>
-                  <a href="mailto:bmt.sangeeta@gmail.com" className="text-[11px] text-slate-500 hover:text-blue-600 transition-colors">bmt.sangeeta@gmail.com</a>
+                  <a href="mailto:bmt.sangeeta@gmail.com" className="hover:text-blue-600 transition-colors">bmt.sangeeta@gmail.com</a>
+                  <a href="mailto:bmt.abbas@gmail.com" className="text-[11px] text-slate-500 hover:text-blue-600 transition-colors">bmt.abbas@gmail.com</a>
                 </div>
               </div>
               <div className="pt-2 border-t border-slate-200/60 text-[10px] font-mono text-slate-500">
-                GSTIN: <span className="font-bold text-slate-700">29AAUFB7927K1ZK</span>
+                GSTIN: <span className="font-bold text-slate-800">29AAUFB7927K1ZK</span>
               </div>
             </div>
           </div>

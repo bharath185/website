@@ -189,11 +189,11 @@ export default function ThermalProcessCoatingsPage() {
           </div>
           <div className="flex flex-wrap items-center gap-3 shrink-0">
             <a
-              href="tel:08048031763"
+              href="tel:+919880464557"
               className="inline-flex items-center gap-2 px-5 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-sm"
             >
               <Phone className="w-4 h-4" />
-              <span>080 4803 1763</span>
+              <span>+91-9880464557</span>
             </a>
             <Link
               href="/contact"

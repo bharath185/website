@@ -285,8 +285,8 @@ export default function AdminOrdersPage() {
 
       // Footer notes
       doc.setFont('helvetica', 'bold')
-      doc.setFontSize(8)
-      doc.text('Bharat Machine Tools | Peenya Industrial Area, Bangalore | contact@bmtbharat.com', 15, 285)
+      doc.setFontSize(7.5)
+      doc.text('Bharat Machine Tools | 155/59, Lakshmipura Main Road, Abbigere Ind. Area, Bengaluru - 560090 | +91-9880464557 | GSTIN: 29AAUFB7927K1ZK', 15, 285)
 
       doc.save(`BMT_Quotation_${pdfOrder.id}.pdf`)
       setPdfOrder(null)
