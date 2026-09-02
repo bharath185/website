@@ -18,12 +18,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: "Article Not Found" }
   }
   return {
-    title: `${item.title} | Bharat Machine Tools`,
+    title: `${item.title} | Bharat Machine Tools Journal`,
     description: item.description,
+    alternates: {
+      canonical: `https://bmtbharat.com/news/${item.slug}`,
+    },
     openGraph: {
       title: `${item.title} | Bharat Machine Tools`,
       description: item.description,
+      url: `https://bmtbharat.com/news/${item.slug}`,
+      type: "article",
+      publishedTime: item.createdAt?.toISOString?.() || undefined,
       images: [{ url: item.image, alt: item.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${item.title} | Bharat Machine Tools`,
+      description: item.description,
+      images: [item.image],
     },
   }
 }
@@ -36,6 +48,32 @@ export default async function NewsDetailPage({ params }: PageProps) {
   
   if (!item) {
     notFound()
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": item.title,
+    "description": item.description,
+    "image": item.image,
+    "datePublished": item.createdAt,
+    "author": {
+      "@type": "Organization",
+      "name": "Bharat Machine Tools",
+      "url": "https://bmtbharat.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Bharat Machine Tools",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://bmtbharat.com/logo.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://bmtbharat.com/news/${item.slug}`
+    }
   }
 
   // Format Date String helper
@@ -77,7 +115,12 @@ export default async function NewsDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white text-slate-800 pt-28 pb-20 relative overflow-hidden">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="min-h-screen bg-white text-slate-800 pt-28 pb-20 relative overflow-hidden">
       
       {/* Background gradients */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
@@ -152,5 +195,6 @@ export default async function NewsDetailPage({ params }: PageProps) {
 
       </div>
     </div>
+    </>
   )
 }

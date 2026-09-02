@@ -21,13 +21,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   }
   return {
-    title: product.name,
+    title: `${product.name} | Bharat Machine Tools Bangalore`,
     description: product.shortDescription || product.description,
+    keywords: [
+      product.name,
+      product.category,
+      "Bharat Machine Tools",
+      "Bangalore Machine Tools",
+      "Precision Machinery Spares",
+    ],
+    alternates: {
+      canonical: `https://bmtbharat.com/products/${product.slug || product.id}`,
+    },
     openGraph: {
-      title: product.name,
+      title: `${product.name} | Bharat Machine Tools`,
       description: product.shortDescription || product.description,
-      url: `https://www.bmtbharat.com/products/${product.slug}`,
+      url: `https://bmtbharat.com/products/${product.slug || product.id}`,
       images: [{ url: product.image, alt: product.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} | Bharat Machine Tools`,
+      description: product.shortDescription || product.description,
+      images: [product.image],
     },
   }
 }
