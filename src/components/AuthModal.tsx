@@ -20,14 +20,6 @@ export default function AuthModal() {
 
   if (!isAuthModalOpen) return null
 
-  const autofillAdmin = () => {
-    setEmail('admin@bmtbharat.com')
-    setPassword('Admin@123')
-    setError('')
-    setSuccessMsg('')
-    setDevTempPassword('')
-  }
-
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -471,35 +463,6 @@ export default function AuthModal() {
                 {!submitting && <ArrowRight className="w-4 h-4" />}
               </button>
             </form>
-          )}
-
-          {/* Quick autofill panel for development / demo convenience */}
-          {authMode === 'login' && (
-            <div className="mt-6 p-4 bg-gradient-to-br from-blue-50/60 to-indigo-50/20 border border-blue-100 rounded-[1.5rem] shadow-sm relative overflow-hidden shrink-0">
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="flex items-center gap-1.5 text-[10px] font-bold text-blue-900">
-                  <ShieldAlert className="w-4.5 h-4.5 text-red-500 shrink-0" />
-                  Demo Credentials
-                </span>
-                <button
-                  type="button"
-                  onClick={autofillAdmin}
-                  className="px-2.5 py-1 bg-[#122f87] hover:bg-[#1a3fa8] text-white text-[8px] font-extrabold uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-sm shadow-blue-900/10 animate-pulse"
-                >
-                  Autofill
-                </button>
-              </div>
-              <div className="font-mono text-[9px] text-slate-600 bg-white/70 border border-slate-100 rounded-xl p-2.5 space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Email:</span> 
-                  <span className="text-slate-900 font-bold select-all">admin@bmtbharat.com</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Pass:</span> 
-                  <span className="text-slate-900 font-bold select-all">Admin@123</span>
-                </div>
-              </div>
-            </div>
           )}
         </div>
 

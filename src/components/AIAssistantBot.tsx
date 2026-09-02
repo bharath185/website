@@ -68,9 +68,9 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
     }
   }
 
-  if (q.includes("admin") || q.includes("login") || q.includes("manage")) {
+  if (q.includes("admin") || q.includes("dashboard") || q.includes("portal")) {
     return {
-      reply: "For Admin Access, click Log In and select 'Admin Autofill' (Email: admin@bmtbharat.com / Password: Admin@123). Directing you to Admin Products Dashboard! [REDIRECT:/admin/products]",
+      reply: "Please log in with your authorized administrator credentials to access the administrative portal.",
       redirect: "/admin/products",
     }
   }

@@ -14,7 +14,6 @@ STRICT DOMAIN RULE:
 PRODUCTS & DETAILS:
 - Location: 155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post, Bengaluru, Karnataka 560090
 - Contact: +91-9880464557 (Abbas Khan) | Emails: bmt.sangeeta@gmail.com, bmt.abbas@gmail.com | GSTIN: 29AAUFB7927K1ZK
-- Admin Credentials: Email admin@bmtbharat.com | Password Admin@123
 - CNC Spindle Assembly (₹1,85,000) | Hydrostatic Bearings (₹98,000) | Lathe Drive Ring (₹42,500)
 - Mandrels & Tooling (₹1,45,000) | Helical GearBox (₹65,000) | Precision Ball Screws (₹54,000)
 
