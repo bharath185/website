@@ -23,35 +23,10 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // 1. Legacy Product & Search paths
-      {
-        source: '/Products/search/:term*/:page*',
-        destination: '/products?search=:term*',
-        permanent: true,
-      },
-      {
-        source: '/products/search/:term*/:page*',
-        destination: '/products?search=:term*',
-        permanent: true,
-      },
-      {
-        source: '/Products/search/:term*',
-        destination: '/products?search=:term*',
-        permanent: true,
-      },
-      {
-        source: '/products/search/:term*',
-        destination: '/products?search=:term*',
-        permanent: true,
-      },
-      {
-        source: '/search/:term*/:page*',
-        destination: '/products?search=:term*',
-        permanent: true,
-      },
+      // 1. Legacy Product Search paths -> /products
       {
         source: '/search/:term*',
-        destination: '/products?search=:term*',
+        destination: '/products',
         permanent: true,
       },
       {
@@ -74,20 +49,10 @@ const nextConfig: NextConfig = {
         destination: '/products',
         permanent: true,
       },
-      {
-        source: '/Products',
-        destination: '/products',
-        permanent: true,
-      },
-      {
-        source: '/Products/:path*',
-        destination: '/products/:path*',
-        permanent: true,
-      },
 
-      // 2. Legacy Updates / News / Journal paths
+      // 2. Legacy Updates / News / Journal paths -> /news
       {
-        source: '/latest-updates/:page*',
+        source: '/latest-updates/:path*',
         destination: '/news',
         permanent: true,
       },
@@ -107,12 +72,12 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/Latest-news/:path*',
+        source: '/latest-news/:path*',
         destination: '/news',
         permanent: true,
       },
       {
-        source: '/latest-news/:path*',
+        source: '/latest-news',
         destination: '/news',
         permanent: true,
       },
@@ -121,8 +86,13 @@ const nextConfig: NextConfig = {
         destination: '/news',
         permanent: true,
       },
+      {
+        source: '/updates',
+        destination: '/news',
+        permanent: true,
+      },
 
-      // 3. Legacy Galleries & Media paths
+      // 3. Legacy Galleries & Media paths -> /gallery
       {
         source: '/videos/:path*',
         destination: '/gallery',
@@ -143,13 +113,8 @@ const nextConfig: NextConfig = {
         destination: '/gallery',
         permanent: true,
       },
-      {
-        source: '/gallery/:path*',
-        destination: '/gallery',
-        permanent: true,
-      },
 
-      // 4. Legacy Contact & Mapview paths
+      // 4. Legacy Contact & Mapview paths -> /contact
       {
         source: '/mapview/:path*',
         destination: '/contact',
@@ -171,7 +136,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
-      // 5. Legacy About & Custom pages
+      // 5. Legacy About & Custom pages -> /company-profile
       {
         source: '/about-us',
         destination: '/company-profile',
@@ -179,11 +144,6 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/aboutus',
-        destination: '/company-profile',
-        permanent: true,
-      },
-      {
-        source: '/about',
         destination: '/company-profile',
         permanent: true,
       },
