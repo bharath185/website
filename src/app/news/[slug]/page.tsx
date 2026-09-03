@@ -2,6 +2,7 @@ import React from "react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/lib/db"
+import { newsData } from "@/data/news"
 import { Calendar, ArrowLeft, Clock } from "lucide-react"
 import type { Metadata } from "next"
 
@@ -9,11 +10,57 @@ interface PageProps {
   params: Promise<{ slug: string }>
 }
 
+async function getArticle(rawSlug: string) {
+  const slug = decodeURIComponent(rawSlug).trim()
+
+  // 1. Try PostgreSQL Database
+  try {
+    const item = await db.updatePost.findUnique({
+      where: { slug }
+    })
+    if (item) return item
+  } catch (err) {
+    // ignore DB error
+  }
+
+  // 2. Try exact match from newsData
+  const staticMatch = newsData.find(n => n.slug === slug || n.id === slug)
+  if (staticMatch) {
+    return {
+      id: staticMatch.id,
+      slug: staticMatch.slug,
+      title: staticMatch.title,
+      description: staticMatch.description,
+      content: staticMatch.content,
+      image: staticMatch.image,
+      date: staticMatch.date,
+      createdAt: new Date(staticMatch.date),
+      updatedAt: new Date(staticMatch.date)
+    }
+  }
+
+  // 3. Try prefix or partial match
+  const prefixMatch = newsData.find(n => n.slug.startsWith(slug) || slug.startsWith(n.slug))
+  if (prefixMatch) {
+    return {
+      id: prefixMatch.id,
+      slug: prefixMatch.slug,
+      title: prefixMatch.title,
+      description: prefixMatch.description,
+      content: prefixMatch.content,
+      image: prefixMatch.image,
+      date: prefixMatch.date,
+      createdAt: new Date(prefixMatch.date),
+      updatedAt: new Date(prefixMatch.date)
+    }
+  }
+
+  return null
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params
-  const item = await db.updatePost.findUnique({
-    where: { slug: resolvedParams.slug }
-  })
+  const item = await getArticle(resolvedParams.slug)
   if (!item) {
     return { title: "Article Not Found" }
   }
@@ -42,9 +89,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function NewsDetailPage({ params }: PageProps) {
   const resolvedParams = await params
-  const item = await db.updatePost.findUnique({
-    where: { slug: resolvedParams.slug }
-  })
+  const item = await getArticle(resolvedParams.slug)
   
   if (!item) {
     notFound()
