@@ -42,161 +42,9 @@ interface Job {
   requirements: string
 }
 
-const CAREER_OPPORTUNITIES: Job[] = [
-  {
-    id: "job-1",
-    title: "Senior Spindle Design Engineer (CAD/FEA)",
-    department: "R&D & Engineering",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "3–6 Years",
-    description: "Lead mechanical design, rotodynamic simulation, and thermal analysis of high-frequency motorized spindles (up to 45,000 RPM) and heavy milling spindles.",
-    highlights: [
-      "FEA stress & harmonic vibration simulation (ANSYS)",
-      "Hybrid ceramic angular contact bearing selection",
-      "Sub-micron shaft & housing tolerance stackup"
-    ],
-    requirements: "• B.Tech/M.Tech in Mechanical Engineering.\n• 3–6 years in spindle, gearbox, or precision rotodynamic design.\n• Proficiency in SolidWorks/Inventor and ANSYS harmonic/FEA analysis.\n• In-depth understanding of hybrid ceramic angular contact bearings & lubrication."
-  },
-  {
-    id: "job-2",
-    title: "Master Hand-Scraping Specialist",
-    department: "Assembly & Craftsmanship",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "4+ Years",
-    description: "Perform master hand-scraping, geometric laser alignment, and slideway matching for CNC rotary tables, machine beds, and sub-micron spindle headstocks.",
-    highlights: [
-      "Precision Turcite-B application & scraping",
-      "Master square & dial indicator geometric alignment",
-      "DIN/ISO machine tool alignment certification"
-    ],
-    requirements: "• 4+ years of hands-on experience in machine tool scraping & geometric alignment.\n• Expertise in master square, dial indicator, and precision level alignment.\n• Knowledge of Turcite-B application, scraping oil pockets, and DIN/ISO geometric tests."
-  },
-  {
-    id: "job-3",
-    title: "Precision Cylindrical Grinding Machinist (5m Bed)",
-    department: "Machining & Production",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "3–7 Years",
-    description: "Operate heavy precision cylindrical grinders (capacities up to Ø500 x 5000 mm) to grind long shafts, spindle journals, and defense outrigger pistons to < 0.002 mm tolerance.",
-    highlights: [
-      "Heavy cylindrical grinding up to 5 meters",
-      "Surface finish inspection (Ra < 0.2 µm)",
-      "Sub-micron journal and taper grinding"
-    ],
-    requirements: "• ITI / Diploma in Mechanical Engineering.\n• 3–7 years operating cylindrical or universal grinding machines.\n• Experience with micrometers, bore gauges, and surface finish (Ra < 0.2 µm) inspection."
-  },
-  {
-    id: "job-4",
-    title: "Quality Assurance & Metrology Engineer",
-    department: "Quality & Testing",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "2–5 Years",
-    description: "Execute sub-micron runout inspections, laser interferometry positioning checks, and dynamic balancing (ISO G0.4) for all finished spindles and rotary tables before dispatch.",
-    highlights: [
-      "Laser interferometry & runout verification",
-      "ISO G0.4 dynamic balancing up to 45,000 RPM",
-      "Traceable QA calibration & test report generation"
-    ],
-    requirements: "• Diploma / B.E. in Mechanical / Production Engineering.\n• 2–5 years in QA inspection for precision machine tools or aerospace components.\n• Hands-on proficiency with dynamic balancing rigs, vibration analyzers, and laser interferometers."
-  },
-  {
-    id: "job-5",
-    title: "Technical Sales & Application Engineer",
-    department: "Sales & Field Support",
-    location: "Bangalore / Pan-India",
-    type: "Full-Time",
-    experienceLevel: "2–5 Years",
-    description: "Interface with aerospace, defense, and machine tool OEM clients to understand custom requirements, prepare technical proposals, and supervise initial field commissioning.",
-    highlights: [
-      "OEM client technical requirement mapping",
-      "Proposal preparation for custom spindles & retrofits",
-      "On-site technical consultation across India"
-    ],
-    requirements: "• B.E. in Mechanical / Mechatronics Engineering.\n• 2–5 years in machine tool components, CNC retrofits, or industrial automation sales.\n• Strong communication skills and willingness to travel for client site consultations."
-  },
-  {
-    id: "job-6",
-    title: "5-Axis CNC Machining Center Programmer",
-    department: "Machining & Production",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "3–6 Years",
-    description: "Generate multi-axis CAM toolpaths (Mastercam/Siemens NX) for high-precision rotary table platters, spindle housings, and aerospace composite tooling fixtures.",
-    highlights: [
-      "5-axis simultaneous CAM toolpath optimization",
-      "Tool life monitoring & surface finish optimization",
-      "In-process probe macro programming"
-    ],
-    requirements: "• Diploma / Degree in Mechanical Engineering.\n• 3+ years in multi-axis CNC milling and CAM programming.\n• Strong knowledge of Fanuc, Siemens, and Heidenhain controllers."
-  },
-  {
-    id: "job-7",
-    title: "Hydrostatic Bearing & Lubrication Specialist",
-    department: "R&D & Engineering",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "4+ Years",
-    description: "Design and optimize high-pressure hydrostatic bearing fluid pockets, oil film compensation valves, and closed-loop hydraulic lubrication circuits for ultra-precision rotary tables.",
-    highlights: [
-      "Hydrostatic oil pocket pressure calculations",
-      "Capillary & flow restrictor hydraulic tuning",
-      "Sub-micron stiffness and damping testing"
-    ],
-    requirements: "• B.Tech/M.Tech in Mechanical / Fluid Dynamics.\n• Experience in hydraulic circuits, hydrostatic bearing design, or precision lubrication.\n• Knowledge of ISO viscosity grades and thermal stabilization units."
-  },
-  {
-    id: "job-8",
-    title: "Defense Linear Actuator Assembly Technician",
-    department: "Defense & Special Projects",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "2–5 Years",
-    description: "Assemble, pressure-test, and align heavy-duty telescopic leveling outriggers, ball screws, and hydraulic positioners engineered for military radar and launcher vehicles.",
-    highlights: [
-      "Military-grade mechanical assembly & pressure testing",
-      "Zero-backlash ball screw installation & preloading",
-      "Environmental seal integrity testing"
-    ],
-    requirements: "• ITI / Diploma in Mechanical or Automobile Engineering.\n• 2–5 years in hydraulic assembly, defense tooling, or heavy mechanical actuators.\n• Rigorous adherence to defense quality checklists."
-  },
-  {
-    id: "job-9",
-    title: "Machine Reconditioning & Slideway Retrofitter",
-    department: "Assembly & Craftsmanship",
-    location: "Bangalore / Field Service",
-    type: "Full-Time",
-    experienceLevel: "3–6 Years",
-    description: "Perform comprehensive rebuilds of worn grinding machines, lathes, and milling centers, including guideway grinding, Turcite scraping, and spindle refurbishing.",
-    highlights: [
-      "Complete mechanical teardown & overhaul",
-      "Precision slideway scraping & alignment restoration",
-      "On-site geometric laser calibration across India"
-    ],
-    requirements: "• ITI / Diploma in Mechanical Engineering.\n• Experience in machine tool overhauls, slideway scraping, and mechanical retrofits.\n• Strong diagnostic and troubleshooting capabilities."
-  },
-  {
-    id: "job-10",
-    title: "Metrology Calibration & Laser Interferometry Specialist",
-    department: "Quality & Testing",
-    location: "Bangalore Works",
-    type: "Full-Time",
-    experienceLevel: "3–5 Years",
-    description: "Operate Renishaw laser interferometers, autocollimators, and roundness testers to certify linear pitch accuracy, angular runout, and rotational concentricity.",
-    highlights: [
-      "Renishaw laser interferometry pitch calibration",
-      "Autocollimator straightness and squareness tests",
-      "Traceable NABL/ISO 17025 certification reports"
-    ],
-    requirements: "• Diploma / B.E. in Mechanical / Instrumentation Engineering.\n• 3+ years in precision metrology and laser calibration.\n• Expertise in ISO 230 machine tool testing standards."
-  }
-]
-
 export default function CareersPage() {
-  const [jobs, setJobs] = useState<Job[]>(CAREER_OPPORTUNITIES)
+  const [jobs, setJobs] = useState<Job[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [activeDept, setActiveDept] = useState("All")
   const [searchQuery, setSearchQuery] = useState("")
@@ -205,10 +53,11 @@ export default function CareersPage() {
   useEffect(() => {
     async function loadDynamicJobs() {
       try {
+        setLoading(true)
         const res = await fetch("/api/jobs")
         if (res.ok) {
           const data = await res.json()
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             const mappedJobs: Job[] = data.map((j: any) => {
               let highlightsArr: string[] = []
               if (Array.isArray(j.highlights)) {
@@ -238,10 +87,17 @@ export default function CareersPage() {
               }
             })
             setJobs(mappedJobs)
+          } else {
+            setJobs([])
           }
+        } else {
+          setJobs([])
         }
       } catch (err) {
         console.error("Error loading dynamic jobs:", err)
+        setJobs([])
+      } finally {
+        setLoading(false)
       }
     }
     loadDynamicJobs()
@@ -370,7 +226,7 @@ export default function CareersPage() {
             <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 shadow-2xs">
               <Sparkles className="w-3 h-3 text-[#122f87]" />
               <span className="text-[10px] font-mono font-bold text-[#122f87] uppercase tracking-widest">
-                CAREERS &bull; 10 ACTIVE OPENINGS IN BANGALORE
+                {loading ? "CAREERS • CHECKING OPENINGS..." : `CAREERS • ${jobs.length} ACTIVE OPENING${jobs.length === 1 ? '' : 'S'} IN BANGALORE`}
               </span>
             </div>
 
@@ -395,7 +251,7 @@ export default function CareersPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 10 positions, skills, CAD..."
+              placeholder="Search open positions, skills, CAD..."
               className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#122f87] focus:border-[#122f87] transition-all placeholder-slate-400 font-medium shadow-2xs"
             />
           </div>
@@ -431,9 +287,29 @@ export default function CareersPage() {
         </div>
 
         {/* ========================================================================= */}
-        {/* 10 JOB CARDS GRID                                                         */}
+        {/* DYNAMIC JOB CARDS GRID                                                    */}
         {/* ========================================================================= */}
-        {filteredJobs.length === 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 animate-pulse">
+                <div className="flex justify-between items-center">
+                  <div className="h-4 w-24 bg-slate-200 rounded-md"></div>
+                  <div className="h-4 w-28 bg-slate-100 rounded-md"></div>
+                </div>
+                <div className="h-6 w-3/4 bg-slate-200 rounded-lg"></div>
+                <div className="space-y-2">
+                  <div className="h-3.5 w-full bg-slate-100 rounded"></div>
+                  <div className="h-3.5 w-5/6 bg-slate-100 rounded"></div>
+                </div>
+                <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
+                  <div className="h-4 w-20 bg-slate-100 rounded"></div>
+                  <div className="h-8 w-24 bg-slate-200 rounded-xl"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredJobs.length === 0 ? (
           <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-2">
             <Briefcase className="w-10 h-10 text-slate-300 mx-auto" />
             <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">No Openings Match Your Query</h3>
