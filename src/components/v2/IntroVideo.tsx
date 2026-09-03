@@ -32,11 +32,11 @@ export default function IntroVideo() {
           {/* Fullscreen Video Player */}
           <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
             <video
-              src="/intro%20video.mp4"
+              src="/explainer_logo_keep_same_what.mp4"
               autoPlay
               muted
-              loop
               playsInline
+              onEnded={handleSkip}
               className="absolute inset-0 w-full h-full object-contain pointer-events-none"
             />
             {/* Dark Cinematic overlay */}
