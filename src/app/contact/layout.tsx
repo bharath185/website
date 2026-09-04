@@ -28,5 +28,58 @@ export default function ContactLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": "https://bmtbharat.com/contact/#contact",
+        "name": "Contact Bharat Machine Tools",
+        "description": "Contact our engineering and sales specialists in Bangalore for rapid technical quotations and factory visits.",
+        "url": "https://bmtbharat.com/contact",
+        "mainEntity": {
+          "@type": "Organization",
+          "name": "Bharat Machine Tools",
+          "telephone": "+919880464557",
+          "email": "bmt.sangeeta@gmail.com",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post",
+            "addressLocality": "Bengaluru",
+            "addressRegion": "Karnataka",
+            "postalCode": "560090",
+            "addressCountry": "IN"
+          }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://bmtbharat.com/contact/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://bmtbharat.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Contact Us",
+            "item": "https://bmtbharat.com/contact"
+          }
+        ]
+      }
+    ]
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
+      {children}
+    </>
+  )
 }

@@ -32,5 +32,32 @@ export default function ProductsLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://bmtbharat.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Products Catalogue",
+        "item": "https://bmtbharat.com/products"
+      }
+    ]
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {children}
+    </>
+  )
 }

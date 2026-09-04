@@ -95,30 +95,63 @@ export default async function NewsDetailPage({ params }: PageProps) {
     notFound()
   }
 
+  const articleUrl = `https://bmtbharat.com/news/${item.slug}`
+  const imageUrl = item.image.startsWith("http") ? item.image : `https://bmtbharat.com${item.image.startsWith("/") ? "" : "/"}${item.image}`
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": item.title,
-    "description": item.description,
-    "image": item.image,
-    "datePublished": item.createdAt,
-    "author": {
-      "@type": "Organization",
-      "name": "Bharat Machine Tools",
-      "url": "https://bmtbharat.com"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Bharat Machine Tools",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://bmtbharat.com/logo.png"
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "@id": `${articleUrl}#article`,
+        "headline": item.title,
+        "description": item.description,
+        "image": imageUrl,
+        "datePublished": item.createdAt,
+        "dateModified": item.updatedAt || item.createdAt,
+        "author": {
+          "@type": "Organization",
+          "name": "Bharat Machine Tools",
+          "url": "https://bmtbharat.com"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Bharat Machine Tools",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://bmtbharat.com/logo.png"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": articleUrl
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${articleUrl}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://bmtbharat.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Journal & Updates",
+            "item": "https://bmtbharat.com/news"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": item.title,
+            "item": articleUrl
+          }
+        ]
       }
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": `https://bmtbharat.com/news/${item.slug}`
-    }
+    ]
   }
 
   // Format Date String helper

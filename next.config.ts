@@ -154,6 +154,38 @@ const nextConfig: NextConfig = {
         destination: '/company-profile',
         permanent: true,
       },
+
+      // 6. Legacy Sub-Sitemaps (NowFloats / Old Platform) -> /sitemap.xml
+      {
+        source: '/sitemap/updates.xml',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+      {
+        source: '/sitemap/products.xml',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+      {
+        source: '/sitemap/custom-pages.xml',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+      {
+        source: '/sitemap/pages.xml',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+      {
+        source: '/sitemap/:subpath*.xml',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+      {
+        source: '/sitemap/:subpath*',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
     ];
   },
   async headers() {

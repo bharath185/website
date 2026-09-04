@@ -27,5 +27,32 @@ export default function GalleryLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://bmtbharat.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Machine Gallery & Works",
+        "item": "https://bmtbharat.com/gallery"
+      }
+    ]
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {children}
+    </>
+  )
 }

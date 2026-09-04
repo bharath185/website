@@ -99,12 +99,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // 3. Technical Articles & News Journal Pages
-  const newsRoutes: MetadataRoute.Sitemap = (newsData || []).map((article) => ({
-    url: `${baseUrl}/news/${article.slug || article.id}`,
-    lastModified: article.date ? new Date(article.date) : currentDate,
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }))
+  const newsMap = new Map<string, MetadataRoute.Sitemap[number]>()
+
+  // Add static news data
+  for (const article of newsData || []) {
+    const slug = article.slug || article.id
+    newsMap.set(slug, {
+      url: `${baseUrl}/news/${slug}`,
+      lastModified: article.date ? new Date(article.date) : currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })
+  }
+
+  // Add dynamic DB update posts
+  try {
+    const { db } = await import('@/lib/db')
+    const dbPosts = await db.updatePost.findMany({
+      select: { slug: true, updatedAt: true, createdAt: true },
+    })
+    for (const post of dbPosts) {
+      newsMap.set(post.slug, {
+        url: `${baseUrl}/news/${post.slug}`,
+        lastModified: post.updatedAt || post.createdAt || currentDate,
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+      })
+    }
+  } catch (err) {
+    // Graceful fallback if database is not reachable at build/sitemap time
+  }
+
+  const newsRoutes: MetadataRoute.Sitemap = Array.from(newsMap.values())
 
   return [...staticRoutes, ...productRoutes, ...newsRoutes]
 }

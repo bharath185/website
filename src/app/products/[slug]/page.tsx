@@ -52,23 +52,67 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const resolvedParams = await params
   const product = await fetchProduct(resolvedParams.slug)
 
+  const productUrl = product ? `https://bmtbharat.com/products/${product.slug || product.id}` : "https://bmtbharat.com/products"
+
   const jsonLd = product ? {
     "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    image: product.image,
-    category: product.category,
-    brand: {
-      "@type": "Brand",
-      name: "Bharat Machine Tools",
-    },
-    offers: {
-      "@type": "Offer",
-      price: product.price || 0,
-      priceCurrency: "INR",
-      availability: "https://schema.org/InStock",
-    },
+    "@graph": [
+      {
+        "@type": "Product",
+        "@id": `${productUrl}#product`,
+        "name": product.name,
+        "description": product.shortDescription || product.description,
+        "image": product.image.startsWith("http") ? product.image : `https://bmtbharat.com${product.image.startsWith("/") ? "" : "/"}${product.image}`,
+        "category": product.category,
+        "sku": product.id,
+        "mpn": product.id,
+        "brand": {
+          "@type": "Brand",
+          "name": "Bharat Machine Tools"
+        },
+        "manufacturer": {
+          "@type": "Organization",
+          "name": "Bharat Machine Tools",
+          "url": "https://bmtbharat.com"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": productUrl,
+          "price": product.price || 0,
+          "priceCurrency": "INR",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Bharat Machine Tools"
+          }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${productUrl}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://bmtbharat.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Products",
+            "item": "https://bmtbharat.com/products"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": product.name,
+            "item": productUrl
+          }
+        ]
+      }
+    ]
   } : null
 
   return (

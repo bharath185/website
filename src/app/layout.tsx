@@ -114,6 +114,21 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <head>
+        {/* Google tag (gtag.js) */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-ZVY9ZZLSZ0"
+          strategy="afterInteractive"
+        />
+        <Script id="google-tag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-ZVY9ZZLSZ0');
+          `}
+        </Script>
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -134,7 +149,7 @@ export default function RootLayout({
                   "@type": ["LocalBusiness", "Organization"],
                   "@id": "https://bmtbharat.com/#organization",
                   "name": "Bharat Machine Tools",
-                  "alternateName": "BMT Bangalore",
+                  "alternateName": ["BMT Bangalore", "BMT Bharat"],
                   "url": "https://bmtbharat.com",
                   "logo": "https://bmtbharat.com/logo.png",
                   "image": "https://bmtbharat.com/logo.png",
@@ -144,10 +159,44 @@ export default function RootLayout({
                   "vatID": "29AAUFB7927K1ZK",
                   "taxID": "29AAUFB7927K1ZK",
                   "priceRange": "₹₹₹₹",
+                  "currenciesAccepted": "INR, USD, EUR",
+                  "paymentAccepted": "Cash, Credit Card, Bank Transfer, UPI, Razorpay",
+                  "areaServed": [
+                    { "@type": "Country", "name": "India" },
+                    { "@type": "AdministrativeArea", "name": "Karnataka" },
+                    { "@type": "City", "name": "Bengaluru" },
+                    { "@type": "GeoShape", "name": "Worldwide Export" }
+                  ],
                   "founder": {
                     "@type": "Person",
                     "name": "Abbas Khan"
                   },
+                  "contactPoint": [
+                    {
+                      "@type": "ContactPoint",
+                      "telephone": "+919880464557",
+                      "contactType": "sales",
+                      "areaServed": "IN",
+                      "availableLanguage": ["English", "Hindi", "Kannada"]
+                    },
+                    {
+                      "@type": "ContactPoint",
+                      "telephone": "+919530208882",
+                      "contactType": "technical support",
+                      "areaServed": "IN",
+                      "availableLanguage": ["English", "Hindi", "Kannada"]
+                    }
+                  ],
+                  "knowsAbout": [
+                    "High Frequency Motorized Spindles",
+                    "Hydrostatic & Hydrodynamic Bearings",
+                    "Precision Ball Screws",
+                    "CNC Machine Reconditioning & Retrofitting",
+                    "Thermal Spray HVOF & PTA Coatings",
+                    "Special Purpose Machine SPM Tooling",
+                    "Turcite Guideway Scraping",
+                    "Heavy Cylindrical Grinding 5m Bed"
+                  ],
                   "address": {
                     "@type": "PostalAddress",
                     "streetAddress": "155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post",

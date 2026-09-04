@@ -1,13 +1,90 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowLeft, CheckCircle2, Flame, Layers, ShieldCheck, Sparkles, Phone, Mail, ArrowRight, Shield, Zap } from 'lucide-react'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'Thermal Process, Surface Treatment & Coatings | Bharat Machine Tools',
-  description: 'Metalizing, plasma spray, HYOF spray, PTA & TIG cladding, hard facing, ceramic & carbide coatings, blackodizing, and anodization in Bangalore, India.'
+export const metadata: Metadata = {
+  title: 'Thermal Process, Surface Treatment & Coatings | Bharat Machine Tools Bangalore',
+  description: 'Plasma spray metalizing, HYOF/HVOF coating, PTA & TIG cladding, hard facing, ceramic & tungsten carbide coatings, blackodizing, and anodization in Bangalore, India.',
+  keywords: [
+    'Thermal Spray Coatings Bangalore',
+    'Plasma Spray Metalizing India',
+    'HVOF Spray Coating',
+    'Tungsten Carbide Coating',
+    'PTA TIG Cladding',
+    'Shaft Journal Build-Up Bangalore',
+    'Hard Anodizing Karnataka'
+  ],
+  alternates: {
+    canonical: 'https://bmtbharat.com/services/thermal-process-and-coatings'
+  },
+  openGraph: {
+    title: 'Thermal Process & Surface Coatings | Bharat Machine Tools',
+    description: 'Advanced metallurgical coatings, plasma spray, and HVOF cladding to protect and restore industrial machine parts in Bangalore, India.',
+    url: 'https://bmtbharat.com/services/thermal-process-and-coatings',
+    images: [{ url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?q=80&w=800&auto=format&fit=crop', alt: 'Thermal Process Coatings BMT' }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Thermal Process & Coatings | Bharat Machine Tools',
+    description: 'Plasma spray, HVOF cladding, and anti-wear metallurgy in Bangalore, India.',
+    images: ['https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?q=80&w=800&auto=format&fit=crop']
+  }
 }
 
 export default function ThermalProcessCoatingsPage() {
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": "https://bmtbharat.com/services/thermal-process-and-coatings/#service",
+        "name": "Thermal Process, Surface Treatment & Metallurgical Coatings",
+        "serviceType": "Thermal Spray & Protective Coatings",
+        "provider": {
+          "@type": "Organization",
+          "name": "Bharat Machine Tools",
+          "url": "https://bmtbharat.com"
+        },
+        "areaServed": [
+          { "@type": "Country", "name": "India" },
+          { "@type": "AdministrativeArea", "name": "Karnataka" }
+        ],
+        "description": "Metalizing, plasma spray, HVOF coating, PTA & TIG cladding, hard facing, ceramic and tungsten carbide protective coatings, blackodizing, and anodization.",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "INR",
+          "availability": "https://schema.org/InStock",
+          "url": "https://bmtbharat.com/services/thermal-process-and-coatings"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://bmtbharat.com/services/thermal-process-and-coatings/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://bmtbharat.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Services",
+            "item": "https://bmtbharat.com/services"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Thermal Process & Coatings",
+            "item": "https://bmtbharat.com/services/thermal-process-and-coatings"
+          }
+        ]
+      }
+    ]
+  }
+
   const coatingCapabilities = [
     {
       title: 'Metalizing / Plasma Thermal Spray',
@@ -48,7 +125,12 @@ export default function ThermalProcessCoatingsPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden font-sans">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <div className="min-h-screen bg-[#fafbfc] text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden font-sans">
       
       {/* Blueprint Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.008)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.008)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
@@ -207,5 +289,6 @@ export default function ThermalProcessCoatingsPage() {
 
       </div>
     </div>
+    </>
   )
 }

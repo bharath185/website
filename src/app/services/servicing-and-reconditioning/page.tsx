@@ -1,13 +1,90 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowLeft, CheckCircle2, Phone, Mail, ShieldCheck, Wrench, Video, Settings, Cog, Check } from 'lucide-react'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'Servicing & Reconditioning of CNC & Manual Machines | Bharat Machine Tools',
-  description: 'Retrofitting and reconditioning of Turning Centers, VMC, HMC, centerless grinding, cylindrical grinding, spindles, ball screws, and rotary tables in Bangalore, India.'
+export const metadata: Metadata = {
+  title: 'Servicing & Reconditioning of CNC & Manual Machines | Bharat Machine Tools Bangalore',
+  description: 'Turnkey retrofitting and reconditioning of Turning Centers, VMC, HMC, centerless & cylindrical grinding machines, spindles, ball screws, and rotary tables in Bangalore, India.',
+  keywords: [
+    'CNC Machine Reconditioning Bangalore',
+    'Machine Tool Retrofitting India',
+    'Spindle Repair Bangalore',
+    'Ball Screw Reconditioning',
+    'VMC Overhaul Service',
+    'Turcite Guideway Scraping',
+    'On-Site Machine Maintenance Bangalore'
+  ],
+  alternates: {
+    canonical: 'https://bmtbharat.com/services/servicing-and-reconditioning'
+  },
+  openGraph: {
+    title: 'CNC & Manual Machine Reconditioning Services | Bharat Machine Tools',
+    description: 'Expert retrofitting and geometric restoration of CNC turning centers, VMC, HMC, and grinding machines across India.',
+    url: 'https://bmtbharat.com/services/servicing-and-reconditioning',
+    images: [{ url: 'https://bmtbharat.com/images/images/image-4.png', alt: 'Machine Reconditioning BMT' }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Machine Tool Servicing & Reconditioning | Bharat Machine Tools',
+    description: 'Turnkey machine tool overhaul and sub-micron precision restoration in Bangalore, India.',
+    images: ['https://bmtbharat.com/images/images/image-4.png']
+  }
 }
 
 export default function ServicingReconditioningPage() {
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": "https://bmtbharat.com/services/servicing-and-reconditioning/#service",
+        "name": "Machine Tool Servicing & Reconditioning",
+        "serviceType": "Industrial Machinery Maintenance & Retrofitting",
+        "provider": {
+          "@type": "Organization",
+          "name": "Bharat Machine Tools",
+          "url": "https://bmtbharat.com"
+        },
+        "areaServed": [
+          { "@type": "Country", "name": "India" },
+          { "@type": "AdministrativeArea", "name": "Karnataka" }
+        ],
+        "description": "Turnkey retrofitting, overhauling, and precision geometric restoration of CNC and conventional machine tools including VMCs, HMCs, turning centers, and grinders.",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "INR",
+          "availability": "https://schema.org/InStock",
+          "url": "https://bmtbharat.com/services/servicing-and-reconditioning"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://bmtbharat.com/services/servicing-and-reconditioning/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://bmtbharat.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Services",
+            "item": "https://bmtbharat.com/services"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Servicing & Reconditioning",
+            "item": "https://bmtbharat.com/services/servicing-and-reconditioning"
+          }
+        ]
+      }
+    ]
+  }
+
   const machineTypes = [
     {
       title: 'Special Purpose Machines & CNC Lathes',
@@ -32,7 +109,12 @@ export default function ServicingReconditioningPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] font-sans text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <div className="min-h-screen bg-[#fafbfc] font-sans text-slate-800 pt-32 sm:pt-36 lg:pt-40 pb-20 relative overflow-hidden">
       
       {/* Blueprint Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.008)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.008)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
@@ -240,5 +322,6 @@ export default function ServicingReconditioningPage() {
 
       </div>
     </div>
+    </>
   )
 }

@@ -2,11 +2,6 @@ import React from 'react'
 import Link from 'next/link'
 import { HelpCircle, Phone, Mail, ChevronDown, MessageSquare } from 'lucide-react'
 
-export const metadata = {
-  title: 'Frequently Asked Questions (FAQ) | Bharat Machine Tools',
-  description: 'Common questions and answers regarding machine spindles, hydrostatic bearings, machine retrofitting, custom SPM tools, and delivery from Bharat Machine Tools, Bangalore.'
-}
-
 export default function FAQPage() {
   const faqs = [
     {
@@ -39,8 +34,49 @@ export default function FAQPage() {
     }
   ]
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "FAQPage",
+        "@id": "https://bmtbharat.com/faq/#faq",
+        "mainEntity": faqs.map((faq) => ({
+          "@type": "Question",
+          "name": faq.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.a
+          }
+        }))
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://bmtbharat.com/faq/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://bmtbharat.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "FAQ",
+            "item": "https://bmtbharat.com/faq"
+          }
+        ]
+      }
+    ]
+  }
+
   return (
-    <div className="min-h-screen bg-[#fafbfc] text-slate-900 pt-24 sm:pt-28 pb-16 font-sans relative overflow-hidden">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <div className="min-h-screen bg-[#fafbfc] text-slate-900 pt-24 sm:pt-28 pb-16 font-sans relative overflow-hidden">
       {/* Dynamic Background Accents */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
@@ -130,5 +166,6 @@ export default function FAQPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

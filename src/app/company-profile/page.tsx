@@ -35,7 +35,22 @@ export const metadata: Metadata = {
     "Make in India machine tools",
     "Abbas Khan BMT",
     "spindles manufacturer India"
-  ]
+  ],
+  alternates: {
+    canonical: "https://bmtbharat.com/company-profile",
+  },
+  openGraph: {
+    title: "Corporate Company Profile | Bharat Machine Tools Bangalore",
+    description: "Official Corporate Profile of Bharat Machine Tools. High-precision motorized spindles, hydrostatic bearings, defense actuators, and CNC reconditioning in Bangalore.",
+    url: "https://bmtbharat.com/company-profile",
+    images: [{ url: "https://bmtbharat.com/logo.png", alt: "Bharat Machine Tools Corporate Profile" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Corporate Profile | Bharat Machine Tools",
+    description: "High-precision machine tool OEM in Bangalore, India.",
+    images: ["https://bmtbharat.com/logo.png"],
+  },
 }
 
 export default function CompanyProfilePage() {
@@ -160,15 +175,53 @@ export default function CompanyProfilePage() {
       items: [
         "Heavy Elevation Actuators (9-Ton to 40-Ton with Roller Screws)",
         "Stabilizing Outriggers (20-Ton to 40-Ton Axial Capacity)",
-        "Airport Frangible Masts, Pneumatic & EM Telescopic Masts",
         "Planetary Gearboxes & Zero-Backlash Speed Reducers",
         "Duplex & Simplex Worm Wheels & Worm Shafts (Standard/Custom)"
       ]
     }
   ]
 
+  const aboutSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "@id": "https://bmtbharat.com/company-profile/#about",
+        "name": "Corporate Company Profile - Bharat Machine Tools",
+        "description": "Premier Indian engineering OEM specializing in the design, manufacturing, and sub-micron reconditioning of motorized spindles, hydrostatic bearings, CNC rotary tables, precision ball screws, defense actuators, and heavy machine tools.",
+        "url": "https://bmtbharat.com/company-profile",
+        "mainEntity": {
+          "@id": "https://bmtbharat.com/#organization"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://bmtbharat.com/company-profile/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://bmtbharat.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Company Profile",
+            "item": "https://bmtbharat.com/company-profile"
+          }
+        ]
+      }
+    ]
+  }
+
   return (
-    <div className="min-h-screen bg-[#fafbfc] font-sans text-slate-800 pt-24 sm:pt-28 pb-20 relative overflow-hidden">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema) }}
+      />
+      <div className="min-h-screen bg-[#fafbfc] font-sans text-slate-800 pt-24 sm:pt-28 pb-20 relative overflow-hidden">
       
       {/* Blueprint Grid Background Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
@@ -695,5 +748,6 @@ export default function CompanyProfilePage() {
 
       </div>
     </div>
+    </>
   )
 }
