@@ -24,8 +24,21 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    const ext = path.extname(file.name) || '.jpg'
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}${ext}`
+    // Process & compress image into modern WebP format
+    let webpBuffer: Buffer
+    try {
+      const sharp = (await import('sharp')).default
+      webpBuffer = await sharp(buffer)
+        .rotate() // Auto-orient based on EXIF metadata
+        .resize(1920, 1920, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 82, effort: 5 })
+        .toBuffer()
+    } catch (sharpError) {
+      console.warn('Sharp processing failed, using original buffer:', sharpError)
+      webpBuffer = buffer
+    }
+
+    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.webp`
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
 
     try {
@@ -33,7 +46,7 @@ export async function POST(req: Request) {
       await fs.mkdir(uploadsDir, { recursive: true })
       
       const filePath = path.join(uploadsDir, filename)
-      await fs.writeFile(filePath, buffer)
+      await fs.writeFile(filePath, webpBuffer)
       
       return NextResponse.json({ 
         success: true, 
@@ -41,19 +54,8 @@ export async function POST(req: Request) {
       })
     } catch (fsError) {
       console.warn('Local filesystem write failed, using base64 fallback:', fsError)
-      // Fallback for serverless or read-only filesystems - compress buffer to keep payload small
-      let dataUrl = `data:${file.type};base64,${buffer.toString('base64')}`
-      try {
-        const sharp = (await import('sharp')).default
-        const compressedBuffer = await sharp(buffer)
-          .resize(1000, 1000, { fit: 'inside', withoutEnlargement: true })
-          .webp({ quality: 80 })
-          .toBuffer()
-        dataUrl = `data:image/webp;base64,${compressedBuffer.toString('base64')}`
-      } catch (sharpErr) {
-        console.warn('Sharp compression skipped or unavailable:', sharpErr)
-      }
-      
+      // Fallback for serverless or read-only filesystems - keep compressed webp data payload
+      const dataUrl = `data:image/webp;base64,${webpBuffer.toString('base64')}`
       return NextResponse.json({ 
         success: true, 
         url: dataUrl 

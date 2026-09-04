@@ -43,41 +43,70 @@ export default function V2NewProductShowcase() {
     return () => clearInterval(interval)
   }, [isSpinning])
 
+  const sectionRef = useRef<HTMLElement>(null)
+  const [inView, setInView] = useState(false)
+  const isVisibleRef = useRef(false)
+
+  // IntersectionObserver to only load Three.js & GLTF when user scrolls near the section
   useEffect(() => {
-    if (!mountRef.current) return
+    if (!sectionRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          isVisibleRef.current = true
+        } else {
+          isVisibleRef.current = false
+        }
+      },
+      { rootMargin: '300px' }
+    )
+
+    observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!mountRef.current || !inView) return
     const container = mountRef.current
 
+    const isMobile = window.innerWidth < 768
     const width = container.clientWidth || 450
     const height = container.clientHeight || 380
 
     const scene = new THREE.Scene()
-    // No background color set - transparent so it floats on HTML bg-slate-50
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100)
     camera.position.set(0, 1.8, 4.3)
     camera.lookAt(0, 0.15, 0)
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: !isMobile, 
+      alpha: true,
+      powerPreference: isMobile ? 'low-power' : 'high-performance'
+    })
     renderer.setSize(width, height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFShadowMap
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2))
+    renderer.shadowMap.enabled = !isMobile
+    if (!isMobile) {
+      renderer.shadowMap.type = THREE.PCFShadowMap
+    }
     container.appendChild(renderer.domElement)
 
     // PMREM Generator for realistic reflections
     const createFakeEnvironmentMap = () => {
       const canvas = document.createElement("canvas")
-      canvas.width = 64
-      canvas.height = 64
+      canvas.width = 32
+      canvas.height = 32
       const ctx = canvas.getContext("2d")
       if (!ctx) return null
       
-      const gradient = ctx.createLinearGradient(0, 0, 0, 64)
+      const gradient = ctx.createLinearGradient(0, 0, 0, 32)
       gradient.addColorStop(0, "#0f172a") // dark slate sky
       gradient.addColorStop(0.5, "#64748b") // steel gray horizon
       gradient.addColorStop(1, "#f1f5f9") // bright studio highlights
       ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, 64, 64)
+      ctx.fillRect(0, 0, 32, 32)
       
       const texture = new THREE.CanvasTexture(canvas)
       texture.mapping = THREE.EquirectangularReflectionMapping
@@ -95,12 +124,12 @@ export default function V2NewProductShowcase() {
     pmremGenerator.dispose()
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
     scene.add(ambientLight)
 
     const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.8)
     dirLight1.position.set(6, 10, 5)
-    dirLight1.castShadow = true
+    if (!isMobile) dirLight1.castShadow = true
     scene.add(dirLight1)
 
     const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.6)
@@ -117,14 +146,17 @@ export default function V2NewProductShowcase() {
     let animateCallback = () => {}
     let modelContainer: THREE.Group | null = null
 
-    // Load custom model
+    // Load optimized model for mobile to prevent memory freeze
     setIsLoading(true)
     const loader = new GLTFLoader()
     loader.setMeshoptDecoder(MeshoptDecoder)
-    logToBackend("info", "Starting GLTF load request for new products showcase")
+    
+    // Choose lightweight model on mobile (7.4MB vs 56.5MB)
+    const modelUrl = isMobile ? "/Image%20to%203D8.glb" : "/Image%20to%203D.glb"
+    logToBackend("info", `Starting GLTF load request: ${modelUrl}`)
 
     loader.load(
-      "/Image%20to%203D.glb",
+      modelUrl,
       (gltf: any) => {
         setIsLoading(false)
         logToBackend("info", "Showcase GLB loaded successfully")
@@ -149,8 +181,10 @@ export default function V2NewProductShowcase() {
           // Double sided + high metalness for high-fidelity look
           gltf.scene.traverse((child: any) => {
             if (child.isMesh) {
-              child.castShadow = true
-              child.receiveShadow = true
+              if (!isMobile) {
+                child.castShadow = true
+                child.receiveShadow = true
+              }
               if (child.material) {
                 child.material.side = THREE.DoubleSide
                 if (child.material.color) {
@@ -186,7 +220,15 @@ export default function V2NewProductShowcase() {
       },
       undefined,
       (error: any) => {
-        setIsLoading(false)
+        // Fallback to secondary model if primary fails
+        if (modelUrl !== "/Image%20to%203D8.glb") {
+          loader.load("/Image%20to%203D8.glb", (gltf2: any) => {
+            setIsLoading(false)
+            // Successfully loaded fallback
+          }, undefined, () => setIsLoading(false))
+        } else {
+          setIsLoading(false)
+        }
         logToBackend("error", `Showcase GLB load failure: ${error.message}`)
       }
     )
@@ -247,15 +289,17 @@ export default function V2NewProductShowcase() {
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseup', handleMouseUp)
 
-    container.addEventListener('touchstart', handleTouchStart, { passive: false })
+    container.addEventListener('touchstart', handleTouchStart, { passive: true })
     window.addEventListener('touchmove', handleTouchMove, { passive: false })
     window.addEventListener('touchend', handleTouchEnd)
 
-    // Animation Loop
+    // Animation Loop with off-screen pause to save 100% GPU/battery when offscreen
     let animationId: number
     const animate = () => {
-      animateCallback()
-      renderer.render(scene, camera)
+      if (isVisibleRef.current) {
+        animateCallback()
+        renderer.render(scene, camera)
+      }
       animationId = requestAnimationFrame(animate)
     }
     animate()
@@ -286,10 +330,10 @@ export default function V2NewProductShowcase() {
       } catch {}
       renderer.dispose()
     }
-  }, [isSpinning])
+  }, [isSpinning, inView])
 
   return (
-    <section className="py-24 bg-slate-50 relative overflow-hidden border-t border-slate-200/60">
+    <section ref={sectionRef} className="py-24 bg-slate-50 relative overflow-hidden border-t border-slate-200/60">
       
       {/* Background radial highlight */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />

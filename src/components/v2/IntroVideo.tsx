@@ -29,13 +29,17 @@ export default function IntroVideo() {
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           className="fixed inset-0 z-[9999] bg-black overflow-hidden selection:bg-blue-600/30 text-slate-100 font-sans"
         >
-          {/* Fullscreen Video Player */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
+          {/* Fullscreen Video Player with touch to dismiss */}
+          <div 
+            onClick={handleSkip}
+            className="absolute inset-0 w-full h-full overflow-hidden z-0 cursor-pointer"
+          >
             <video
               src="/explainer_logo_keep_same_what.mp4"
               autoPlay
               muted
               playsInline
+              preload="metadata"
               onEnded={handleSkip}
               className="absolute inset-0 w-full h-full object-contain pointer-events-none"
             />

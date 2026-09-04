@@ -27,21 +27,27 @@ async function optimizeImage(filePath) {
   }
 
   try {
+    const inputBuffer = fs.readFileSync(filePath);
+    let sharpInstance = sharp(inputBuffer).rotate();
+
+    const metadata = await sharp(inputBuffer).metadata();
+    if (metadata.width && (metadata.width > 1920 || metadata.height > 1920)) {
+      sharpInstance = sharpInstance.resize(1920, 1920, { fit: 'inside', withoutEnlargement: true });
+    }
+
     let buffer;
 
     if (ext === '.png') {
-      // PNG → optimize with sharp, keep PNG format
-      buffer = await sharp(filePath)
-        .png({ quality: 85, compressionLevel: 9, palette: true, effort: 10 })
+      buffer = await sharpInstance
+        .png({ quality: 80, compressionLevel: 9, palette: true, effort: 8 })
         .toBuffer();
     } else if (ext === '.jpg' || ext === '.jpeg') {
-      // JPEG → optimize quality
-      buffer = await sharp(filePath)
-        .jpeg({ quality: 82, mozjpeg: true })
+      buffer = await sharpInstance
+        .jpeg({ quality: 80, mozjpeg: true })
         .toBuffer();
     } else if (ext === '.webp') {
-      buffer = await sharp(filePath)
-        .webp({ quality: 82, effort: 6 })
+      buffer = await sharpInstance
+        .webp({ quality: 80, effort: 5 })
         .toBuffer();
     } else {
       filesSkipped++;

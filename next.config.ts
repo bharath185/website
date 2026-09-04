@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 86400,
     remotePatterns: [
       { protocol: "https", hostname: "fplogoimages.withfloats.com" },
       { protocol: "https", hostname: "fpimages.withfloats.com" },
