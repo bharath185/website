@@ -24,7 +24,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin/'],
       },
     ],
-    sitemap: 'https://bmtbharat.com/sitemap.xml',
-    host: 'https://bmtbharat.com',
+    sitemap: 'https://www.bmtbharat.com/sitemap.xml',
+    host: 'https://www.bmtbharat.com',
   }
 }
