@@ -445,16 +445,6 @@ const nextConfig: NextConfig = {
         destination: '/sitemap.xml',
         permanent: true,
       },
-      {
-        source: '/sitemap/:subpath*.xml',
-        destination: '/sitemap.xml',
-        permanent: true,
-      },
-      {
-        source: '/sitemap/:subpath*',
-        destination: '/sitemap.xml',
-        permanent: true,
-      },
     ];
   },
   async headers() {
