@@ -394,26 +394,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/pages/:path*',
-        destination: '/company-profile',
-        permanent: true,
-      },
-      {
-        source: '/pages',
-        destination: '/company-profile',
-        permanent: true,
-      },
-      {
-        source: '/page/:path*',
-        destination: '/company-profile',
-        permanent: true,
-      },
-      {
-        source: '/page',
-        destination: '/company-profile',
-        permanent: true,
-      },
-      {
         source: '/testimonials/:path*',
         destination: '/company-profile',
         permanent: true,
