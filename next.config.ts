@@ -25,9 +25,14 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // 1. Legacy Product Search paths -> /products
+      // 1. Legacy Product Search & Catalog paths -> /products
       {
         source: '/search/:term*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/search',
         destination: '/products',
         permanent: true,
       },
@@ -51,8 +56,177 @@ const nextConfig: NextConfig = {
         destination: '/products',
         permanent: true,
       },
+      {
+        source: '/catalog/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/catalog',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/catalogue/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/catalogue',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/category/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/category',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/categories/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/categories',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/all-categories/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/all-categories',
+        destination: '/products',
+        permanent: true,
+      },
 
-      // 2. Legacy Updates / News / Journal paths -> /news
+      // 2. Legacy Tag Pages & Tagged Items (NowFloats / Old Platform) -> /products
+      {
+        source: '/tag/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/tag',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/tags/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/tags',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/tagged/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/tagged',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/items-tagged-with/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/items-tagged-with-:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/item-tagged-with/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/items-tagged/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/item-tagged/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/tag-products/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/product-tag/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/product-tags/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/products/tag/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/all-tags/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/all-tags',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/keywords/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/keyword/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+
+      // 3. Specific Google-Indexed Tag/Page Slugs -> /products
+      {
+        source: '/available/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/available',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/high-efficiency/:path*',
+        destination: '/products',
+        permanent: true,
+      },
+      {
+        source: '/high-efficiency',
+        destination: '/products',
+        permanent: true,
+      },
+
+      // 4. Legacy Updates / News / Journal paths -> /news
       {
         source: '/latest-updates/:path*',
         destination: '/news',
@@ -93,8 +267,18 @@ const nextConfig: NextConfig = {
         destination: '/news',
         permanent: true,
       },
+      {
+        source: '/updates/tag/:path*',
+        destination: '/news',
+        permanent: true,
+      },
+      {
+        source: '/news/tag/:path*',
+        destination: '/news',
+        permanent: true,
+      },
 
-      // 3. Legacy Galleries & Media paths -> /gallery
+      // 5. Legacy Galleries & Media paths -> /gallery
       {
         source: '/videos/:path*',
         destination: '/gallery',
@@ -115,8 +299,18 @@ const nextConfig: NextConfig = {
         destination: '/gallery',
         permanent: true,
       },
+      {
+        source: '/photos/:path*',
+        destination: '/gallery',
+        permanent: true,
+      },
+      {
+        source: '/photos',
+        destination: '/gallery',
+        permanent: true,
+      },
 
-      // 4. Legacy Contact & Mapview paths -> /contact
+      // 6. Legacy Contact & Mapview paths -> /contact
       {
         source: '/mapview/:path*',
         destination: '/contact',
@@ -137,8 +331,18 @@ const nextConfig: NextConfig = {
         destination: '/contact',
         permanent: true,
       },
+      {
+        source: '/feedback/:path*',
+        destination: '/contact',
+        permanent: true,
+      },
+      {
+        source: '/feedback',
+        destination: '/contact',
+        permanent: true,
+      },
 
-      // 5. Legacy About & Custom pages -> /company-profile
+      // 7. Legacy About & Custom pages -> /company-profile
       {
         source: '/about-us',
         destination: '/company-profile',
@@ -154,8 +358,73 @@ const nextConfig: NextConfig = {
         destination: '/company-profile',
         permanent: true,
       },
+      {
+        source: '/custom-pages',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/custom-page/:path*',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/custom-page',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/custompages/:path*',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/custompages',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/custompage/:path*',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/custompage',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/pages/:path*',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/pages',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/page/:path*',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/page',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/testimonials/:path*',
+        destination: '/company-profile',
+        permanent: true,
+      },
+      {
+        source: '/testimonials',
+        destination: '/company-profile',
+        permanent: true,
+      },
 
-      // 6. Legacy Sub-Sitemaps (NowFloats / Old Platform) -> /sitemap.xml
+      // 8. Legacy Sub-Sitemaps (NowFloats / Old Platform) -> /sitemap.xml
       {
         source: '/sitemap/updates.xml',
         destination: '/sitemap.xml',

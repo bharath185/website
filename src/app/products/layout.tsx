@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   },
 }
 
+import productsLive from "@/data/products-live.json"
+
 export default function ProductsLayout({
   children,
 }: {
@@ -51,11 +53,36 @@ export default function ProductsLayout({
     ]
   }
 
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Bharat Machine Tools Precision Catalog",
+    "itemListElement": (productsLive || []).map((product, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "Product",
+        "name": product.name,
+        "url": `https://bmtbharat.com/products/${product.slug || product.id}`,
+        "image": product.image,
+        "description": product.shortDescription || product.description,
+        "brand": {
+          "@type": "Brand",
+          "name": "Bharat Machine Tools"
+        }
+      }
+    }))
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
       />
       {children}
     </>
