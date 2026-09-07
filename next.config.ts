@@ -144,11 +144,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/items-tagged-with-:path*',
-        destination: '/products',
-        permanent: true,
-      },
-      {
         source: '/item-tagged-with/:path*',
         destination: '/products',
         permanent: true,
