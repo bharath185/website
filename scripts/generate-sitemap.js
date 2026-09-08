@@ -63,4 +63,16 @@ for (const slug of newsMatches) {
 xml += '</urlset>\n';
 
 fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), xml, 'utf8');
-console.log('Successfully generated public/sitemap.xml with ' + (staticPages.length + products.length + newsMatches.length) + ' URLs');
+fs.writeFileSync(path.join(__dirname, '../public/sitemap-main.xml'), xml, 'utf8');
+fs.writeFileSync(path.join(__dirname, '../public/sitemap_index.xml'), xml, 'utf8');
+
+// Also write plain text sitemap
+const allUrls = [
+  ...staticPages.map(p => baseUrl + p.url),
+  ...products.map(p => baseUrl + '/products/' + (p.slug || p.id)),
+  ...newsMatches.map(slug => baseUrl + '/news/' + slug)
+];
+fs.writeFileSync(path.join(__dirname, '../public/sitemap.txt'), allUrls.join('\n'), 'utf8');
+
+console.log('Successfully generated sitemap files (xml, -main.xml, _index.xml, .txt) with ' + (staticPages.length + products.length + newsMatches.length) + ' URLs');
+
