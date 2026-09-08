@@ -63,12 +63,19 @@ export default function ProductsLayout({
       "@type": "ItemList",
       "name": "Bharat Machine Tools Precision Catalog",
       "numberOfItems": (productsLive || []).length,
-      "itemListElement": (productsLive || []).map((product, index) => ({
-        "@type": "ListItem",
-        "position": index + 1,
-        "name": product.name,
-        "url": `https://bmtbharat.com/products/${product.slug || product.id}`
-      }))
+      "itemListElement": (productsLive || []).map((product, index) => {
+        const rawImg = product.image || ''
+        const fullImg = rawImg.startsWith('http')
+          ? rawImg
+          : `https://bmtbharat.com${rawImg.startsWith('/') ? '' : '/'}${rawImg}`
+        return {
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": product.name,
+          "url": `https://bmtbharat.com/products/${product.slug || product.id}`,
+          "image": fullImg
+        }
+      })
     }
   }
 

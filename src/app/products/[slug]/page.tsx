@@ -19,6 +19,12 @@ async function fetchProduct(slug: string): Promise<Product | undefined> {
   return prod || undefined
 }
 
+function getAbsoluteImageUrl(img?: string): string {
+  if (!img) return "https://bmtbharat.com/logo.png"
+  if (img.startsWith("http://") || img.startsWith("https://")) return img
+  return `https://bmtbharat.com${img.startsWith("/") ? "" : "/"}${img}`
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params
   const product = await fetchProduct(resolvedParams.slug)
@@ -27,6 +33,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: "Product Details",
     }
   }
+
+  const primaryImage = getAbsoluteImageUrl(product.image)
+
   return {
     title: `${product.name} | Bharat Machine Tools Bangalore`,
     description: product.shortDescription || product.description,
@@ -44,13 +53,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${product.name} | Bharat Machine Tools`,
       description: product.shortDescription || product.description,
       url: `https://bmtbharat.com/products/${product.slug || product.id}`,
-      images: [{ url: product.image, alt: product.name }],
+      images: [{ url: primaryImage, alt: product.name, width: 800, height: 800 }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${product.name} | Bharat Machine Tools`,
       description: product.shortDescription || product.description,
-      images: [product.image],
+      images: [primaryImage],
     },
   }
 }
@@ -61,6 +70,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const productUrl = product ? `https://bmtbharat.com/products/${product.slug || product.id}` : "https://bmtbharat.com/products"
 
+  const imageList = product
+    ? (Array.isArray(product.images) && product.images.length > 0
+        ? product.images.map(getAbsoluteImageUrl)
+        : [getAbsoluteImageUrl(product.image)])
+    : []
+
   const jsonLd = product ? {
     "@context": "https://schema.org",
     "@graph": [
@@ -69,7 +84,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         "@id": `${productUrl}#product`,
         "name": product.name,
         "description": product.shortDescription || product.description,
-        "image": product.image.startsWith("http") ? product.image : `https://bmtbharat.com${product.image.startsWith("/") ? "" : "/"}${product.image}`,
+        "image": imageList,
         "category": product.category,
         "sku": product.id,
         "mpn": product.id,
