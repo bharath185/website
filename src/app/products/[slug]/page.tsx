@@ -1,10 +1,17 @@
 import type { Metadata } from "next"
-import { getProductByIdOrSlug } from "@/lib/products-store"
+import { getProductByIdOrSlug, getAllProducts } from "@/lib/products-store"
 import ProductDetailClientV2 from "@/components/v2/ProductDetailClientV2"
 import { Product } from "@/types"
 
 interface PageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateStaticParams() {
+  const products = await getAllProducts()
+  return (products || []).map((p) => ({
+    slug: p.slug || p.id,
+  }))
 }
 
 async function fetchProduct(slug: string): Promise<Product | undefined> {
