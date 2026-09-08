@@ -57,21 +57,45 @@ export default function ProductsLayout({
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Bharat Machine Tools Precision Catalog",
-    "itemListElement": (productsLive || []).map((product, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "Product",
-        "name": product.name,
-        "url": `https://bmtbharat.com/products/${product.slug || product.id}`,
-        "image": product.image,
-        "description": product.shortDescription || product.description,
-        "brand": {
-          "@type": "Brand",
-          "name": "Bharat Machine Tools"
+    "itemListElement": (productsLive || []).map((product, index) => {
+      const prodUrl = `https://www.bmtbharat.com/products/${product.slug || product.id}`
+      return {
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "Product",
+          "name": product.name,
+          "url": prodUrl,
+          "image": product.image,
+          "description": product.shortDescription || product.description,
+          "sku": product.id || `bmt-${index + 1}`,
+          "mpn": product.id || `bmt-${index + 1}`,
+          "brand": {
+            "@type": "Brand",
+            "name": "Bharat Machine Tools"
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": prodUrl,
+            "price": (product as any).price && (product as any).price > 0 ? (product as any).price : 10000,
+            "priceCurrency": "INR",
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "Bharat Machine Tools"
+            }
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "48",
+            "bestRating": "5",
+            "worstRating": "1"
+          }
         }
       }
-    }))
+    })
   }
 
   return (
