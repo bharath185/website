@@ -53,49 +53,23 @@ export default function ProductsLayout({
     ]
   }
 
-  const itemListSchema = {
+  const collectionSchema = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Bharat Machine Tools Precision Catalog",
-    "itemListElement": (productsLive || []).map((product, index) => {
-      const prodUrl = `https://www.bmtbharat.com/products/${product.slug || product.id}`
-      return {
+    "@type": "CollectionPage",
+    "name": "Bharat Machine Tools Precision Products Catalogue",
+    "description": "Explore precision CNC machine spindles, hydrostatic bearings, precision ball screws, planetary gearboxes, locknuts, mandrels, and machine tool spares.",
+    "url": "https://bmtbharat.com/products",
+    "mainEntity": {
+      "@type": "ItemList",
+      "name": "Bharat Machine Tools Precision Catalog",
+      "numberOfItems": (productsLive || []).length,
+      "itemListElement": (productsLive || []).map((product, index) => ({
         "@type": "ListItem",
         "position": index + 1,
-        "item": {
-          "@type": "Product",
-          "name": product.name,
-          "url": prodUrl,
-          "image": product.image,
-          "description": product.shortDescription || product.description,
-          "sku": product.id || `bmt-${index + 1}`,
-          "mpn": product.id || `bmt-${index + 1}`,
-          "brand": {
-            "@type": "Brand",
-            "name": "Bharat Machine Tools"
-          },
-          "offers": {
-            "@type": "Offer",
-            "url": prodUrl,
-            "price": (product as any).price && (product as any).price > 0 ? (product as any).price : 10000,
-            "priceCurrency": "INR",
-            "itemCondition": "https://schema.org/NewCondition",
-            "availability": "https://schema.org/InStock",
-            "seller": {
-              "@type": "Organization",
-              "name": "Bharat Machine Tools"
-            }
-          },
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": "48",
-            "bestRating": "5",
-            "worstRating": "1"
-          }
-        }
-      }
-    })
+        "name": product.name,
+        "url": `https://bmtbharat.com/products/${product.slug || product.id}`
+      }))
+    }
   }
 
   return (
@@ -106,7 +80,7 @@ export default function ProductsLayout({
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
       {children}
     </>
