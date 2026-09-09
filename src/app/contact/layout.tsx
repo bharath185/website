@@ -35,10 +35,10 @@ export default function ContactLayout({
     "@graph": [
       {
         "@type": "ContactPage",
-        "@id": "https://bmtbharat.com/contact/#contact",
+        "@id": "https://www.bmtbharat.com/contact/#contact",
         "name": "Contact Bharat Machine Tools",
         "description": "Contact our engineering and sales specialists in Bangalore for rapid technical quotations and factory visits.",
-        "url": "https://bmtbharat.com/contact",
+        "url": "https://www.bmtbharat.com/contact",
         "mainEntity": {
           "@type": "Organization",
           "name": "Bharat Machine Tools",
@@ -56,19 +56,19 @@ export default function ContactLayout({
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "https://bmtbharat.com/contact/#breadcrumb",
+        "@id": "https://www.bmtbharat.com/contact/#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://bmtbharat.com"
+            "item": "https://www.bmtbharat.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Contact Us",
-            "item": "https://bmtbharat.com/contact"
+            "item": "https://www.bmtbharat.com/contact"
           }
         ]
       }

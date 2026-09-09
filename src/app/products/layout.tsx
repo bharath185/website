@@ -49,13 +49,13 @@ export default function ProductsLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://bmtbharat.com"
+        "item": "https://www.bmtbharat.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Products Catalogue",
-        "item": "https://bmtbharat.com/products"
+        "item": "https://www.bmtbharat.com/products"
       }
     ]
   }
@@ -65,7 +65,7 @@ export default function ProductsLayout({
     "@type": "CollectionPage",
     "name": "Bharat Machine Tools Precision Products Catalogue",
     "description": "Explore precision CNC machine spindles, hydrostatic bearings, precision ball screws, planetary gearboxes, locknuts, mandrels, and machine tool spares.",
-    "url": "https://bmtbharat.com/products",
+    "url": "https://www.bmtbharat.com/products",
     "mainEntity": {
       "@type": "ItemList",
       "name": "Bharat Machine Tools Precision Catalog",
@@ -74,8 +74,8 @@ export default function ProductsLayout({
         const rawImg = product.image || ''
         const fullImg = rawImg.startsWith('http')
           ? rawImg
-          : `https://bmtbharat.com${rawImg.startsWith('/') ? '' : '/'}${rawImg}`
-        const productUrl = `https://bmtbharat.com/products/${product.slug || product.id}`
+          : `https://www.bmtbharat.com${rawImg.startsWith('/') ? '' : '/'}${rawImg}`
+        const productUrl = `https://www.bmtbharat.com/products/${product.slug || product.id}`
         const ratingVal = (4.7 + ((index % 3) * 0.1)).toFixed(1)
         const reviewCnt = 45 + (index * 7) % 80
         return {

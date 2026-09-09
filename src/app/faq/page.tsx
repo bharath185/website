@@ -39,7 +39,7 @@ export default function FAQPage() {
     "@graph": [
       {
         "@type": "FAQPage",
-        "@id": "https://bmtbharat.com/faq/#faq",
+        "@id": "https://www.bmtbharat.com/faq/#faq",
         "mainEntity": faqs.map((faq) => ({
           "@type": "Question",
           "name": faq.q,
@@ -51,19 +51,19 @@ export default function FAQPage() {
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "https://bmtbharat.com/faq/#breadcrumb",
+        "@id": "https://www.bmtbharat.com/faq/#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://bmtbharat.com"
+            "item": "https://www.bmtbharat.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "FAQ",
-            "item": "https://bmtbharat.com/faq"
+            "item": "https://www.bmtbharat.com/faq"
           }
         ]
       }

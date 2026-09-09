@@ -95,8 +95,8 @@ export default async function NewsDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  const articleUrl = `https://bmtbharat.com/news/${item.slug}`
-  const imageUrl = item.image.startsWith("http") ? item.image : `https://bmtbharat.com${item.image.startsWith("/") ? "" : "/"}${item.image}`
+  const articleUrl = `https://www.bmtbharat.com/news/${item.slug}`
+  const imageUrl = item.image.startsWith("http") ? item.image : `https://www.bmtbharat.com${item.image.startsWith("/") ? "" : "/"}${item.image}`
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -112,14 +112,14 @@ export default async function NewsDetailPage({ params }: PageProps) {
         "author": {
           "@type": "Organization",
           "name": "Bharat Machine Tools",
-          "url": "https://bmtbharat.com"
+          "url": "https://www.bmtbharat.com"
         },
         "publisher": {
           "@type": "Organization",
           "name": "Bharat Machine Tools",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://bmtbharat.com/logo.png"
+            "url": "https://www.bmtbharat.com/logo.png"
           }
         },
         "mainEntityOfPage": {
@@ -135,13 +135,13 @@ export default async function NewsDetailPage({ params }: PageProps) {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://bmtbharat.com"
+            "item": "https://www.bmtbharat.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Journal & Updates",
-            "item": "https://bmtbharat.com/news"
+            "item": "https://www.bmtbharat.com/news"
           },
           {
             "@type": "ListItem",

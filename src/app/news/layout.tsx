@@ -35,13 +35,13 @@ export default function NewsLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://bmtbharat.com"
+        "item": "https://www.bmtbharat.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Technical Journal & News",
-        "item": "https://bmtbharat.com/news"
+        "item": "https://www.bmtbharat.com/news"
       }
     ]
   }

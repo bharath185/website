@@ -37,13 +37,13 @@ export default function GalleryLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://bmtbharat.com"
+        "item": "https://www.bmtbharat.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Machine Gallery & Works",
-        "item": "https://bmtbharat.com/gallery"
+        "item": "https://www.bmtbharat.com/gallery"
       }
     ]
   }

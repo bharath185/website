@@ -38,13 +38,13 @@ export default function ThermalProcessCoatingsPage() {
     "@graph": [
       {
         "@type": "Service",
-        "@id": "https://bmtbharat.com/services/thermal-process-and-coatings/#service",
+        "@id": "https://www.bmtbharat.com/services/thermal-process-and-coatings/#service",
         "name": "Thermal Process, Surface Treatment & Metallurgical Coatings",
         "serviceType": "Thermal Spray & Protective Coatings",
         "provider": {
           "@type": "Organization",
           "name": "Bharat Machine Tools",
-          "url": "https://bmtbharat.com"
+          "url": "https://www.bmtbharat.com"
         },
         "areaServed": [
           { "@type": "Country", "name": "India" },
@@ -55,30 +55,30 @@ export default function ThermalProcessCoatingsPage() {
           "@type": "Offer",
           "priceCurrency": "INR",
           "availability": "https://schema.org/InStock",
-          "url": "https://bmtbharat.com/services/thermal-process-and-coatings"
+          "url": "https://www.bmtbharat.com/services/thermal-process-and-coatings"
         }
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "https://bmtbharat.com/services/thermal-process-and-coatings/#breadcrumb",
+        "@id": "https://www.bmtbharat.com/services/thermal-process-and-coatings/#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://bmtbharat.com"
+            "item": "https://www.bmtbharat.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Services",
-            "item": "https://bmtbharat.com/services"
+            "item": "https://www.bmtbharat.com/services"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": "Thermal Process & Coatings",
-            "item": "https://bmtbharat.com/services/thermal-process-and-coatings"
+            "item": "https://www.bmtbharat.com/services/thermal-process-and-coatings"
           }
         ]
       }

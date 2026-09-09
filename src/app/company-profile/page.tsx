@@ -190,29 +190,29 @@ export default function CompanyProfilePage() {
     "@graph": [
       {
         "@type": "AboutPage",
-        "@id": "https://bmtbharat.com/company-profile/#about",
+        "@id": "https://www.bmtbharat.com/company-profile/#about",
         "name": "Corporate Company Profile - Bharat Machine Tools",
         "description": "Premier Indian engineering OEM specializing in the design, manufacturing, and sub-micron reconditioning of motorized spindles, hydrostatic bearings, CNC rotary tables, precision ball screws, defense actuators, and heavy machine tools.",
-        "url": "https://bmtbharat.com/company-profile",
+        "url": "https://www.bmtbharat.com/company-profile",
         "mainEntity": {
-          "@id": "https://bmtbharat.com/#organization"
+          "@id": "https://www.bmtbharat.com/#organization"
         }
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "https://bmtbharat.com/company-profile/#breadcrumb",
+        "@id": "https://www.bmtbharat.com/company-profile/#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://bmtbharat.com"
+            "item": "https://www.bmtbharat.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Company Profile",
-            "item": "https://bmtbharat.com/company-profile"
+            "item": "https://www.bmtbharat.com/company-profile"
           }
         ]
       }

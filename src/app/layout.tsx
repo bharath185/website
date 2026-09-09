@@ -78,13 +78,13 @@ export const metadata: Metadata = {
     title: "BMT - Bharat Machine Tools | Precision Spindles & CNC Tooling Bangalore",
     description:
       "BMT (Bharat Machine Tools) is the premier manufacturer of motorized spindles, hydrostatic bearings, precision ball screws, defense actuators, and complete CNC reconditioning in Bangalore, India.",
-    url: "https://bmtbharat.com",
+    url: "https://www.bmtbharat.com",
     siteName: "BMT - Bharat Machine Tools",
     locale: "en_IN",
     type: "website",
     images: [
       {
-        url: "https://bmtbharat.com/logo.png",
+        url: "https://www.bmtbharat.com/logo.png",
         width: 1200,
         height: 630,
         alt: "BMT - Bharat Machine Tools Bangalore",
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     title: "BMT - Bharat Machine Tools | Precision Spindles & CNC Tooling",
     description:
       "BMT (Bharat Machine Tools) - Leading manufacturer of precision motorized spindles, hydrostatic bearings, ball screws, and CNC reconditioning in Bangalore, India.",
-    images: ["https://bmtbharat.com/logo.png"],
+    images: ["https://www.bmtbharat.com/logo.png"],
   },
   robots: {
     index: true,
@@ -155,12 +155,12 @@ export default function RootLayout({
               "@graph": [
                 {
                   "@type": ["LocalBusiness", "Organization"],
-                  "@id": "https://bmtbharat.com/#organization",
+                  "@id": "https://www.bmtbharat.com/#organization",
                   "name": "BMT - Bharat Machine Tools",
                   "alternateName": ["BMT", "BMT Bangalore", "BMT Bharat", "BMT Machine Tools", "Bharat Machine Tools"],
-                  "url": "https://bmtbharat.com",
-                  "logo": "https://bmtbharat.com/logo.png",
-                  "image": "https://bmtbharat.com/logo.png",
+                  "url": "https://www.bmtbharat.com",
+                  "logo": "https://www.bmtbharat.com/logo.png",
+                  "image": "https://www.bmtbharat.com/logo.png",
                   "description": "BMT (Bharat Machine Tools) - High-precision machine tool manufacturing, motorized spindles, hydrostatic bearings, ball screws, defense actuators, and turnkey CNC reconditioning in Bangalore, India.",
                   "telephone": "+919880464557",
                   "email": "bmt.sangeeta@gmail.com",
@@ -234,17 +234,17 @@ export default function RootLayout({
                 },
                 {
                   "@type": "WebSite",
-                  "@id": "https://bmtbharat.com/#website",
-                  "url": "https://bmtbharat.com",
+                  "@id": "https://www.bmtbharat.com/#website",
+                  "url": "https://www.bmtbharat.com",
                   "name": "BMT - Bharat Machine Tools",
                   "alternateName": ["BMT", "BMT Bharat", "BMT Bangalore", "Bharat Machine Tools"],
                   "description": "BMT - Precision Industrial Machinery, Spindles, and CNC Accessories in Bangalore",
                   "publisher": {
-                    "@id": "https://bmtbharat.com/#organization"
+                    "@id": "https://www.bmtbharat.com/#organization"
                   },
                   "potentialAction": {
                     "@type": "SearchAction",
-                    "target": "https://bmtbharat.com/products?search={search_term_string}",
+                    "target": "https://www.bmtbharat.com/products?search={search_term_string}",
                     "query-input": "required name=search_term_string"
                   }
                 }

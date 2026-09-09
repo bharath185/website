@@ -20,9 +20,9 @@ async function fetchProduct(slug: string): Promise<Product | undefined> {
 }
 
 function getAbsoluteImageUrl(img?: string): string {
-  if (!img) return "https://bmtbharat.com/logo.png"
+  if (!img) return "https://www.bmtbharat.com/logo.png"
   if (img.startsWith("http://") || img.startsWith("https://")) return img
-  return `https://bmtbharat.com${img.startsWith("/") ? "" : "/"}${img}`
+  return `https://www.bmtbharat.com${img.startsWith("/") ? "" : "/"}${img}`
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -73,7 +73,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const resolvedParams = await params
   const product = await fetchProduct(resolvedParams.slug)
 
-  const productUrl = product ? `https://bmtbharat.com/products/${product.slug || product.id}` : "https://bmtbharat.com/products"
+  const productUrl = product ? `https://www.bmtbharat.com/products/${product.slug || product.id}` : "https://www.bmtbharat.com/products"
 
   const imageList = product
     ? (Array.isArray(product.images) && product.images.length > 0
@@ -100,7 +100,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         "manufacturer": {
           "@type": "Organization",
           "name": "Bharat Machine Tools",
-          "url": "https://bmtbharat.com"
+          "url": "https://www.bmtbharat.com"
         },
         "offers": {
           "@type": "Offer",
@@ -166,13 +166,13 @@ export default async function ProductDetailPage({ params }: PageProps) {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://bmtbharat.com"
+            "item": "https://www.bmtbharat.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Products",
-            "item": "https://bmtbharat.com/products"
+            "item": "https://www.bmtbharat.com/products"
           },
           {
             "@type": "ListItem",

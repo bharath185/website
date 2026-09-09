@@ -38,13 +38,13 @@ export default function ServicingReconditioningPage() {
     "@graph": [
       {
         "@type": "Service",
-        "@id": "https://bmtbharat.com/services/servicing-and-reconditioning/#service",
+        "@id": "https://www.bmtbharat.com/services/servicing-and-reconditioning/#service",
         "name": "Machine Tool Servicing & Reconditioning",
         "serviceType": "Industrial Machinery Maintenance & Retrofitting",
         "provider": {
           "@type": "Organization",
           "name": "Bharat Machine Tools",
-          "url": "https://bmtbharat.com"
+          "url": "https://www.bmtbharat.com"
         },
         "areaServed": [
           { "@type": "Country", "name": "India" },
@@ -55,30 +55,30 @@ export default function ServicingReconditioningPage() {
           "@type": "Offer",
           "priceCurrency": "INR",
           "availability": "https://schema.org/InStock",
-          "url": "https://bmtbharat.com/services/servicing-and-reconditioning"
+          "url": "https://www.bmtbharat.com/services/servicing-and-reconditioning"
         }
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "https://bmtbharat.com/services/servicing-and-reconditioning/#breadcrumb",
+        "@id": "https://www.bmtbharat.com/services/servicing-and-reconditioning/#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://bmtbharat.com"
+            "item": "https://www.bmtbharat.com"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Services",
-            "item": "https://bmtbharat.com/services"
+            "item": "https://www.bmtbharat.com/services"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": "Servicing & Reconditioning",
-            "item": "https://bmtbharat.com/services/servicing-and-reconditioning"
+            "item": "https://www.bmtbharat.com/services/servicing-and-reconditioning"
           }
         ]
       }

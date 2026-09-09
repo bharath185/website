@@ -36,13 +36,13 @@ export default function CareersLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://bmtbharat.com"
+        "item": "https://www.bmtbharat.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Careers & Vacancies",
-        "item": "https://bmtbharat.com/careers"
+        "item": "https://www.bmtbharat.com/careers"
       }
     ]
   }
