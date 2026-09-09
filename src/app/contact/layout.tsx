@@ -1,25 +1,27 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Contact Engineering Desk | Bharat Machine Tools Bangalore",
+  title: "Contact BMT Engineering Desk | Bharat Machine Tools Bangalore",
   description:
-    "Get in touch with Bharat Machine Tools for custom machine spindle design, technical RFQs, and machine reconditioning inquiries. Works at Abbigere Industrial Area, Bengaluru.",
+    "Get in touch with BMT (Bharat Machine Tools) for custom machine spindle design, technical RFQs, and machine reconditioning inquiries. Works at Abbigere Industrial Area, Bengaluru.",
   keywords: [
-    "Contact Bharat Machine Tools",
+    "Contact BMT",
     "BMT Bangalore phone number",
+    "BMT Machine Tools contact",
+    "Contact Bharat Machine Tools",
     "Abbas Khan Machine Tools",
     "Abbigere Industrial Area Machine Tools",
     "Machine Tool RFQ Bangalore",
   ],
   alternates: {
-    canonical: "https://bmtbharat.com/contact",
+    canonical: "https://www.bmtbharat.com/contact",
   },
   openGraph: {
-    title: "Contact Engineering Desk | Bharat Machine Tools",
+    title: "Contact BMT Engineering Desk | Bharat Machine Tools",
     description:
-      "Connect with our senior engineering specialists in Bangalore for rapid technical quotations and site consultation.",
-    url: "https://bmtbharat.com/contact",
-    images: [{ url: "https://bmtbharat.com/logo.png", alt: "Contact BMT" }],
+      "Connect with BMT senior engineering specialists in Bangalore for rapid technical quotations and site consultation.",
+    url: "https://www.bmtbharat.com/contact",
+    images: [{ url: "https://www.bmtbharat.com/logo.png", alt: "Contact BMT" }],
   },
 }
 

@@ -1,10 +1,14 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Machine Tool Services & Reconditioning | Bharat Machine Tools Bangalore",
+  title: "BMT Specialized Services & Machine Reconditioning | Bharat Machine Tools",
   description:
-    "Comprehensive machine tool rebuilding, slideway grinding up to 5 meters, Turcite scraping, laser interferometry alignment, and thermal spray coatings in Bangalore, India.",
+    "BMT (Bharat Machine Tools) comprehensive machine tool rebuilding, slideway grinding up to 5 meters, Turcite scraping, laser interferometry alignment, and thermal spray coatings in Bangalore, India.",
   keywords: [
+    "BMT Services",
+    "BMT Reconditioning",
+    "BMT Machine Tools",
+    "BMT Bangalore",
     "Machine Reconditioning Bangalore",
     "CNC Machine Overhaul India",
     "Thermal Spray Coatings HYOF PTA",
@@ -14,14 +18,14 @@ export const metadata: Metadata = {
     "Machine Tool Retrofit Bangalore",
   ],
   alternates: {
-    canonical: "https://bmtbharat.com/services",
+    canonical: "https://www.bmtbharat.com/services",
   },
   openGraph: {
-    title: "Machine Tool Services & Reconditioning | Bharat Machine Tools",
+    title: "BMT Services & Machine Reconditioning | Bharat Machine Tools",
     description:
-      "Expert machine reconditioning, guideway grinding, Turcite scraping, laser calibration, and protective thermal coatings in Bangalore, India.",
-    url: "https://bmtbharat.com/services",
-    images: [{ url: "https://bmtbharat.com/logo.png", alt: "BMT Specialized Services" }],
+      "Expert machine reconditioning, guideway grinding, Turcite scraping, laser calibration, and protective thermal coatings by BMT in Bangalore, India.",
+    url: "https://www.bmtbharat.com/services",
+    images: [{ url: "https://www.bmtbharat.com/logo.png", alt: "BMT Specialized Services" }],
   },
 }
 

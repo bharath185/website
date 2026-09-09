@@ -68,12 +68,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${item.title} | Bharat Machine Tools Journal`,
     description: item.description,
     alternates: {
-      canonical: `https://bmtbharat.com/news/${item.slug}`,
+      canonical: `https://www.bmtbharat.com/news/${item.slug}`,
     },
     openGraph: {
       title: `${item.title} | Bharat Machine Tools`,
       description: item.description,
-      url: `https://bmtbharat.com/news/${item.slug}`,
+      url: `https://www.bmtbharat.com/news/${item.slug}`,
       type: "article",
       publishedTime: item.createdAt?.toISOString?.() || undefined,
       images: [{ url: item.image, alt: item.title }],

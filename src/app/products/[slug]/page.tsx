@@ -37,27 +37,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const primaryImage = getAbsoluteImageUrl(product.image)
 
   return {
-    title: `${product.name} | Bharat Machine Tools Bangalore`,
-    description: product.shortDescription || product.description,
+    title: `${product.name} | BMT - Bharat Machine Tools`,
+    description: `${product.shortDescription || product.description} - BMT (Bharat Machine Tools) Bangalore.`,
     keywords: [
+      `BMT ${product.name}`,
       product.name,
+      `BMT ${product.category}`,
       product.category,
+      "BMT",
+      "BMT Bangalore",
+      "BMT Machine Tools",
       "Bharat Machine Tools",
       "Bangalore Machine Tools",
       "Precision Machinery Spares",
     ],
     alternates: {
-      canonical: `https://bmtbharat.com/products/${product.slug || product.id}`,
+      canonical: `https://www.bmtbharat.com/products/${product.slug || product.id}`,
     },
     openGraph: {
-      title: `${product.name} | Bharat Machine Tools`,
-      description: product.shortDescription || product.description,
-      url: `https://bmtbharat.com/products/${product.slug || product.id}`,
-      images: [{ url: primaryImage, alt: product.name, width: 800, height: 800 }],
+      title: `${product.name} | BMT - Bharat Machine Tools`,
+      description: `${product.shortDescription || product.description} - BMT Bangalore`,
+      url: `https://www.bmtbharat.com/products/${product.slug || product.id}`,
+      images: [{ url: primaryImage, alt: `${product.name} - BMT`, width: 800, height: 800 }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | Bharat Machine Tools`,
+      title: `${product.name} | BMT - Bharat Machine Tools`,
       description: product.shortDescription || product.description,
       images: [primaryImage],
     },
@@ -102,11 +107,47 @@ export default async function ProductDetailPage({ params }: PageProps) {
           "url": productUrl,
           "price": product.price && product.price > 0 ? product.price : 10000,
           "priceCurrency": "INR",
+          "priceValidUntil": "2027-12-31",
           "itemCondition": "https://schema.org/NewCondition",
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",
             "name": "Bharat Machine Tools"
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "INR"
+            },
+            "shippingDestination": {
+              "@type": "DefinedRegion",
+              "addressCountry": "IN"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 1,
+                "maxValue": 3,
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 3,
+                "maxValue": 7,
+                "unitCode": "DAY"
+              }
+            }
+          },
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "applicableCountry": "IN",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 30,
+            "returnMethod": "https://schema.org/ReturnByMail",
+            "returnFees": "https://schema.org/FreeReturn"
           }
         },
         "aggregateRating": {

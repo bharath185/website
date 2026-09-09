@@ -11,14 +11,14 @@ export const metadata: Metadata = {
     "BMT Bangalore News",
   ],
   alternates: {
-    canonical: "https://bmtbharat.com/news",
+    canonical: "https://www.bmtbharat.com/news",
   },
   openGraph: {
     title: "Technical Journal & Industry Updates | Bharat Machine Tools",
     description:
       "Engineering insights, spindle maintenance whitepapers, and manufacturing updates from Bharat Machine Tools Bangalore.",
-    url: "https://bmtbharat.com/news",
-    images: [{ url: "https://bmtbharat.com/logo.png", alt: "BMT Technical Journal" }],
+    url: "https://www.bmtbharat.com/news",
+    images: [{ url: "https://www.bmtbharat.com/logo.png", alt: "BMT Technical Journal" }],
   },
 }
 

@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     'On-Site Machine Maintenance Bangalore'
   ],
   alternates: {
-    canonical: 'https://bmtbharat.com/services/servicing-and-reconditioning'
+    canonical: 'https://www.bmtbharat.com/services/servicing-and-reconditioning'
   },
   openGraph: {
     title: 'CNC & Manual Machine Reconditioning Services | Bharat Machine Tools',
     description: 'Expert retrofitting and geometric restoration of CNC turning centers, VMC, HMC, and grinding machines across India.',
-    url: 'https://bmtbharat.com/services/servicing-and-reconditioning',
-    images: [{ url: 'https://bmtbharat.com/images/images/image-4.png', alt: 'Machine Reconditioning BMT' }]
+    url: 'https://www.bmtbharat.com/services/servicing-and-reconditioning',
+    images: [{ url: 'https://www.bmtbharat.com/images/images/image-4.png', alt: 'Machine Reconditioning BMT' }]
   },
   twitter: {
     card: 'summary_large_image',

@@ -11,14 +11,14 @@ export const metadata: Metadata = {
     "Thermal coating queries BMT",
   ],
   alternates: {
-    canonical: "https://bmtbharat.com/faq",
+    canonical: "https://www.bmtbharat.com/faq",
   },
   openGraph: {
     title: "Frequently Asked Questions (FAQ) | Bharat Machine Tools",
     description:
       "Answers to common engineering, quotation, and manufacturing questions at Bharat Machine Tools.",
-    url: "https://bmtbharat.com/faq",
-    images: [{ url: "https://bmtbharat.com/logo.png", alt: "BMT FAQ" }],
+    url: "https://www.bmtbharat.com/faq",
+    images: [{ url: "https://www.bmtbharat.com/logo.png", alt: "BMT FAQ" }],
   },
 }
 

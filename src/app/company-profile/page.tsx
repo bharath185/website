@@ -26,9 +26,13 @@ import {
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Corporate Company Profile | Bharat Machine Tools Bangalore",
-  description: "Official Corporate Profile of Bharat Machine Tools. High-precision machine tool manufacturing, motorized spindles, hydrostatic bearings, ball screws, defense actuators, and turnkey CNC reconditioning in Bangalore, India.",
+  title: "BMT Corporate Profile | Bharat Machine Tools Bangalore",
+  description: "Official Corporate Profile of BMT (Bharat Machine Tools). High-precision machine tool manufacturing, motorized spindles, hydrostatic bearings, ball screws, defense actuators, and turnkey CNC reconditioning in Bangalore, India.",
   keywords: [
+    "BMT",
+    "BMT Company Profile",
+    "BMT Bangalore",
+    "BMT Machine Tools",
     "Bharat Machine Tools company profile",
     "BMT Bangalore profile",
     "precision machine manufacturing Bangalore",
@@ -37,19 +41,19 @@ export const metadata: Metadata = {
     "spindles manufacturer India"
   ],
   alternates: {
-    canonical: "https://bmtbharat.com/company-profile",
+    canonical: "https://www.bmtbharat.com/company-profile",
   },
   openGraph: {
-    title: "Corporate Company Profile | Bharat Machine Tools Bangalore",
-    description: "Official Corporate Profile of Bharat Machine Tools. High-precision motorized spindles, hydrostatic bearings, defense actuators, and CNC reconditioning in Bangalore.",
-    url: "https://bmtbharat.com/company-profile",
-    images: [{ url: "https://bmtbharat.com/logo.png", alt: "Bharat Machine Tools Corporate Profile" }],
+    title: "BMT Corporate Profile | Bharat Machine Tools Bangalore",
+    description: "Official Corporate Profile of BMT (Bharat Machine Tools). High-precision motorized spindles, hydrostatic bearings, defense actuators, and CNC reconditioning in Bangalore.",
+    url: "https://www.bmtbharat.com/company-profile",
+    images: [{ url: "https://www.bmtbharat.com/logo.png", alt: "BMT - Bharat Machine Tools Corporate Profile" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Corporate Profile | Bharat Machine Tools",
-    description: "High-precision machine tool OEM in Bangalore, India.",
-    images: ["https://bmtbharat.com/logo.png"],
+    title: "BMT Corporate Profile | Bharat Machine Tools",
+    description: "BMT - High-precision machine tool OEM in Bangalore, India.",
+    images: ["https://www.bmtbharat.com/logo.png"],
   },
 }
 

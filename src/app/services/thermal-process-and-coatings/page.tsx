@@ -16,12 +16,12 @@ export const metadata: Metadata = {
     'Hard Anodizing Karnataka'
   ],
   alternates: {
-    canonical: 'https://bmtbharat.com/services/thermal-process-and-coatings'
+    canonical: 'https://www.bmtbharat.com/services/thermal-process-and-coatings'
   },
   openGraph: {
     title: 'Thermal Process & Surface Coatings | Bharat Machine Tools',
     description: 'Advanced metallurgical coatings, plasma spray, and HVOF cladding to protect and restore industrial machine parts in Bangalore, India.',
-    url: 'https://bmtbharat.com/services/thermal-process-and-coatings',
+    url: 'https://www.bmtbharat.com/services/thermal-process-and-coatings',
     images: [{ url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?q=80&w=800&auto=format&fit=crop', alt: 'Thermal Process Coatings BMT' }]
   },
   twitter: {

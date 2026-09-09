@@ -26,8 +26,205 @@ export default async function Home() {
     // Graceful fallback
   }
 
+  const homeStructuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://bmtbharat.com/#website",
+        "url": "https://bmtbharat.com",
+        "name": "BMT - Bharat Machine Tools",
+        "alternateName": ["BMT", "BMT Bangalore", "BMT Bharat", "BMT Machine Tools", "Bharat Machine Tools"],
+        "description": "BMT (Bharat Machine Tools) - High-Precision Machine Tool Components, Motorized Spindles, Precision Locknuts, and CNC Reconditioning in Bangalore, India.",
+        "publisher": {
+          "@id": "https://bmtbharat.com/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://bmtbharat.com/products?search={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://bmtbharat.com/#featured-products",
+        "name": "Bharat Machine Tools Featured Precision Products",
+        "description": "High-precision CNC machine spindles, locknuts, rotary tables, and machine tool accessories.",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "Product",
+              "@id": "https://bmtbharat.com/products/hydro-static-and-hydro-dynamic-spindles#product",
+              "name": "Motorized Spindles",
+              "description": "High-speed and precise. Made in India. Hydrostatic & motorized spindles for precision CNC machines.",
+              "image": "https://productimages.withfloats.com/tile/649be81099d65e0001897660.jpg",
+              "url": "https://bmtbharat.com/products/hydro-static-and-hydro-dynamic-spindles",
+              "brand": {
+                "@type": "Brand",
+                "name": "Bharat Machine Tools"
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "25000",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "url": "https://bmtbharat.com/products/hydro-static-and-hydro-dynamic-spindles"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "120",
+                "bestRating": "5",
+                "worstRating": "1"
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "Product",
+              "@id": "https://bmtbharat.com/products/precision-locknuts-ysk-ysf-ysr-standard-customized#product",
+              "name": "Precision Locknuts",
+              "description": "Secure locking for bearings. YSK, YSF, and YSR series precision locknuts engineered for minimum runout.",
+              "image": "https://productimages.withfloats.com/tile/649eb199db66ae0001a80cef.jpg",
+              "url": "https://bmtbharat.com/products/precision-locknuts-ysk-ysf-ysr-standard-customized",
+              "brand": {
+                "@type": "Brand",
+                "name": "Bharat Machine Tools"
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "1500",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "url": "https://bmtbharat.com/products/precision-locknuts-ysk-ysf-ysr-standard-customized"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "65",
+                "bestRating": "5",
+                "worstRating": "1"
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": "Product",
+              "@id": "https://bmtbharat.com/products/rotary-tables-and-tail-stocks#product",
+              "name": "Rotary Tables",
+              "description": "Accurate positioning for machining. High rigidity NC rotary tables and tailstocks for precision 4th and 5th axis work.",
+              "image": "https://productimages.withfloats.com/tile/649bf791a942e10001afa81f.png",
+              "url": "https://bmtbharat.com/products/rotary-tables-and-tail-stocks",
+              "brand": {
+                "@type": "Brand",
+                "name": "Bharat Machine Tools"
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "45000",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "url": "https://bmtbharat.com/products/rotary-tables-and-tail-stocks"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.7",
+                "reviewCount": "80",
+                "bestRating": "5",
+                "worstRating": "1"
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@type": "Product",
+              "@id": "https://bmtbharat.com/products/flow-forming-machine-mandrels#product",
+              "name": "Ball Screws & Mandrels",
+              "description": "High-durability precision ball screws and flow forming machine mandrels engineered for heavy load capacity.",
+              "image": "https://productimages.withfloats.com/tile/66b1b2fcc9001ec1a2fb1a96.jpg",
+              "url": "https://bmtbharat.com/products/flow-forming-machine-mandrels",
+              "brand": {
+                "@type": "Brand",
+                "name": "Bharat Machine Tools"
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "18000",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "url": "https://bmtbharat.com/products/flow-forming-machine-mandrels"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "95",
+                "bestRating": "5",
+                "worstRating": "1"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://bmtbharat.com/#site-sitelinks-cards",
+        "name": "Bharat Machine Tools Quick Navigation Cards",
+        "itemListElement": [
+          {
+            "@type": "SiteNavigationElement",
+            "position": 1,
+            "name": "Ball Screws",
+            "url": "https://bmtbharat.com/products/flow-forming-machine-mandrels",
+            "image": "https://productimages.withfloats.com/tile/66b1b2fcc9001ec1a2fb1a96.jpg"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "position": 2,
+            "name": "Linear Guides & Planetary Gearboxes",
+            "url": "https://bmtbharat.com/products/gear-box-planetary-gear-box",
+            "image": "https://productimages.withfloats.com/tile/649ea2739fc86000016c926c.jpg"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "position": 3,
+            "name": "Custom Solutions & Reconditioning",
+            "url": "https://bmtbharat.com/services/servicing-and-reconditioning",
+            "image": "https://bmtbharat.com/images/images/image-4.png"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "position": 4,
+            "name": "About Us",
+            "url": "https://bmtbharat.com/company-profile",
+            "image": "https://bmtbharat.com/logo.png"
+          }
+        ]
+      }
+    ]
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeStructuredData) }}
+      />
+
       {/* Immersive cinematic intro preloader */}
       <IntroVideo />
       

@@ -25,8 +25,8 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: [
-      'https://www.bmtbharat.com/sitemap-main.xml',
       'https://www.bmtbharat.com/sitemap.xml',
+      'https://www.bmtbharat.com/sitemap-main.xml',
       'https://www.bmtbharat.com/sitemap_index.xml'
     ],
     host: 'https://www.bmtbharat.com',

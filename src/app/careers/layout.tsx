@@ -12,14 +12,14 @@ export const metadata: Metadata = {
     "Machinist Jobs Bangalore",
   ],
   alternates: {
-    canonical: "https://bmtbharat.com/careers",
+    canonical: "https://www.bmtbharat.com/careers",
   },
   openGraph: {
     title: "Careers & Engineering Vacancies | Bharat Machine Tools",
     description:
       "Explore engineering and craftsmanship career opportunities at Bharat Machine Tools, Bangalore.",
-    url: "https://bmtbharat.com/careers",
-    images: [{ url: "https://bmtbharat.com/logo.png", alt: "BMT Careers" }],
+    url: "https://www.bmtbharat.com/careers",
+    images: [{ url: "https://www.bmtbharat.com/logo.png", alt: "BMT Careers" }],
   },
 }
 
