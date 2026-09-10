@@ -8,10 +8,23 @@ import V2Industries from "@/components/v2/V2Industries"
 import V2WhyChooseUs from "@/components/v2/V2WhyChooseUs"
 import V2NewProductShowcase from "@/components/v2/V2NewProductShowcase"
 import V2Updates from "@/components/v2/V2Updates"
-import { getPgClient } from "@/lib/pg-products"
+import { getPgClient, pgGetAllProducts } from "@/lib/pg-products"
+import staticProductsFallback from "@/data/products-live.json"
+import { Product } from "@/types"
 
 export default async function Home() {
   let mdInfo = null
+  let products: Product[] = staticProductsFallback as Product[]
+
+  try {
+    const fetched = await pgGetAllProducts()
+    if (fetched && fetched.length > 0) {
+      products = fetched
+    }
+  } catch (err) {
+    // Graceful fallback to static data
+  }
+
   try {
     const client = await getPgClient()
     try {
@@ -229,7 +242,7 @@ export default async function Home() {
       <IntroVideo />
       
       {/* High-end sections */}
-      <V2Hero />
+      <V2Hero initialProducts={products} />
       <V2About />
       <V2MDProfile initialData={mdInfo} />
       

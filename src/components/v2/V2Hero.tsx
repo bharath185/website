@@ -6,9 +6,13 @@ import Link from "next/link"
 import { ArrowRight, ChevronLeft, ChevronRight, RefreshCw, Sparkles, ShieldCheck, Activity, Check } from "lucide-react"
 import { Product } from "@/types"
 
-export default function V2Hero() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
+interface V2HeroProps {
+  initialProducts?: Product[]
+}
+
+export default function V2Hero({ initialProducts = [] }: V2HeroProps) {
+  const [products, setProducts] = useState<Product[]>(initialProducts)
+  const [loading, setLoading] = useState(initialProducts.length === 0)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
@@ -16,6 +20,8 @@ export default function V2Hero() {
   const CYCLE_DURATION = 5000 // 5 seconds per product
 
   useEffect(() => {
+    if (initialProducts.length > 0) return
+
     async function fetchProducts() {
       try {
         const res = await fetch("/api/products")
@@ -32,7 +38,7 @@ export default function V2Hero() {
       }
     }
     fetchProducts()
-  }, [])
+  }, [initialProducts.length])
 
   // Circular Neon Progress Timer
   useEffect(() => {
@@ -228,6 +234,9 @@ export default function V2Hero() {
                       transition={{ duration: 0.3, ease: "easeOut" }}
                       src={currentProduct.image}
                       alt={currentProduct.name}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
                       className="max-h-[220px] sm:max-h-[280px] lg:max-h-[320px] max-w-[90%] object-contain drop-shadow-[0_16px_30px_rgba(0,0,0,0.12)] select-none pointer-events-none"
                     />
                   </AnimatePresence>

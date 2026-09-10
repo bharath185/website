@@ -5,13 +5,21 @@ import { motion, AnimatePresence } from "framer-motion"
 import { SkipForward } from "lucide-react"
 
 export default function IntroVideo() {
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(false)
 
-  // Session storage check to only show preloader once per session
+  // Only show if explicitly not seen in session and not a bot
   useEffect(() => {
-    const hasSeenIntro = sessionStorage.getItem("seen_intro")
-    if (hasSeenIntro) {
-      setVisible(false)
+    try {
+      const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(navigator.userAgent)
+      if (isBot) return
+
+      const hasSeenIntro = sessionStorage.getItem("seen_intro")
+      if (!hasSeenIntro) {
+        // Show after initial page load
+        setVisible(true)
+      }
+    } catch {
+      // Storage unavailable or disabled
     }
   }, [])
 

@@ -3,8 +3,10 @@
 @theme inline {
   --color-background: #f8fafc;
   --color-foreground: #0f172a;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-display: var(--font-outfit), sans-serif;
+  --font-space: var(--font-space-grotesk), sans-serif;
   
   /* BMT Logo Exact Brand Colors */
   --color-bmt-blue: #122f87;
