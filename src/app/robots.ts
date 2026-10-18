@@ -11,17 +11,19 @@ export default function robots(): MetadataRoute.Robots {
           '/admin/',
           '/api/admin/',
           '/api/auth/',
+          '/BMT_Ayudha_Puja_Invitation_Lite.html',
+          '/invitation',
         ],
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: ['/admin/'],
+        disallow: ['/admin/', '/BMT_Ayudha_Puja_Invitation_Lite.html', '/invitation'],
       },
       {
         userAgent: 'Bingbot',
         allow: '/',
-        disallow: ['/admin/'],
+        disallow: ['/admin/', '/BMT_Ayudha_Puja_Invitation_Lite.html', '/invitation'],
       },
     ],
     sitemap: [

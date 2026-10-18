@@ -400,6 +400,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/invitation',
+        destination: '/BMT_Ayudha_Puja_Invitation_Lite.html',
+      },
+    ];
+  },
   async headers() {
     return [
       {
