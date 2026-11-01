@@ -12,6 +12,9 @@ import { getPgClient, pgGetAllProducts } from "@/lib/pg-products"
 import staticProductsFallback from "@/data/products-live.json"
 import { Product } from "@/types"
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function Home() {
   let mdInfo = null
   let products: Product[] = staticProductsFallback as Product[]

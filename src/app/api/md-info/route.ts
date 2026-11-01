@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSessionUser } from '@/lib/auth'
 import { getPgClient } from '@/lib/pg-products'
 
@@ -41,7 +42,16 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ mdInfo })
+    return NextResponse.json(
+      { mdInfo },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0'
+        }
+      }
+    )
   } catch (error) {
     console.error('Error fetching MD info:', error)
     return NextResponse.json({ error: 'Server error fetching MD info' }, { status: 500 })
@@ -151,6 +161,13 @@ export async function POST(req: Request) {
         badgeText: badgeText || '',
         updatedAt: new Date()
       }
+    }
+
+    try {
+      revalidatePath('/')
+      revalidatePath('/admin/settings')
+    } catch (revalErr) {
+      console.warn('Revalidation notice:', revalErr)
     }
 
     return NextResponse.json({ success: true, mdInfo: updated })

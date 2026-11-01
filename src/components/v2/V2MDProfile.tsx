@@ -42,10 +42,10 @@ export default function V2MDProfile({ initialData }: { initialData?: MDInfoData 
   })
 
   useEffect(() => {
-    if (initialData) return
+    // Fetch latest MD info from API on mount to guarantee fresh photo and details
     async function fetchMDInfo() {
       try {
-        const res = await fetch("/api/md-info")
+        const res = await fetch("/api/md-info", { cache: "no-store" })
         if (res.ok) {
           const data = await res.json()
           if (data.mdInfo) {
