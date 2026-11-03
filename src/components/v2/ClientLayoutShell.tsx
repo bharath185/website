@@ -56,8 +56,8 @@ export default function ClientLayoutShell({ children }: { children: React.ReactN
 
             <div className="border-t border-slate-800/80 pt-5 text-[10px] font-mono text-slate-500">
               <p>For urgent business inquiries, please reach out to:</p>
-              <a href="mailto:bmt.sangeeta@gmail.com" className="text-blue-400 hover:text-blue-300 font-bold mt-1.5 block transition-colors">
-                bmt.sangeeta@gmail.com / bmt.abbas@gmail.com
+              <a href="mailto:sangeeta@bmtbharat.com" className="text-blue-400 hover:text-blue-300 font-bold mt-1.5 block transition-colors">
+                sangeeta@bmtbharat.com / abbas@bmtbharat.com
               </a>
             </div>
           </div>

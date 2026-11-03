@@ -150,8 +150,8 @@ export default function V2Footer() {
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-blue-600 shrink-0" />
                 <div className="flex flex-col">
-                  <a href="mailto:bmt.sangeeta@gmail.com" className="hover:text-blue-600 transition-colors">bmt.sangeeta@gmail.com</a>
-                  <a href="mailto:bmt.abbas@gmail.com" className="text-[11px] text-slate-500 hover:text-blue-600 transition-colors">bmt.abbas@gmail.com</a>
+                  <a href="mailto:sangeeta@bmtbharat.com" className="hover:text-blue-600 transition-colors">sangeeta@bmtbharat.com</a>
+                  <a href="mailto:abbas@bmtbharat.com" className="text-[11px] text-slate-500 hover:text-blue-600 transition-colors">abbas@bmtbharat.com</a>
                 </div>
               </div>
               <div className="pt-2 border-t border-slate-200/60 text-[10px] font-mono text-slate-500">

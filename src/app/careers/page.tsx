@@ -404,7 +404,7 @@ export default function CareersPage() {
           </div>
 
           <a
-            href="mailto:bmt.abbas@gmail.com?subject=Spontaneous%20Job%20Application%20-%20BMT%20Careers"
+            href="mailto:abbas@bmtbharat.com?subject=Spontaneous%20Job%20Application%20-%20BMT%20Careers"
             className="px-5 py-2.5 bg-white text-[#122f87] hover:bg-blue-50 font-bold rounded-xl text-xs font-mono uppercase tracking-wider transition-colors shadow-sm shrink-0 inline-flex items-center gap-1.5 cursor-pointer"
           >
             <Mail className="w-3.5 h-3.5 text-[#122f87]" />

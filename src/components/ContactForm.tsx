@@ -56,7 +56,7 @@ export default function ContactForm() {
   }
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText('bmt.abbas@gmail.com')
+    navigator.clipboard.writeText('sangeeta@bmtbharat.com')
     setCopiedEmail(true)
     setTimeout(() => setCopiedEmail(false), 2000)
   }
@@ -151,16 +151,16 @@ export default function ContactForm() {
                   Official Email
                 </span>
                 <a 
-                  href="mailto:bmt.sangeeta@gmail.com" 
+                  href="mailto:sangeeta@bmtbharat.com" 
                   className="text-xs font-bold text-white font-mono block hover:underline truncate"
                 >
-                  bmt.sangeeta@gmail.com
+                  sangeeta@bmtbharat.com
                 </a>
                 <a
-                  href="mailto:bmt.abbas@gmail.com"
+                  href="mailto:abbas@bmtbharat.com"
                   className="text-[10px] text-blue-200/80 font-light block truncate hover:underline"
                 >
-                  bmt.abbas@gmail.com
+                  abbas@bmtbharat.com
                 </a>
               </div>
               <button

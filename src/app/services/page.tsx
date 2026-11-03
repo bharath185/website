@@ -236,7 +236,7 @@ export default function ServicesPage() {
               <span>+91-9880464557</span>
             </a>
             <a
-              href="mailto:bmt.sangeeta@gmail.com"
+              href="mailto:sangeeta@bmtbharat.com"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider rounded-xl border border-white/20 transition-all"
             >
               <Mail className="w-4 h-4" />

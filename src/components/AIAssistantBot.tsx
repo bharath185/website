@@ -63,7 +63,7 @@ function matchInstantKnowledge(text: string): { reply: string; redirect?: string
 
   if (q.includes("contact") || q.includes("phone") || q.includes("email") || q.includes("gstin")) {
     return {
-      reply: "You can reach Mr. Abbas Khan at +91-9880464557 or email bmt.sangeeta@gmail.com / bmt.abbas@gmail.com (GSTIN: 29AAUFB7927K1ZK). Directing you to Contact page! [REDIRECT:/contact]",
+      reply: "You can reach Mr. Abbas Khan at +91-9880464557 or email sangeeta@bmtbharat.com / abbas@bmtbharat.com (GSTIN: 29AAUFB7927K1ZK). Directing you to Contact page! [REDIRECT:/contact]",
       redirect: "/contact",
     }
   }

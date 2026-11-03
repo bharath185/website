@@ -144,8 +144,8 @@ export default function Footer() {
                 <div className="flex items-start gap-2.5 text-xs text-slate-600 font-medium">
                   <Mail className="w-4 h-4 text-blue-800 flex-shrink-0 mt-0.5" />
                   <div className="flex flex-col">
-                    <a href="mailto:bmt.sangeeta@gmail.com" className="hover:text-blue-900 transition-colors">bmt.sangeeta@gmail.com</a>
-                    <a href="mailto:bmt.abbas@gmail.com" className="text-slate-500 hover:text-blue-900 transition-colors">bmt.abbas@gmail.com</a>
+                    <a href="mailto:sangeeta@bmtbharat.com" className="hover:text-blue-900 transition-colors">sangeeta@bmtbharat.com</a>
+                    <a href="mailto:abbas@bmtbharat.com" className="text-slate-500 hover:text-blue-900 transition-colors">abbas@bmtbharat.com</a>
                   </div>
                 </div>
               </li>

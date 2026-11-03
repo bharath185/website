@@ -1,5 +1,35 @@
 [
   {
+    "id": "polished-industrial-shafts",
+    "name": "Precision Polished Industrial Shafts",
+    "slug": "polished-industrial-shafts",
+    "category": "Machinery",
+    "price": 45000,
+    "shortDescription": "High-precision ground and mirror-polished industrial shafts engineered for heavy-duty rotary transmissions, CNC spindles, and high-load rotodynamic machinery with sub-micron runout tolerances.",
+    "description": "Bharat Machine Tools manufactures high-precision ground and mirror-polished industrial shafts designed to meet the rigorous tolerances demanded by aerospace, defense, automotive, and heavy industrial machinery OEMs. Crafted from premium alloy steels (EN8, EN19, EN24, SAE 4140, Stainless Steel), our shafts undergo multi-stage induction hardening, stress relieving, cylindrical grinding, and super-finishing to ensure sub-micron concentricity and superior fatigue strength. Shipped with protective wooden pallet staging, rust-preventive coating, and precision dimensional QA inspection certificates.",
+    "specifications": [
+      "Material Grades: EN8, EN19, EN24, SAE 4140, 20MnCr5, SS304/SS316",
+      "Diameter Range: Ø15mm to Ø350mm | Length: Up to 3,500mm",
+      "Surface Finish: Mirror Polished Ra < 0.2 µm, Hard Chrome Plated Option",
+      "Runout & Concentricity: Sub-micron tolerance within ±0.003 mm",
+      "Heat Treatment: Case Hardened / Induction Hardened up to 58-62 HRC",
+      "Packaging: Export-grade corrosion-inhibiting VCI wrapping on reinforced wooden pallets"
+    ],
+    "image": "/images/products/polished-industrial-shafts.png",
+    "features": [
+      "Sub-micron cylindrical grinding and super-finish polishing",
+      "High dynamic balancing for high-speed rotational stability",
+      "Superior wear, corrosion, and torsional fatigue resistance",
+      "Custom keyways, stepped diameters, and spline milling available",
+      "Individually inspected with CMM inspection reports"
+    ],
+    "images": [
+      "/images/products/polished-industrial-shafts.png",
+      "/Polished Industrial Shafts on Wooden Pallets.png"
+    ],
+    "tag": "NEW ARRIVAL"
+  },
+  {
     "id": "reeling-rollers",
     "name": "Reeling Rollers",
     "slug": "reeling-rollers",

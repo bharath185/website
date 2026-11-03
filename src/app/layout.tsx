@@ -161,7 +161,7 @@ export default function RootLayout({
                   "image": "https://www.bmtbharat.com/logo.png",
                   "description": "BMT (Bharat Machine Tools) - High-precision machine tool manufacturing, motorized spindles, hydrostatic bearings, ball screws, defense actuators, and turnkey CNC reconditioning in Bangalore, India.",
                   "telephone": "+919880464557",
-                  "email": "bmt.sangeeta@gmail.com",
+                  "email": ["sangeeta@bmtbharat.com", "abbas@bmtbharat.com"],
                   "vatID": "29AAUFB7927K1ZK",
                   "taxID": "29AAUFB7927K1ZK",
                   "priceRange": "₹₹₹₹",

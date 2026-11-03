@@ -43,7 +43,7 @@ export default function ContactLayout({
           "@type": "Organization",
           "name": "Bharat Machine Tools",
           "telephone": "+919880464557",
-          "email": "bmt.sangeeta@gmail.com",
+          "email": ["sangeeta@bmtbharat.com", "abbas@bmtbharat.com"],
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "155/59, Lakshmipura Main Road, 2nd Cross, Abbigere Industrial Area, Chikkabanavara Post",

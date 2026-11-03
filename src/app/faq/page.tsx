@@ -26,7 +26,7 @@ export default function FAQPage() {
     },
     {
       q: 'How can I request a technical quote or submit an RFQ for products?',
-      a: 'You can submit an inquiry through our website Enquiry Cart, call our desk directly at +91-9880464557 (Abbas Khan), send an email to bmt.sangeeta@gmail.com / bmt.abbas@gmail.com, or chat with us on WhatsApp.'
+      a: 'You can submit an inquiry through our website Enquiry Cart, call our desk directly at +91-9880464557 (Abbas Khan), send an email to sangeeta@bmtbharat.com / abbas@bmtbharat.com, or chat with us on WhatsApp.'
     },
     {
       q: 'Do you supply products outside Bangalore and internationally?',
