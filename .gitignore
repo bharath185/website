@@ -43,3 +43,17 @@ next-env.d.ts
 # local databases
 prisma/*.db
 *.db
+
+# Archives and build artifacts
+*.zip
+*.tar.gz
+*.sql
+fresh-deploy/
+turbopack-fix/
+
+# Credentials and scratch files
+*password*
+inspect_tables.js
+generate_clean_sql.js
+make_fix_zip.js
+build_server_fix.js

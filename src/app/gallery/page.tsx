@@ -10,9 +10,22 @@ interface GalleryItem {
   createdAt: string
 }
 
+const DEFAULT_GALLERY_ITEMS: GalleryItem[] = [
+  { id: "gal-1", url: "/images/gallery/bmt-product-wheel.jpg", createdAt: "" },
+  { id: "gal-2", url: "/images/gallery/spm-front.jpg", createdAt: "" },
+  { id: "gal-3", url: "/images/gallery/spm-front-face.jpg", createdAt: "" },
+  { id: "gal-4", url: "/images/gallery/spm-side.jpg", createdAt: "" },
+  { id: "gal-5", url: "/images/gallery/spm-rear.jpg", createdAt: "" },
+  { id: "gal-6", url: "/images/gallery/spm-top.jpg", createdAt: "" },
+  { id: "gal-7", url: "https://fpimages.withfloats.com/actual/689b2aaf4e1a717b10cdac53.jpg", createdAt: "" },
+  { id: "gal-8", url: "https://fpimages.withfloats.com/actual/689b2a7f68536c1523251664.jpg", createdAt: "" },
+  { id: "gal-9", url: "https://fpimages.withfloats.com/actual/689b2a7ca0534d0427d7b062.jpg", createdAt: "" },
+  { id: "gal-10", url: "https://fpimages.withfloats.com/actual/689b2a7ae41135d55e7beaf0.jpg", createdAt: "" },
+]
+
 export default function GalleryPage() {
-  const [images, setImages] = useState<GalleryItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [images, setImages] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS)
+  const [loading, setLoading] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   useEffect(() => {
@@ -21,7 +34,7 @@ export default function GalleryPage() {
         const res = await fetch("/api/gallery", { cache: "no-store" })
         if (res.ok) {
           const data = await res.json()
-          if (data.images) {
+          if (data.images && data.images.length > 0) {
             setImages(data.images)
           }
         }

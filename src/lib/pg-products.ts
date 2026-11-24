@@ -2,38 +2,90 @@ import dns from 'dns'
 import { Pool, Client } from 'pg'
 import { Product } from '@/types'
 
-const HOSTNAME = 'ep-fragrant-sound-azji41kz-pooler.c-3.ap-southeast-1.aws.neon.tech'
-const DB_USER = 'neondb_owner'
-const DB_PASS = 'npg_MemHW9SCdtg2'
-const DB_NAME = 'neondb'
-const DB_PORT = 5432
+const FALLBACK_HOSTNAME = 'ep-fragrant-sound-azji41kz-pooler.c-3.ap-southeast-1.aws.neon.tech'
+const FALLBACK_USER = 'neondb_owner'
+const FALLBACK_PASS = 'npg_MemHW9SCdtg2'
+const FALLBACK_NAME = 'neondb'
+const FALLBACK_PORT = 5432
+
+// Curated high-resolution fallback image mapping for critical machinery products
+const KNOWN_PRODUCT_IMAGES: Record<string, string> = {
+  'rotary-tables': 'https://productimages.withfloats.com/tile/649bf791a942e10001afa81f.png',
+  '5th-axis-rotary-table': 'https://productimages.withfloats.com/tile/649bf9892c55490001fe2276.png',
+  'ball-screws': 'https://productimages.withfloats.com/tile/6499819740036f0001c548d2.jpg',
+  'locknuts': '/uploads/1786554276270-vmh5apy.png',
+  'planetary-gear-box': '/uploads/1786553860570-t4s3j5l.png',
+  'spm-machine-tools': '/uploads/1786554554525-g9u0dry.png',
+  'bend-checking-fixture': '/uploads/1787331777609-x5noist.png',
+  'polished-industrial-shafts': '/images/products/polished-industrial-shafts.png'
+}
+
+function sanitizeProductImage(slug: string, img: string): string {
+  if (!img) return KNOWN_PRODUCT_IMAGES[slug] || ''
+  // Guard against MD portrait uploaded into Rotary Tables or any machine product
+  if (img.includes('1786554119506-30flis9') || img.includes('md_portrait') || img.includes('md.jpg')) {
+    return KNOWN_PRODUCT_IMAGES[slug] || 'https://productimages.withfloats.com/tile/649bf791a942e10001afa81f.png'
+  }
+  // Guard against Locknuts photo accidentally duplicating into Ball Screws
+  if (slug === 'ball-screws' && img.includes('1786554265141-6t94w7e')) {
+    return 'https://productimages.withfloats.com/tile/6499819740036f0001c548d2.jpg'
+  }
+  return img
+}
 
 let cachedPool: Pool | null = null
 
 export async function getPgClient(): Promise<Client> {
-  // Resolve IPv4 directly with Google/Cloudflare DNS to bypass any local/serverless DNS glitches
-  let targetIp = HOSTNAME
+  const dbUrl = process.env.DATABASE_URL
+
+  if (dbUrl) {
+    try {
+      const parsedUrl = new URL(dbUrl)
+      const host = parsedUrl.hostname
+      const isLocal = !host || host === 'localhost' || host === '127.0.0.1'
+
+      const client = new Client({
+        connectionString: dbUrl,
+        ssl: isLocal ? false : { rejectUnauthorized: false, servername: host },
+        connectionTimeoutMillis: 10000
+      })
+
+      await client.connect()
+      return client
+    } catch (parseErr) {
+      console.warn('Error connecting with DATABASE_URL, attempting standard client:', parseErr)
+      const client = new Client({
+        connectionString: dbUrl,
+        ssl: false,
+        connectionTimeoutMillis: 10000
+      })
+      await client.connect()
+      return client
+    }
+  }
+
+  // Fallback to Neon if DATABASE_URL is not set
+  let targetIp = FALLBACK_HOSTNAME
   try {
     const dnsPromises = dns.promises
     dns.setServers(['8.8.8.8', '1.1.1.1'])
-    const ips = await dnsPromises.resolve4(HOSTNAME)
+    const ips = await dnsPromises.resolve4(FALLBACK_HOSTNAME)
     if (ips && ips.length > 0) {
       targetIp = ips[0]
     }
   } catch (dnsErr) {
-    // If dns resolve fails, use hostname directly
-    targetIp = HOSTNAME
+    targetIp = FALLBACK_HOSTNAME
   }
 
   const client = new Client({
     host: targetIp,
-    port: DB_PORT,
-    database: DB_NAME,
-    user: DB_USER,
-    password: DB_PASS,
+    port: FALLBACK_PORT,
+    database: FALLBACK_NAME,
+    user: FALLBACK_USER,
+    password: FALLBACK_PASS,
     ssl: {
       rejectUnauthorized: false,
-      servername: HOSTNAME
+      servername: FALLBACK_HOSTNAME
     },
     connectionTimeoutMillis: 8000
   })
@@ -59,6 +111,8 @@ export async function pgGetAllProducts(): Promise<Product[]> {
       if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
         parsedImages = p.image ? [p.image] : []
       }
+      parsedImages = parsedImages.map(img => sanitizeProductImage(p.slug, img))
+      const primaryImage = sanitizeProductImage(p.slug, parsedImages[0] || p.image || '')
 
       let parsedSpecs: string[] = []
       if (p.specifications) {
@@ -86,8 +140,8 @@ export async function pgGetAllProducts(): Promise<Product[]> {
         price: parseFloat(p.price) || 0,
         shortDescription: p.shortDescription || p.name,
         description: p.description || p.name,
-        image: parsedImages[0] || p.image || '',
-        images: parsedImages,
+        image: primaryImage,
+        images: parsedImages.length > 0 ? parsedImages : [primaryImage],
         tag: p.tag || undefined,
         specifications: parsedSpecs,
         features: parsedFeatures,
@@ -120,6 +174,8 @@ export async function pgGetProductByIdOrSlug(idOrSlug: string): Promise<Product 
     if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
       parsedImages = p.image ? [p.image] : []
     }
+    parsedImages = parsedImages.map(img => sanitizeProductImage(p.slug, img))
+    const finalPrimaryImage = sanitizeProductImage(p.slug, parsedImages[0] || p.image || '')
 
     let parsedSpecs: string[] = []
     if (p.specifications) {
@@ -147,8 +203,8 @@ export async function pgGetProductByIdOrSlug(idOrSlug: string): Promise<Product 
       price: parseFloat(p.price) || 0,
       shortDescription: p.shortDescription || p.name,
       description: p.description || p.name,
-      image: parsedImages[0] || p.image || '',
-      images: parsedImages,
+      image: finalPrimaryImage,
+      images: parsedImages.length > 0 ? parsedImages : [finalPrimaryImage],
       tag: p.tag || undefined,
       specifications: parsedSpecs,
       features: parsedFeatures,
@@ -299,6 +355,8 @@ export async function pgUpdateProduct(idOrSlug: string, updates: Partial<Product
     if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
       parsedImages = p.image ? [p.image] : []
     }
+    parsedImages = parsedImages.map(img => sanitizeProductImage(p.slug, img))
+    const finalPrimaryImage = sanitizeProductImage(p.slug, parsedImages[0] || p.image || '')
 
     let parsedSpecs: string[] = []
     if (p.specifications) {
@@ -326,8 +384,8 @@ export async function pgUpdateProduct(idOrSlug: string, updates: Partial<Product
       price: parseFloat(p.price) || 0,
       shortDescription: p.shortDescription || p.name,
       description: p.description || p.name,
-      image: parsedImages[0] || p.image || '',
-      images: parsedImages,
+      image: finalPrimaryImage,
+      images: parsedImages.length > 0 ? parsedImages : [finalPrimaryImage],
       tag: p.tag || undefined,
       specifications: parsedSpecs,
       features: parsedFeatures,
